@@ -139,6 +139,8 @@ def main():
         check()
     elif args.command == "test":
         test()
+    elif args.command == "pre-push":
+        pre_push()
     else:
         parser.print_help()
 
