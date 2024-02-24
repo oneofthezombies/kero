@@ -20,47 +20,55 @@ CPYTHON_BRANCH = "target"
 
 
 def clean():
-    print("Cleaning development environment")
     if os.path.exists(THIRD_PARTY_DIR):
-        print("Removing third party directory")
+        print("Deleting third_party directory")
         shutil.rmtree(THIRD_PARTY_DIR)
-    print("Cleaning rust project")
     subprocess.check_call(["cargo", "clean"])
 
 
 def init(force=False):
-    print("Initializing development environment")
-    print("Installing rust nightly")
-    subprocess.check_call(["rustup", "install", "nightly"])
-    subprocess.check_call(
-        ["rustup", "component", "add", "rustfmt", "clippy", "--toolchain", "nightly"]
-    )
-    subprocess.check_call(["rustup", "override", "set", "nightly"])
-
-    if os.path.exists(THIRD_PARTY_DIR):
-        if force:
-            print("Forcing initialization")
-            clean()
-        else:
-            print("Development environment already initialized")
-            return
-
-    os.makedirs(THIRD_PARTY_DIR, exist_ok=True)
-    with push_dir(THIRD_PARTY_DIR):
+    def rust():
+        subprocess.check_call(["rustup", "install", "nightly"])
         subprocess.check_call(
             [
-                "git",
-                "clone",
-                "--depth=1",
-                f"--branch={CPYTHON_BRANCH}",
-                "https://github.com/oneofthezombies/cpython.git",
+                "rustup",
+                "component",
+                "add",
+                "rustfmt",
+                "clippy",
+                "--toolchain",
+                "nightly",
             ]
         )
-        with push_dir("cpython"):
-            os.makedirs("debug", exist_ok=True)
-            with push_dir("debug"):
-                subprocess.check_call(["../configure", "--with-pydebug"])
-                subprocess.check_call(["make", "-j"])
+        subprocess.check_call(["rustup", "override", "set", "nightly"])
+
+    def third_party():
+        if os.path.exists(THIRD_PARTY_DIR):
+            if force:
+                clean()
+            else:
+                print("third_party directory already exists")
+                return
+
+        os.makedirs(THIRD_PARTY_DIR, exist_ok=True)
+        with push_dir(THIRD_PARTY_DIR):
+            subprocess.check_call(
+                [
+                    "git",
+                    "clone",
+                    "--depth=1",
+                    f"--branch={CPYTHON_BRANCH}",
+                    "https://github.com/oneofthezombies/cpython.git",
+                ]
+            )
+            with push_dir("cpython"):
+                os.makedirs("debug", exist_ok=True)
+                with push_dir("debug"):
+                    subprocess.check_call(["../configure", "--with-pydebug"])
+                    subprocess.check_call(["make", "-j"])
+
+    rust()
+    third_party()
 
 
 def check():
