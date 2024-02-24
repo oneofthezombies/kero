@@ -4,5 +4,5 @@ repos:
       - id: pre-push
         name: pre-push
         entry: python scripts/dev.py pre-push
-        language: script
+        language: python_venv
         stages: [pre-push]
