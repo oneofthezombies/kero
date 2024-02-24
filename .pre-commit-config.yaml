@@ -3,6 +3,6 @@ repos:
     hooks:
       - id: custom-script
         name: Run custom script before push
-        entry: scripts/dev.py pre-push
+        entry: python scripts/dev.py pre-push
         language: python
         stages: [pre-push]
