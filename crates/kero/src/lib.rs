@@ -7,10 +7,10 @@ pub struct KeroParser;
 
 fn parse() {
     let successful_parse = KeroParser::parse(Rule::field, "-273.15");
-    println!("{:?}", successful_parse);
+    println!("{successful_parse:?}");
 
     let unsuccessful_parse = KeroParser::parse(Rule::field, "this is not a number");
-    println!("{:?}", unsuccessful_parse);
+    println!("{unsuccessful_parse:?}");
 }
 
 #[cfg(test)]

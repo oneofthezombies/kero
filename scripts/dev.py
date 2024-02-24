@@ -22,11 +22,21 @@ CPYTHON_BRANCH = "target"
 def clean():
     print("Cleaning development environment")
     if os.path.exists(THIRD_PARTY_DIR):
+        print("Removing third party directory")
         shutil.rmtree(THIRD_PARTY_DIR)
+    print("Cleaning rust project")
+    subprocess.check_call(["cargo", "clean"])
 
 
 def init(force=False):
     print("Initializing development environment")
+    print("Installing rust nightly")
+    subprocess.check_call(["rustup", "install", "nightly"])
+    subprocess.check_call(
+        ["rustup", "component", "add", "rustfmt", "clippy", "--toolchain", "nightly"]
+    )
+    subprocess.check_call(["rustup", "override", "set", "nightly"])
+
     if os.path.exists(THIRD_PARTY_DIR):
         if force:
             print("Forcing initialization")
@@ -53,6 +63,46 @@ def init(force=False):
                 subprocess.check_call(["make", "-j"])
 
 
+def check():
+    subprocess.check_call(
+        ["cargo", "check", "--workspace", "--all-targets", "--all-features"]
+    )
+    subprocess.check_call(
+        [
+            "cargo",
+            "clippy",
+            "--workspace",
+            "--all-targets",
+            "--all-features",
+            "--",
+            "-D",
+            "clippy::all",
+            "-D",
+            "clippy::pedantic",
+        ]
+    )
+    subprocess.check_call(["cargo", "fmt", "--all", "--check"])
+
+
+def test():
+    subprocess.check_call(
+        [
+            "cargo",
+            "test",
+            "--workspace",
+            "--all-targets",
+            "--all-features",
+            "--",
+            "--nocapture",
+        ]
+    )
+
+
+def pre_push():
+    check()
+    test()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Development utilities")
     command_parser = parser.add_subparsers(dest="command", help="Available commands")
@@ -65,11 +115,22 @@ def main():
     clean_parser = command_parser.add_parser(
         "clean", help="Clean development environment"
     )
+    check_parser = command_parser.add_parser(
+        "check", help="Run check, clippy and rustfmt"
+    )
+    test_parser = command_parser.add_parser("test", help="Run tests")
+    pre_push_parser = command_parser.add_parser(
+        "pre-push", help="Run pre-push checks and tests"
+    )
     args = parser.parse_args()
     if args.command == "init":
         init(args.force)
     elif args.command == "clean":
         clean()
+    elif args.command == "check":
+        check()
+    elif args.command == "test":
+        test()
     else:
         parser.print_help()
 
