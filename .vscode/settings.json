@@ -22,5 +22,9 @@
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml",
     "editor.formatOnSave": true
+  },
+  "[pest]": {
+    "editor.defaultFormatter": "pest.pest-ide-tools",
+    "editor.formatOnSave": true
   }
 }

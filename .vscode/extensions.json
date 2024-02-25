@@ -6,6 +6,7 @@
     "tamasfe.even-better-toml",
     "ms-python.vscode-pylance",
     "ms-python.python",
-    "ms-python.debugpy"
+    "ms-python.debugpy",
+    "pest.pest-ide-tools"
   ]
 }
