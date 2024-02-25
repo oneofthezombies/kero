@@ -130,7 +130,7 @@ def main():
     pre_push_parser = command_parser.add_parser(
         "pre-push", help="Run pre-push checks and tests"
     )
-    args = parser.parse_known_args()
+    args, argv = parser.parse_known_args()
     if args.command == "init":
         init(args.force)
     elif args.command == "clean":
