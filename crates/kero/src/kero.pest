@@ -1,3 +1,49 @@
 module = {
-    SOI ~ EOI
+    SOI ~ statement* ~ EOI
+}
+
+statement = {
+    expression
+  | statement ~ NEWLINE ~ statement
+}
+
+expression = @{
+    integer
+}
+
+// comment = @{
+// "#" ~ (!NEWLINE ~ ANY)*
+// }
+
+decimal_integer = @{
+    "0" ~ !ASCII_DIGIT
+  | (ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
+}
+
+binary_integer = @{
+    "0b" ~ ASCII_BIN_DIGIT+
+}
+
+octal_integer = @{
+    "0o" ~ ASCII_OCT_DIGIT+
+}
+
+hexadecimal_integer = @{
+    "0x" ~ ASCII_HEX_DIGIT+
+}
+
+positive_integer = @{
+    decimal_integer
+  | binary_integer
+  | octal_integer
+  | hexadecimal_integer
+}
+
+negative_integer = @{
+    "-" ~ positive_integer
+}
+
+integer = @{
+    positive_integer
+  | negative_integer
 }

@@ -6,11 +6,12 @@ use pest_derive::Parser;
 pub struct KeroParser;
 
 fn parse() {
-    // let successful_parse = KeroParser::parse(Rule::field, "-273.15");
-    // println!("{successful_parse:?}");
-
-    // let unsuccessful_parse = KeroParser::parse(Rule::field, "this is not a number");
-    // println!("{unsuccessful_parse:?}");
+    KeroParser::parse(Rule::module, "").unwrap();
+    KeroParser::parse(Rule::decimal_integer, "0").unwrap();
+    KeroParser::parse(Rule::decimal_integer, "1").unwrap();
+    KeroParser::parse(Rule::decimal_integer, "12").unwrap();
+    KeroParser::parse(Rule::decimal_integer, "01").unwrap_err();
+    KeroParser::parse(Rule::decimal_integer, "1_2").unwrap_err();
 }
 
 #[cfg(test)]
