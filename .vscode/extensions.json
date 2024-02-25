@@ -1,3 +1,7 @@
 {
-  "recommendations": ["ms-python.black-formatter", "rust-lang.rust-analyzer"]
+  "recommendations": [
+    "ms-python.black-formatter",
+    "rust-lang.rust-analyzer",
+    "esbenp.prettier-vscode"
+  ]
 }

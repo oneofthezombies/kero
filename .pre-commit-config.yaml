@@ -1,9 +1,15 @@
 repos:
   - repo: local
     hooks:
-      - id: pre-push
-        name: pre-push
-        entry: python scripts/dev.py pre-push
+      - id: check
+        name: check
+        entry: python scripts/dev.py check
+        language: python_venv
+        stages:
+          - pre-push
+      - id: test
+        name: test
+        entry: python scripts/dev.py test
         language: python_venv
         stages:
           - pre-push

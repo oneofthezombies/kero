@@ -106,11 +106,6 @@ def test():
     )
 
 
-def pre_push():
-    check()
-    test()
-
-
 def main():
     parser = argparse.ArgumentParser(description="Development utilities")
     command_parser = parser.add_subparsers(dest="command", help="Available commands")
@@ -127,9 +122,6 @@ def main():
         "check", help="Run check, clippy and rustfmt"
     )
     test_parser = command_parser.add_parser("test", help="Run tests")
-    pre_push_parser = command_parser.add_parser(
-        "pre-push", help="Run pre-push checks and tests"
-    )
     args, argv = parser.parse_known_args()
     if args.command == "init":
         init(args.force)
@@ -139,8 +131,6 @@ def main():
         check()
     elif args.command == "test":
         test()
-    elif args.command == "pre-push":
-        pre_push()
     else:
         parser.print_help()
 
