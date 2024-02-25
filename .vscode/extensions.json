@@ -1,7 +1,11 @@
 {
   "recommendations": [
     "ms-python.black-formatter",
-    "rust-lang.rust-analyzer",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "ms-vscode.cpptools",
+    "tamasfe.even-better-toml",
+    "ms-python.vscode-pylance",
+    "ms-python.python",
+    "ms-python.debugpy"
   ]
 }
