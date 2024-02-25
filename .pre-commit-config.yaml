@@ -4,12 +4,12 @@ repos:
       - id: check
         name: check
         entry: python scripts/dev.py check
-        language: python_venv
+        language: python
         stages:
           - pre-push
       - id: test
         name: test
         entry: python scripts/dev.py test
-        language: python_venv
+        language: python
         stages:
           - pre-push
