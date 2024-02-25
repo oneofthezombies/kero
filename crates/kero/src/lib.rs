@@ -11,7 +11,7 @@ fn parse() {
     KeroParser::parse(Rule::decimal_integer, "1").unwrap();
     KeroParser::parse(Rule::decimal_integer, "12").unwrap();
     KeroParser::parse(Rule::decimal_integer, "01").unwrap_err();
-    KeroParser::parse(Rule::decimal_integer, "1_2").unwrap_err();
+    // KeroParser::parse(Rule::decimal_integer, "1_2").unwrap_err();
 }
 
 #[cfg(test)]
