@@ -19,3 +19,13 @@ python -m venv .venv
 pip install -r requirements.txt
 pre-commit install -t pre-push
 ```
+
+## Python Source Build Dependencies
+
+### Ubuntu
+
+```sh
+sudo apt-get update && \
+    sudo apt-get install -y \
+        libgdbm-compat-dev
+```
