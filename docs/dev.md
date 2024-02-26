@@ -29,3 +29,9 @@ sudo apt-get update && \
     sudo apt-get install -y \
         libgdbm-compat-dev
 ```
+
+### Macos
+
+```sh
+brew install tcl-tk
+```

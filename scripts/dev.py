@@ -1,6 +1,7 @@
 import argparse
 import shutil
 import os
+import platform
 import subprocess
 from contextlib import contextmanager
 
@@ -64,7 +65,12 @@ def init(force=False):
             with push_dir("cpython"):
                 os.makedirs("debug", exist_ok=True)
                 with push_dir("debug"):
-                    subprocess.check_call(["../configure", "--with-pydebug"])
+                    env = None
+                    if platform.system() == "Darwin":
+                        env = os.environ.copy()
+                        env["CFLAGS"] = f"-I{os.environ['HOMEBREW_PREFIX']}/include"
+                        env["LDFLAGS"] = f"-L{os.environ['HOMEBREW_PREFIX']}/lib"
+                    subprocess.check_call(["../configure", "--with-pydebug"], env=env)
                     subprocess.check_call(["make", "-j"])
 
     rust()
