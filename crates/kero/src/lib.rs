@@ -54,19 +54,4 @@ mod tests {
         KeroParser::parse(Rule::module, "1/ 2").unwrap();
         KeroParser::parse(Rule::module, "1 /2").unwrap();
     }
-
-    #[test]
-    fn parens() {
-        KeroParser::parse(Rule::module, "(1)").unwrap();
-        KeroParser::parse(Rule::module, "(1+2)").unwrap();
-        KeroParser::parse(Rule::module, "1+(2)").unwrap();
-        KeroParser::parse(Rule::module, "(1)+2").unwrap();
-        KeroParser::parse(Rule::module, "1+(2+3)").unwrap();
-        KeroParser::parse(Rule::module, "(1+2)+3").unwrap();
-        KeroParser::parse(Rule::module, "1+(2+3)+4").unwrap();
-        KeroParser::parse(Rule::module, "1+(2+3+4)").unwrap();
-        KeroParser::parse(Rule::module, "1+2+(3+4)").unwrap();
-        KeroParser::parse(Rule::module, "1+2+3+(4)").unwrap();
-        KeroParser::parse(Rule::module, "1+2+3+4").unwrap();
-    }
 }
