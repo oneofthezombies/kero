@@ -1,48 +1,116 @@
 module = {
-    SOI ~ statement* ~ EOI
+    SOI ~ stmt* ~ EOI
 }
 
-statement = {
-    expression
+// statement
+stmt = {
+    expr
 }
 
-expression = @{
-    integer
+// expression
+expr = {
+    add
+  | sub
+  | mul
+  | div
+  | modulo
+  | expo
+  | int
 }
 
-// comment = @{
-// "#" ~ (!NEWLINE ~ ANY)*
-// }
+////////////////////////////////
+// Operators begin
+////////////////////////////////
 
-decimal_integer = @{
+// addition
+add = {
+    int ~ "+" ~ int
+}
+
+// subtraction
+sub = {
+    int ~ "-" ~ int
+}
+
+// multiplication
+mul = {
+    int ~ "*" ~ int
+}
+
+// division
+div = {
+    int ~ "/" ~ int
+}
+
+// modulo
+modulo = {
+    int ~ "%" ~ int
+}
+
+// exponentiation
+expo = {
+    int ~ "^" ~ int
+}
+
+////////////////////////////////
+// Operators end
+////////////////////////////////
+
+////////////////////////////////
+// Numbers begin
+////////////////////////////////
+
+// integer
+int = @{
+    positive_int
+  | negative_int
+}
+
+// negative integer
+negative_int = @{
+    "-" ~ positive_int
+}
+
+// positive integer
+positive_int = @{
+    decimal_int
+  | binary_int
+  | octal_int
+  | hexadecimal_int
+}
+
+// decimal integer
+decimal_int = @{
     "0" ~ !ASCII_DIGIT
   | (ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
 }
 
-binary_integer = @{
+// binary integer
+binary_int = @{
     "0b" ~ ASCII_BIN_DIGIT+
 }
 
-octal_integer = @{
+// octal integer
+octal_int = @{
     "0o" ~ ASCII_OCT_DIGIT+
 }
 
-hexadecimal_integer = @{
+// hexadecimal integer
+hexadecimal_int = @{
     "0x" ~ ASCII_HEX_DIGIT+
 }
 
-positive_integer = @{
-    decimal_integer
-  | binary_integer
-  | octal_integer
-  | hexadecimal_integer
-}
+////////////////////////////////
+// Numbers end
+////////////////////////////////
 
-negative_integer = @{
-    "-" ~ positive_integer
-}
+////////////////////////////////
+// Miscellaneous begin
+////////////////////////////////
 
-integer = @{
-    positive_integer
-  | negative_integer
-}
+// whitespace
+WHITESPACE = _{ " " }
+
+////////////////////////////////
+// Miscellaneous end
+////////////////////////////////

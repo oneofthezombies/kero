@@ -5,21 +5,68 @@ use pest_derive::Parser;
 #[grammar = "kero.pest"]
 pub struct KeroParser;
 
-fn parse() {
-    KeroParser::parse(Rule::module, "").unwrap();
-    KeroParser::parse(Rule::decimal_integer, "0").unwrap();
-    KeroParser::parse(Rule::decimal_integer, "1").unwrap();
-    KeroParser::parse(Rule::decimal_integer, "12").unwrap();
-    KeroParser::parse(Rule::decimal_integer, "01").unwrap_err();
-    // KeroParser::parse(Rule::decimal_integer, "1_2").unwrap_err();
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_parse() {
-        parse();
+    fn decimal_int() {
+        KeroParser::parse(Rule::module, "").unwrap();
+        KeroParser::parse(Rule::module, "0").unwrap();
+        KeroParser::parse(Rule::module, "1").unwrap();
+        KeroParser::parse(Rule::module, "12").unwrap();
+        KeroParser::parse(Rule::module, "01").unwrap_err();
+        KeroParser::parse(Rule::module, "1_2").unwrap_err();
+    }
+
+    #[test]
+    fn adds() {
+        KeroParser::parse(Rule::module, "1+2").unwrap();
+        KeroParser::parse(Rule::module, "1 + 2").unwrap();
+        KeroParser::parse(Rule::module, "1  +  2").unwrap();
+        KeroParser::parse(Rule::module, "1+ 2").unwrap();
+        KeroParser::parse(Rule::module, "1 +2").unwrap();
+    }
+
+    #[test]
+    fn subs() {
+        KeroParser::parse(Rule::module, "1-2").unwrap();
+        KeroParser::parse(Rule::module, "1 - 2").unwrap();
+        KeroParser::parse(Rule::module, "1  -  2").unwrap();
+        KeroParser::parse(Rule::module, "1- 2").unwrap();
+        KeroParser::parse(Rule::module, "1 -2").unwrap();
+    }
+
+    #[test]
+    fn muls() {
+        KeroParser::parse(Rule::module, "1*2").unwrap();
+        KeroParser::parse(Rule::module, "1 * 2").unwrap();
+        KeroParser::parse(Rule::module, "1  *  2").unwrap();
+        KeroParser::parse(Rule::module, "1* 2").unwrap();
+        KeroParser::parse(Rule::module, "1 *2").unwrap();
+    }
+
+    #[test]
+    fn divs() {
+        KeroParser::parse(Rule::module, "1/2").unwrap();
+        KeroParser::parse(Rule::module, "1 / 2").unwrap();
+        KeroParser::parse(Rule::module, "1  /  2").unwrap();
+        KeroParser::parse(Rule::module, "1/ 2").unwrap();
+        KeroParser::parse(Rule::module, "1 /2").unwrap();
+    }
+
+    #[test]
+    fn parens() {
+        KeroParser::parse(Rule::module, "(1)").unwrap();
+        KeroParser::parse(Rule::module, "(1+2)").unwrap();
+        KeroParser::parse(Rule::module, "1+(2)").unwrap();
+        KeroParser::parse(Rule::module, "(1)+2").unwrap();
+        KeroParser::parse(Rule::module, "1+(2+3)").unwrap();
+        KeroParser::parse(Rule::module, "(1+2)+3").unwrap();
+        KeroParser::parse(Rule::module, "1+(2+3)+4").unwrap();
+        KeroParser::parse(Rule::module, "1+(2+3+4)").unwrap();
+        KeroParser::parse(Rule::module, "1+2+(3+4)").unwrap();
+        KeroParser::parse(Rule::module, "1+2+3+(4)").unwrap();
+        KeroParser::parse(Rule::module, "1+2+3+4").unwrap();
     }
 }

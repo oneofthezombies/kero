@@ -8,6 +8,7 @@
     "ms-python.python",
     "ms-python.debugpy",
     "pest.pest-ide-tools",
-    "lysnikolaou.pegen-peg"
+    "lysnikolaou.pegen-peg",
+    "vadimcn.vscode-lldb"
   ]
 }
