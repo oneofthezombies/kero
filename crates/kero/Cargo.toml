@@ -11,3 +11,4 @@ license.workspace = true
 [dependencies]
 pest = "2.7.7"
 pest_derive = "2.7.7"
+lazy_static = "1.4.0"

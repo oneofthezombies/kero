@@ -1,71 +1,86 @@
+// Module
 module = {
     SOI ~ stmt* ~ EOI
 }
 
-// statement
+// Statement
 stmt = {
     expr
 }
 
-// expression
+// Expression
 expr = {
-    add
-  | sub
-  | mul
-  | div
-  | modulo
-  | int
+    ari_expr
 }
 
 ////////////////////////////////
-// Arithmetic operators begin
+//
+// # Arithmetic Expression begin
+//
 ////////////////////////////////
 
-// addition
-add = {
-    int ~ "+" ~ int
-}
+// Arithmetic Expression
+ari_expr = {  ari_atom ~ (ari_in_op ~ ari_atom)* }
 
-// subtraction
-sub = {
-    int ~ "-" ~ int
-}
+// Arithmetic Atom
+ari_atom = _{ ari_pre_op_minus? ~ ari_primary }
 
-// multiplication
-mul = {
-    int ~ "*" ~ int
-}
+// Arithmetic Primary
+ari_primary = _{ int | "(" ~ ari_expr ~ ")" }
 
-// division
-div = {
-    int ~ "/" ~ int
-}
+// Arithmetic Prefix Operator Minus
+ari_pre_op_minus = { "-" }
 
-// modulo
-modulo = {
-    int ~ "%" ~ int
-}
+// Arithmetic Infix Operator
+ari_in_op = _{ ari_in_op_add | ari_in_op_sub | ari_in_op_mul | ari_in_op_div }
 
-////////////////////////////////
-// Arithmetic operators end
-////////////////////////////////
+// Arithmetic Infix Operator Add
+ari_in_op_add = { "+" }
+
+// Arithmetic Infix Operator Subtract
+ari_in_op_sub = { "-" }
+
+// Arithmetic Infix Operator Multiply
+ari_in_op_mul = { "*" }
+
+// Arithmetic Infix Operator Divide
+ari_in_op_div = { "/" }
 
 ////////////////////////////////
+//
+// Arithmetic Expression end
+//
+////////////////////////////////
+
+////////////////////////////////
+//
+// Types begin
+//
+////////////////////////////////
+
+////////////////////////////////
+//
 // Numbers begin
+//
 ////////////////////////////////
 
-// integer
+// Number
+num = @{
+    int
+}
+
+// Integer
 int = @{
     pos_int
   | neg_int
 }
 
-// negative integer
+// Negative Integer
 neg_int = @{
     "-" ~ pos_int
 }
 
-// positive integer
+// Positive Integer
 pos_int = @{
     bin_int
   | oct_int
@@ -73,38 +88,75 @@ pos_int = @{
   | dec_int
 }
 
-// binary integer
+// Binary Integer
 bin_int = @{
     "0b" ~ ASCII_BIN_DIGIT+
 }
 
-// octal integer
+// Octal Integer
 oct_int = @{
     "0o" ~ ASCII_OCT_DIGIT+
 }
 
-// hexadecimal integer
+// Hexadecimal Integer
 hex_int = @{
     "0x" ~ ASCII_HEX_DIGIT+
 }
 
-// decimal integer
+// Decimal Integer
 dec_int = @{
     "0" ~ !ASCII_DIGIT
   | (ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
 }
 
 ////////////////////////////////
+//
 // Numbers end
+//
 ////////////////////////////////
 
 ////////////////////////////////
+//
+// Types end
+//
+////////////////////////////////
+
+////////////////////////////////
+//
 // Miscellaneous begin
+//
 ////////////////////////////////
 
-// whitespace
+// Whitespace
 WHITESPACE = _{ " " }
 
 ////////////////////////////////
+//
 // Miscellaneous end
+//
+////////////////////////////////
+
+////////////////////////////////
+//
+// Symbols begin
+//
+////////////////////////////////
+
+// Whitespace = " "
+// Plus = "+"
+// Minus = "-"
+// Asterisk = "*"
+// Slash = "/"
+// Percent Sign = "%"
+// Left Parenthesis = "("
+// Right Parenthesis = ")"
+// Left Brace = "{"
+// Right Brace = "}"
+// Left Bracket = "["
+// Right Bracket = "]"
+
+////////////////////////////////
+//
+// Symbols end
+//
 ////////////////////////////////
