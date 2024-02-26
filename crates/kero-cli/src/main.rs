@@ -29,11 +29,11 @@ fn main() {
     let cli = Cli::parse();
 
     if let Some(file) = cli.file {
-        println!("file: {}", file);
+        println!("file: {file}");
         return;
     }
 
     if let Some(command) = cli.command {
-        println!("command: {}", command);
+        println!("command: {command}");
     }
 }
