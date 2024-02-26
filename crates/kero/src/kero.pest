@@ -56,40 +56,40 @@ modulo = {
 
 // integer
 int = @{
-    positive_int
-  | negative_int
+    pos_int
+  | neg_int
 }
 
 // negative integer
-negative_int = @{
-    "-" ~ positive_int
+neg_int = @{
+    "-" ~ pos_int
 }
 
 // positive integer
-positive_int = @{
-    binary_int
-  | octal_int
-  | hexadecimal_int
-  | decimal_int
+pos_int = @{
+    bin_int
+  | oct_int
+  | hex_int
+  | dec_int
 }
 
 // binary integer
-binary_int = @{
+bin_int = @{
     "0b" ~ ASCII_BIN_DIGIT+
 }
 
 // octal integer
-octal_int = @{
+oct_int = @{
     "0o" ~ ASCII_OCT_DIGIT+
 }
 
 // hexadecimal integer
-hexadecimal_int = @{
+hex_int = @{
     "0x" ~ ASCII_HEX_DIGIT+
 }
 
 // decimal integer
-decimal_int = @{
+dec_int = @{
     "0" ~ !ASCII_DIGIT
   | (ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
 }
