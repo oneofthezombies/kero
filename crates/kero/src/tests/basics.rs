@@ -1,13 +1,4 @@
-use crate::{KeroParser, Rule};
-use pest::Parser;
-
-fn ok(input: &str) {
-    KeroParser::parse(Rule::module, input).unwrap();
-}
-
-fn err(input: &str) {
-    KeroParser::parse(Rule::module, input).unwrap_err();
-}
+use super::core::{err, ok};
 
 #[test]
 fn empty() {
