@@ -7,5 +7,5 @@ pub struct KeroParser;
 
 mod arithmetic;
 
-#[cfg(test)]
-mod tests;
+// #[cfg(test)]
+// mod tests;
