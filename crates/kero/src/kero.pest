@@ -14,7 +14,6 @@ expr = {
   | mul
   | div
   | modulo
-  | expo
   | int
 }
 
@@ -47,11 +46,6 @@ modulo = {
     int ~ "%" ~ int
 }
 
-// exponentiation
-expo = {
-    int ~ "^" ~ int
-}
-
 ////////////////////////////////
 // Operators end
 ////////////////////////////////
@@ -73,16 +67,10 @@ negative_int = @{
 
 // positive integer
 positive_int = @{
-    decimal_int
-  | binary_int
+    binary_int
   | octal_int
   | hexadecimal_int
-}
-
-// decimal integer
-decimal_int = @{
-    "0" ~ !ASCII_DIGIT
-  | (ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
+  | decimal_int
 }
 
 // binary integer
@@ -98,6 +86,12 @@ octal_int = @{
 // hexadecimal integer
 hexadecimal_int = @{
     "0x" ~ ASCII_HEX_DIGIT+
+}
+
+// decimal integer
+decimal_int = @{
+    "0" ~ !ASCII_DIGIT
+  | (ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
 }
 
 ////////////////////////////////
