@@ -23,10 +23,13 @@ expr = {
 ari_expr = {  ari_atom ~ (ari_in_op ~ ari_atom)* }
 
 // Arithmetic Atom
-ari_atom = _{ ari_pre_op_minus? ~ ari_primary }
+ari_atom = _{ ari_pre_op? ~ ari_primary }
 
 // Arithmetic Primary
 ari_primary = _{ int | "(" ~ ari_expr ~ ")" }
+
+// Arithmetic Prefix Operator
+ari_pre_op = _{ ari_pre_op_minus }
 
 // Arithmetic Prefix Operator Minus
 ari_pre_op_minus = { "-" }
