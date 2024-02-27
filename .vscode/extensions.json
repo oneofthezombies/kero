@@ -5,6 +5,7 @@
     "tamasfe.even-better-toml",
     "pest.pest-ide-tools",
     "lysnikolaou.pegen-peg",
-    "vadimcn.vscode-lldb"
+    "vadimcn.vscode-lldb",
+    "dbaeumer.vscode-eslint"
   ]
 }
