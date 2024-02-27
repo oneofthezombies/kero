@@ -1,12 +1,8 @@
 {
   "recommendations": [
-    "ms-python.black-formatter",
     "esbenp.prettier-vscode",
     "ms-vscode.cpptools",
     "tamasfe.even-better-toml",
-    "ms-python.vscode-pylance",
-    "ms-python.python",
-    "ms-python.debugpy",
     "pest.pest-ide-tools",
     "lysnikolaou.pegen-peg",
     "vadimcn.vscode-lldb"
