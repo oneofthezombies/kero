@@ -6,6 +6,10 @@
     "pest.pest-ide-tools",
     "lysnikolaou.pegen-peg",
     "vadimcn.vscode-lldb",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "ms-python.black-formatter",
+    "ms-python.vscode-pylance",
+    "ms-python.python",
+    "ms-python.debugpy"
   ]
 }

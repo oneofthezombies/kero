@@ -2,7 +2,8 @@
   "type": "module",
   "scripts": {
     "prepare": "husky",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "node scripts/dev.mjs clean",
+    "init": "node scripts/dev.mjs init"
   },
   "devDependencies": {
     "commander": "12.0.0",

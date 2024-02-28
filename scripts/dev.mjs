@@ -4,11 +4,13 @@ import fs from "fs";
 
 const THIRD_PARTY_DIR = "third_party";
 const NODE_BRANCH = "target";
+const CPYTHON_BRANCH = "target";
 
-async function run(command, args) {
+async function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       stdio: "inherit",
+      ...options,
     });
     child.on("exit", (code, signal) => {
       if (code === 0) {
@@ -67,6 +69,24 @@ async function init() {
       `--branch=${NODE_BRANCH}`,
       "https://github.com/oneofthezombies/node.git",
     ]);
+    await run("git", [
+      "clone",
+      "--depth=1",
+      `--branch=${CPYTHON_BRANCH}`,
+      "https://github.com/oneofthezombies/cpython.git",
+    ]);
+    process.chdir("cpython");
+    const env = {
+      ...process.env,
+    };
+    if (process.platform === "darwin") {
+      env.CFLAGS = `-I${process.env.HOMEBREW_PREFIX}/include`;
+      env.LDFLAGS = `-L${process.env.HOMEBREW_PREFIX}/lib`;
+    }
+    await run("./configure", ["--with-pydebug"], {
+      env,
+    });
+    await run("make", ["-j"]);
   }
 
   await initRust();

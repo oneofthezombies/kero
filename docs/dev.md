@@ -2,6 +2,15 @@
 
 # Prequirements
 
+## Node.js
+
+### Version
+
+```sh
+node --version
+# v20.11.1
+```
+
 ## Python
 
 ### Version
@@ -9,15 +18,6 @@
 ```sh
 python --version
 # Python 3.12.2
-```
-
-### Setup Virtual Environment
-
-```sh
-python -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
-pre-commit install -t pre-push
 ```
 
 ## Python Source Build Dependencies
