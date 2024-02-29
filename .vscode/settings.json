@@ -18,5 +18,10 @@
   "[pest]": {
     "editor.defaultFormatter": "pest.pest-ide-tools",
     "editor.formatOnSave": true
-  }
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
+  "python.analysis.typeCheckingMode": "strict"
 }
