@@ -100,21 +100,17 @@ async function check() {
     "--all-targets",
     "--all-features",
   ]);
-  await run(
-    "cargo",
-    [
-      "clippy",
-      "--workspace",
-      "--all-targets",
-      "--all-features",
-      "--",
-      "-D",
-      "clippy::all",
-      "-D",
-      "clippy::pedantic",
-    ],
-    { env: { ...process.env, RUSTFLAGS: "-Z macro-backtrace" } }
-  );
+  await run("cargo", [
+    "clippy",
+    "--workspace",
+    "--all-targets",
+    "--all-features",
+    "--",
+    "-D",
+    "clippy::all",
+    "-D",
+    "clippy::pedantic",
+  ]);
   await run("cargo", ["fmt", "--all", "--check"]);
 }
 
