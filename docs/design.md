@@ -43,3 +43,32 @@
 - Features from Go
   - Green Threads
   - Channel
+
+## MVC Details
+- Value types
+  - None
+  - bool
+  - True
+  - False
+  - int (builtin type equivalant i64)
+  - float (builtin type equivalant f64)
+  - i64
+  - i32
+  - i16
+  - i8
+  - u64
+  - u32
+  - u16
+  - u8
+  - f64
+  - f32
+- Control flow statement
+  - if
+  - elif
+  - else
+  - while
+  - break
+  - continue
+- Function definition
+  - def
+  - return
