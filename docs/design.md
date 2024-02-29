@@ -9,8 +9,9 @@
 - Channel
 - Batteries Included (package manager, formatter, language server, and ide support)
 
-## Features from Kotlin
-- Null Safety
+## Features from JavaScript/TypeScript
+- Nullish
+- Optional Chaining
 
 ## Type System
 
