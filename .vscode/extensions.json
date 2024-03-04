@@ -2,15 +2,12 @@
   "recommendations": [
     "esbenp.prettier-vscode",
     "ms-vscode.cpptools",
-    "tamasfe.even-better-toml",
-    "pest.pest-ide-tools",
-    "lysnikolaou.pegen-peg",
-    "vadimcn.vscode-lldb",
-    "dbaeumer.vscode-eslint",
     "ms-python.black-formatter",
     "ms-python.vscode-pylance",
     "ms-python.python",
     "ms-python.debugpy",
-    "ms-vscode.cmake-tools"
+    "ms-vscode.cmake-tools",
+    "tamasfe.even-better-toml",
+    "ms-python.isort"
   ]
 }

@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "module": "es2022",
-    "target": "es2022",
-    "moduleResolution": "bundler",
-    "checkJs": true
-  },
-  "include": ["scripts/**/*.mjs"]
-}

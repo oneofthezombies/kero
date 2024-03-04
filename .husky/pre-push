@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-set -e
-set -x
-
-# node scripts/dev.mjs check
-# node scripts/dev.mjs test
