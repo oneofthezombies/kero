@@ -12,7 +12,7 @@ def clean():
         shutil.rmtree(THIRD_PARTY_DIR)
 
 
-def main():
+def cli():
     parser = argparse.ArgumentParser(description="Kero Development Tool.")
     commands = parser.add_subparsers(dest="command")
     _clean_parser = commands.add_parser(
@@ -31,4 +31,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    cli()
