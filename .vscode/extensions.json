@@ -8,6 +8,8 @@
     "ms-python.debugpy",
     "ms-vscode.cmake-tools",
     "tamasfe.even-better-toml",
-    "ms-python.isort"
+    "ms-python.isort",
+    "twxs.cmake",
+    "cheshirekow.cmake-format"
   ]
 }

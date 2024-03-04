@@ -6,6 +6,12 @@
 
 version >= 3.12.2
 
+### Install Libraries
+
+```sh
+python -m pip install -r requirements.txt
+```
+
 ## CMake
 
 version >= 3.28.3
