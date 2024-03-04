@@ -35,3 +35,13 @@ sudo apt-get update && \
 ```sh
 brew install tcl-tk
 ```
+
+## C++ Build Dependencies
+
+### CMake
+
+cmake >= 3.28.3
+
+### Ninja
+
+ninja >= 1.11.1
