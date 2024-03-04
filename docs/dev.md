@@ -22,14 +22,12 @@ version >= 1.11.1
 
 ## LLVM
 
-version >= 17.0.6
-
-### Macos
+tag == llvmorg-17.0.6
 
 ```sh
-curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-arm64-apple-darwin22.0.tar.xz && \
-    tar zxvf clang+llvm-17.0.6-arm64-apple-darwin22.0.tar.xz && \
-    mkdir -p third_party && \
-    mv clang+llvm-17.0.6-arm64-apple-darwin22.0 third_party/llvm && \
-    rm clang+llvm-17.0.6-arm64-apple-darwin22.0.tar.xz
+mkdir -p third_party && \
+    cd third_party && \
+    git clone --depth=1 https://github.com/llvm/llvm-project.git && \
+    cd llvm-project && \
+    git fetch --tags origin llvmorg-17.0.6
 ```
