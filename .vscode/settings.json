@@ -31,10 +31,5 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml",
     "editor.formatOnSave": true
-  },
-  "files.associations": {
-    "string_view": "cpp",
-    "iostream": "cpp",
-    "vector": "cpp"
   }
 }
