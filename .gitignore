@@ -177,6 +177,11 @@ cython_debug/
 # Third party libraries
 third_party/
 
+# Downloaded files
+/*.tar.xz
+/*.tar.gz
+/*.zip
+
 ################################
 ## Kero end
 ################################

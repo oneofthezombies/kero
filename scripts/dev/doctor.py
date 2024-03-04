@@ -60,7 +60,7 @@ class CheckCommandResult(CheckResult):
         return CheckCommandResult.from_completed(False, error, completed)
 
 
-def _python() -> CheckResult:
+def python() -> CheckResult:
     completed = subprocess.run(
         ["python", "--version"],
         capture_output=True,
@@ -90,7 +90,7 @@ def _python() -> CheckResult:
     return CheckCommandResult.from_completed_ok(completed)
 
 
-def _cmake() -> CheckResult:
+def cmake() -> CheckResult:
     completed = subprocess.run(
         ["cmake", "--version"],
         capture_output=True,
@@ -129,7 +129,7 @@ def _cmake() -> CheckResult:
     return CheckCommandResult.from_completed_ok(completed)
 
 
-def _ninja() -> CheckResult:
+def ninja() -> CheckResult:
     completed = subprocess.run(
         ["ninja", "--version"],
         capture_output=True,
@@ -159,7 +159,7 @@ def _ninja() -> CheckResult:
     return CheckCommandResult.from_completed_ok(completed)
 
 
-def _llvm() -> CheckResult:
+def llvm() -> CheckResult:
     llvm_dir = os.path.join(os.getcwd(), THIRD_PARTY_DIR, "llvm")
     if not os.path.exists(llvm_dir):
         return CheckDirResult(False, f"LLVM directory not found: {llvm_dir}", llvm_dir)
@@ -167,7 +167,7 @@ def _llvm() -> CheckResult:
 
 
 def doctor() -> bool:
-    results = [_python(), _cmake(), _ninja(), _llvm()]
+    results = [python(), cmake(), ninja(), llvm()]
     ok = True
     print("-" * 80)
     for result in results:
