@@ -6,3 +6,4 @@ Standard: c++20
 LineEnding: LF
 DerivePointerAlignment: false
 PointerAlignment: Left
+BreakAfterAttributes: Always

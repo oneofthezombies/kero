@@ -3,7 +3,7 @@ import re
 import subprocess
 from typing import List
 
-from common import THIRD_PARTY_DIR
+from .common import THIRD_PARTY_DIR
 
 
 class CheckResult:

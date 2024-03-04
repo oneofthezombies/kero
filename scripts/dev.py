@@ -3,8 +3,8 @@ import os
 import shutil
 import subprocess
 
-from common import BUILD_DIR, THIRD_PARTY_DIR
-from doctor import doctor
+from impl.common import BUILD_DIR, THIRD_PARTY_DIR
+from impl.doctor import doctor
 
 
 def clean(all: bool):
