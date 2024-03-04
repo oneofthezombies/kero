@@ -10,6 +10,7 @@
     "tamasfe.even-better-toml",
     "ms-python.isort",
     "twxs.cmake",
-    "cheshirekow.cmake-format"
+    "cheshirekow.cmake-format",
+    "redhat.vscode-yaml"
   ]
 }

@@ -23,5 +23,13 @@
   "[cmake]": {
     "editor.defaultFormatter": "cheshirekow.cmake-format",
     "editor.formatOnSave": true
+  },
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.formatOnSave": true
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.formatOnSave": true
   }
 }
