@@ -25,10 +25,19 @@ version >= 1.11.1
 tag == llvmorg-17.0.6
 
 ```sh
-mkdir -p third_party && \
-    cd third_party && \
-    git clone --depth=1 https://github.com/llvm/llvm-project.git && \
-    cd llvm-project && \
-    git fetch --tags origin llvmorg-17.0.6 && \
-    git checkout llvmorg-17.0.6
+mkdir -p third_party
+
+cd third_party
+git clone --depth=1 https://github.com/llvm/llvm-project.git
+
+cd llvm-project
+git fetch --tags origin llvmorg-17.0.6
+git checkout llvmorg-17.0.6
+
+# ensure third_party/llvm-project directory.
+cmake -S llvm -B build -G Ninja -DLLVM_ENABLE_PROJECTS="clang;lld" -DCMAKE_BUILD_TYPE=Release
+ninja -C build
+
+# ensure <kero_project_dir> directory.
+export PATH="$(pwd)/third_party/llvm-project/build/bin:${PATH}"
 ```

@@ -19,6 +19,8 @@ def clean(all: bool):
 
 
 def build():
+    env = os.environ.copy()
+    env["PATH"] = f"{os.getcwd()}/third_party/llvm-project/build/bin:{env['PATH']}"
     subprocess.check_call(
         [
             "cmake",
@@ -28,9 +30,17 @@ def build():
             "src",
             "-B",
             BUILD_DIR,
-        ]
+        ],
+        env=env,
     )
-    subprocess.check_call(["ninja"], cwd=BUILD_DIR)
+    subprocess.check_call(
+        [
+            "ninja",
+            "-C",
+            BUILD_DIR,
+        ],
+        env=env,
+    )
 
 
 def cli():
