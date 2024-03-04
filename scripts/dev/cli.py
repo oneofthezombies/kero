@@ -2,9 +2,8 @@ import argparse
 import os
 import shutil
 
+from common import THIRD_PARTY_DIR
 from doctor import doctor
-
-THIRD_PARTY_DIR = "third_party"
 
 
 def clean():
