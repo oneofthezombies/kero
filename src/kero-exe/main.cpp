@@ -1,12 +1,3 @@
-#include <iostream>
-#include <string_view>
-#include <vector>
-
-[[nodiscard]]
-auto parse_args(int argc, char** argv) -> std::vector<std::string_view> {
-  return std::vector<std::string_view>(argv, argv + argc);
-}
-
 #include "../include/KaleidoscopeJIT.h"
 #include "llvm/ADT/APFloat.h"
 #include "llvm/ADT/STLExtras.h"
@@ -35,13 +26,20 @@ auto parse_args(int argc, char** argv) -> std::vector<std::string_view> {
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 #include <map>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace llvm;
 using namespace llvm::orc;
+
+[[nodiscard]]
+auto parse_args(int argc, char** argv) -> std::vector<std::string_view> {
+  return std::vector<std::string_view>(argv, argv + argc);
+}
 
 //===----------------------------------------------------------------------===//
 // Lexer
