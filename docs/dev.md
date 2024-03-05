@@ -44,10 +44,28 @@ export PATH="$(pwd)/third_party/llvm-project/build/bin:${PATH}"
 
 ## Bazel
 
-1. Install `bazelisk`, `bazel`.
+1. ensure commands `bazelisk` and `bazel`.
 
-https://github.com/bazelbuild/bazelisk
+    _version >= 7.0.2_
 
-2. Install `buildifier`.
+    please see [Official Documents](https://github.com/bazelbuild/bazelisk).
 
-https://github.com/bazelbuild/buildtools
+    ```sh
+    bazelisk --version
+    # bazel 7.0.2
+
+    bazel --version
+    # bazel 7.0.2
+    ```
+
+2. ensure command `buildifier`.
+
+    _version >= 6.4.0_
+
+    please see [Official Documents](https://github.com/bazelbuild/buildtools).
+
+    ```sh
+    buildifier --version
+    # buildifier version: 6.4.0 
+    # buildifier scm revision: 433ea8554e82832e4fa4bdd530ca471564071511
+    ```

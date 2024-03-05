@@ -31,8 +31,5 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml",
     "editor.formatOnSave": true
-  },
-  "files.associations": {
-    "ostream": "cpp"
   }
 }
