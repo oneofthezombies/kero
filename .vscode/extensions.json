@@ -11,6 +11,7 @@
     "ms-python.isort",
     "twxs.cmake",
     "cheshirekow.cmake-format",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "bazelbuild.vscode-bazel"
   ]
 }

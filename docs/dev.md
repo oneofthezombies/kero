@@ -41,3 +41,13 @@ ninja -C build
 # ensure <kero_project_dir> directory.
 export PATH="$(pwd)/third_party/llvm-project/build/bin:${PATH}"
 ```
+
+## Bazel
+
+1. Install `bazelisk`, `bazel`.
+
+https://github.com/bazelbuild/bazelisk
+
+2. Install `buildifier`.
+
+https://github.com/bazelbuild/buildtools
