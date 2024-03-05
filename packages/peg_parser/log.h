@@ -37,13 +37,12 @@ struct Logger {
     }
 
     template <typename T> auto operator<<(T&& value) -> Stream& {
-      if (log_level_ < filter_level_) {
-        return *this;
+      if (log_level_ <= filter_level_) {
+        for (auto& transport : transports_) {
+          transport->ostream() << std::forward<T>(value);
+        }
       }
 
-      for (auto& transport : transports_) {
-        transport->ostream() << std::forward<T>(value);
-      }
       return *this;
     }
 

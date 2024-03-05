@@ -16,7 +16,7 @@ auto example() -> void {
   };
 
   Logger logger;
-  logger.set_level(LogLevel::Debug);
+  logger.set_level(LogLevel::Info);
   logger.add_transport(std::make_unique<ConsoleTransport>());
 
   std::fstream file("/Users/hunhoekim/repo/kero/log.txt", std::ios::out);
