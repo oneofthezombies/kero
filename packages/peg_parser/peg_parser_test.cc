@@ -1,3 +1,4 @@
+#include "peg_parser.h"
 #include <gtest/gtest.h>
 
 // Demonstrate some basic assertions.
@@ -6,4 +7,7 @@ TEST(HelloTest, BasicAssertions) {
   EXPECT_STRNE("hello", "world");
   // Expect equality.
   EXPECT_EQ(7 * 6, 42);
+
+  peg_parser::example();
+  EXPECT_TRUE(false);
 }

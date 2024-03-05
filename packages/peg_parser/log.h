@@ -2,20 +2,17 @@
 #define PEG_PARSER_LOG_H
 
 #include <iostream>
-#include <streambuf>
 
 namespace peg_parser {
 
-class Transport {
-public:
+struct Transport {
   virtual ~Transport() {}
 
-  virtual auto out() -> std::ostream& = 0;
+  virtual auto ostream() -> std::ostream& = 0;
 };
 
-class ConsoleTransport : public Transport {
-public:
-  auto out() -> std::ostream& override { return std::cout; }
+struct ConsoleTransport : Transport {
+  virtual auto ostream() -> std::ostream& override { return std::cout; }
 };
 
 enum class LogLevel : int8_t {
@@ -25,59 +22,78 @@ enum class LogLevel : int8_t {
   Debug,
 };
 
-class Logger {
-public:
-  class Stream {
-  public:
-    Stream(std::vector<std::unique_ptr<Transport>>& transports)
-        : transports_{transports} {}
+struct Logger {
+  using Transports = std::vector<std::unique_ptr<Transport>>;
 
-    template <typename T> auto operator<<(const T& value) -> Stream& {
+  struct Stream {
+    Stream(Transports& transports, LogLevel filter_level, LogLevel log_level,
+           const std::string_view& file, int32_t line)
+        : transports_{transports}, filter_level_{filter_level},
+          log_level_{log_level}, file_{file}, line_{line} {}
+
+    Stream(Stream&& other)
+        : transports_{other.transports_}, filter_level_{other.filter_level_},
+          log_level_{other.log_level_}, file_{other.file_}, line_{other.line_} {
+    }
+
+    template <typename T> auto operator<<(T&& value) -> Stream& {
+      if (log_level_ < filter_level_) {
+        return *this;
+      }
+
       for (auto& transport : transports_) {
-        transport->out() << value;
+        transport->ostream() << std::forward<T>(value);
       }
       return *this;
     }
 
+    auto operator<<(std::ostream& (*endl)(std::ostream&)) -> Stream& {
+      for (auto& transport : transports_) {
+        transport->ostream() << endl;
+      }
+      return *this;
+    }
+
+    Stream(const Stream&) = delete;
+    auto operator=(const Stream&) -> Stream& = delete;
+    auto operator=(Stream&&) -> Stream& = delete;
+
   private:
-    std::vector<std::unique_ptr<Transport>>& transports_;
+    Transports& transports_;
+    LogLevel filter_level_;
+    LogLevel log_level_;
+    const std::string_view& file_;
+    int32_t line_;
   };
 
   Logger() {}
 
   auto set_level(LogLevel level) -> Logger& {
-    level_ = level;
+    filter_level_ = level;
     return *this;
   }
 
-  auto level() const -> LogLevel { return level_; }
+  auto level() const -> LogLevel { return filter_level_; }
 
   auto add_transport(std::unique_ptr<Transport>&& transport) -> Logger& {
     transports_.push_back(std::move(transport));
     return *this;
   }
 
-  auto log(LogLevel level) -> Stream {
-    if (level <= level_) {
-      return Stream{transports_};
-    }
-
-    static std::vector<std::unique_ptr<Transport>> null_transports_{};
-    return Stream{null_transports_};
+  auto stream(LogLevel log_level, const std::string_view& file, int32_t line)
+      -> Stream {
+    return Stream{transports_, filter_level_, log_level, file, line};
   }
 
 private:
   std::vector<std::unique_ptr<Transport>> transports_{};
-  LogLevel level_{LogLevel::Info};
+  LogLevel filter_level_{LogLevel::Info};
 };
 
-void example() {
-  Logger logger{};
-  logger.set_level(LogLevel::Debug)
-      .add_transport(std::make_unique<ConsoleTransport>());
-  logger.log(LogLevel::Debug) << "Debug message" << std::endl;
-  std::cout << "Done" << std::endl;
-}
+#define ERROR(logger) logger.stream(LogLevel::Error, __FILE__, __LINE__)
+#define WARN(logger) logger.stream(LogLevel::Warning, __FILE__, __LINE__)
+#define INFO(logger) logger.stream(LogLevel::Info, __FILE__, __LINE__)
+#define DEBUG(logger) logger.stream(LogLevel::Debug, __FILE__, __LINE__)
 
 } // namespace peg_parser
 

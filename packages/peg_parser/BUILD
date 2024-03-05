@@ -1,14 +1,14 @@
 cc_library(
     name = "peg_parser",
-    srcs = ["peg_parser.cc"],
-    hdrs = ["peg_parser.h"],
+    srcs = ["peg_parser.cc", "log.cc"],
+    hdrs = ["peg_parser.h", "log.h"],
 )
 
 cc_test(
     name = "peg_parser_test",
     size = "small",
     srcs = ["peg_parser_test.cc"],
-    deps = ["@com_google_googletest//:gtest_main"],
+    deps = ["@com_google_googletest//:gtest_main", ":peg_parser"],
 )
 
 cc_binary(

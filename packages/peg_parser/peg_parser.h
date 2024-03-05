@@ -1,9 +1,10 @@
-#pragma once
+#ifndef PEG_PARSER_PEG_PARSER_H
+#define PEG_PARSER_PEG_PARSER_H
 
-class PegParser {
-public:
-  PegParser() {}
-  ~PegParser() {}
+namespace peg_parser {
 
-  int add();
-};
+auto example() -> void;
+
+} // namespace peg_parser
+
+#endif // PEG_PARSER_PEG_PARSER_H

@@ -106,6 +106,7 @@
     "vector": "cpp",
     "algorithm": "cpp",
     "strstream": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "valarray": "cpp"
   }
 }
