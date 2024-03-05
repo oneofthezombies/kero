@@ -14,6 +14,6 @@ cc_test(
 cc_binary(
     name = "peg_parser_main",
     srcs = ["peg_parser_main.cc"],
+    toolchains = ["//toolchain:llvm_local"],
     deps = [":peg_parser"],
-    toolchains = ["//packages/toolchain:local"],
 )
