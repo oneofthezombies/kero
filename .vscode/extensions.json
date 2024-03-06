@@ -3,18 +3,12 @@
     "tamasfe.even-better-toml",
     "redhat.vscode-yaml",
     "esbenp.prettier-vscode",
-
     "ms-python.python",
     "ms-python.vscode-pylance",
     "ms-python.debugpy",
     "ms-python.black-formatter",
     "ms-python.isort",
-
-    "ms-vscode.cpptools",
     "bazelbuild.vscode-bazel",
-
-    "ms-vscode.cmake-tools",
-    "twxs.cmake",
-    "cheshirekow.cmake-format"
+    "llvm-vs-code-extensions.vscode-clangd"
   ]
 }
