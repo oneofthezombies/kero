@@ -10,20 +10,29 @@
 #include "./bridge.h"
 }
 
-module <- _ (module_body _)* end_of_file
-module_body <- statement / definition
+module <- _ body end_of_file
 
-statement <- if_statement
+# TODO: remove string
+body <- (statement / definition / string _)*
+
+statement <- if_statement / function_call_statement
 
 # if statement
 if_statement <- kw_if _ if_condition _ kw_then _ if_body _ (elseif_statement _)* (else_statement _)? kw_end
 if_condition <- condition
-if_body <- block
+if_body <- body
 elseif_statement <- kw_elseif _ elseif_condition _ kw_then _ elseif_body
 elseif_condition <- condition
-elseif_body <- block
+elseif_body <- body
 else_statement <- kw_else _ else_body
-else_body <- block
+else_body <- body
+
+# function call statement
+function_call_statement <- function_name _ (function_call_body_without_parenthesis / function_call_body_with_parenthesis)
+function_call_body_without_parenthesis <- function_argument
+function_call_body_with_parenthesis <- '(' _ function_arguments? _ ')'
+function_argument <- identifier
+function_arguments <- function_argument _ (',' _ function_argument _)*
 
 definition <- function_definition
 
@@ -32,11 +41,10 @@ function_definition <- kw_function _ function_name _ '(' _ function_parameters? 
 function_name <- identifier
 function_parameter <- identifier
 function_parameters <- function_parameter _ (',' _ function_parameter _)*
-function_body <- block
+function_body <- body
 
 # TODO
 condition <- kw_true / kw_false / kw_nil
-block <- string*
 
 # ignore
 _ <- (whitespace / end_of_line / comment)*
