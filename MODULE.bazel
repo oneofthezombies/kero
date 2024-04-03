@@ -1,29 +1,40 @@
-""""""
+"""
+kero
+"""
 
-module(
-    name = "kero",
-)
+module(name = "kero", version = "0.1.0")
 
-bazel_dep(
-    name = "com_google_googletest",
-    version = "1.14.0",
-    repo_urls = ["https://github.com/google/googletest/archive/refs/tags/v{version}.zip"],
-)
-# load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-# http_archive(
-#     name = "com_google_googletest",
-#     strip_prefix = "googletest-1.14.0",
-#     url = "https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip",
-# )
+bazel_dep(name = "googletest", version = "1.14.0")
 
 # Hedron's Compile Commands Extractor for Bazel
 # https://github.com/hedronvision/bazel-compile-commands-extractor
-# bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
-# git_override(
-#     module_name = "hedron_compile_commands",
-#     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
-#     commit = "204aa593e002cbd177d30f11f54cff3559110bb9",
-#     # Replace the commit hash (above) with the latest (https://github.com/hedronvision/bazel-compile-commands-extractor/commits/main).
-#     # Even better, set up Renovate and let it do the work for you (see "Suggestion: Updates" in the README).
+bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
+git_override(
+    module_name = "hedron_compile_commands",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+    commit = "204aa593e002cbd177d30f11f54cff3559110bb9",
+)
+
+# KERO_MPSC_VERSION = "0.10.0"
+# bazel_dep(name = "kero_mpsc", version = KERO_MPSC_VERSION)
+# archive_override(
+#     module_name = "kero_mpsc",
+#     urls = ["https://github.com/oneofthezombies/kero-mpsc/archive/refs/tags/v" + KERO_MPSC_VERSION + ".zip"],
+#     strip_prefix = "kero-mpsc-" + KERO_MPSC_VERSION,
+# )
+
+# KERO_LOG_VERSION = "0.2.0"
+# bazel_dep(name = "kero_log", version = KERO_LOG_VERSION)
+# archive_override(
+#     module_name = "kero_log",
+#     urls = ["https://github.com/oneofthezombies/kero-log/archive/refs/tags/v" + KERO_LOG_VERSION + ".zip"],
+#     strip_prefix = "kero-log-" + KERO_LOG_VERSION,
+# )
+
+# KERO_SPSC_VERSION = "0.2.4"
+# bazel_dep(name = "kero_spsc", version = KERO_SPSC_VERSION)
+# archive_override(
+#     module_name = "kero_spsc",
+#     urls = ["https://github.com/oneofthezombies/kero-spsc/archive/refs/tags/v" + KERO_SPSC_VERSION + ".zip"],
+#     strip_prefix = "kero-spsc-" + KERO_SPSC_VERSION,
 # )

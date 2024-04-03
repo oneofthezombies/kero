@@ -1,27 +1,14 @@
 {
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "clangd.arguments": [
+    "--header-insertion=never",
+    "--compile-commands-dir=${workspaceFolder}/",
+    "--query-driver=**"
+  ],
+  "[cpp]": {
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
     "editor.formatOnSave": true
   },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[bazel]": {
     "editor.formatOnSave": true
-  },
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    }
-  },
-  "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml",
-    "editor.formatOnSave": true
-  },
-  "[yaml]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml",
-    "editor.formatOnSave": true
-  },
-  "isort.args": ["--profile", "black"],
-  "python.analysis.typeCheckingMode": "strict"
+  }
 }
