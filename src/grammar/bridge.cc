@@ -9,8 +9,8 @@ auto AsParser(void* auxil) -> kero::grammar::Parser* {
   return static_cast<kero::grammar::Parser*>(auxil);
 }
 
-int KeroGrammarParser_GetChar(void* auxil) {
-  return AsParser(auxil)->GetChar();
+int KeroGrammarParser_OnGetChar(void* auxil) {
+  return AsParser(auxil)->OnGetChar();
 }
 
-void KeroGrammarParser_Error(void* auxil) { AsParser(auxil)->Error(); }
+void KeroGrammarParser_OnError(void* auxil) { AsParser(auxil)->OnError(); }

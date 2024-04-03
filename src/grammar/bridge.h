@@ -5,11 +5,11 @@
 extern "C" {
 #endif // __cplusplus
 
-int KeroGrammarParser_GetChar(void* auxil);
-void KeroGrammarParser_Error(void* auxil);
+int KeroGrammarParser_OnGetChar(void* auxil);
+void KeroGrammarParser_OnError(void* auxil);
 
-#define PCC_GETCHAR(auxil) KeroGrammarParser_GetChar(auxil)
-#define PCC_ERROR(auxil) KeroGrammarParser_Error(auxil)
+#define PCC_GETCHAR(auxil) KeroGrammarParser_OnGetChar(auxil)
+#define PCC_ERROR(auxil) KeroGrammarParser_OnError(auxil)
 
 #ifdef __cplusplus
 }

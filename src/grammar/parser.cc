@@ -12,14 +12,14 @@ Parser::Parser(const std::string_view source) noexcept
 
 Parser::~Parser() noexcept { ::KeroGrammarCore_destroy(core_context_); }
 
-auto Parser::GetChar() noexcept -> int {
+auto Parser::OnGetChar() noexcept -> int {
   if (source_index_ >= source_.size()) {
     return -1;
   }
   return source_[source_index_++];
 }
 
-auto Parser::Error() noexcept -> void { error_occurred_ = true; }
+auto Parser::OnError() noexcept -> void { error_occurred_ = true; }
 
 auto Parser::Parse() noexcept -> void {
   std::cout << "Parser::parse() called" << std::endl;

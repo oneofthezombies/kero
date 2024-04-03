@@ -13,8 +13,8 @@ public:
   Parser(const std::string_view source) noexcept;
   ~Parser() noexcept;
 
-  auto GetChar() noexcept -> int;
-  auto Error() noexcept -> void;
+  auto OnGetChar() noexcept -> int;
+  auto OnError() noexcept -> void;
 
   auto Parse() noexcept -> void;
 
