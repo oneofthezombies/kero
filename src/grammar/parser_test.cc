@@ -3,6 +3,6 @@
 #include "grammar/parser.h"
 
 TEST(ParserTest, Parse) {
-  auto parser{kero::grammar::Parser{}};
-  parser.parse();
+  auto parser{kero::grammar::Parser{"# hello\n1"}};
+  parser.Parse();
 }

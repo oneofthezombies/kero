@@ -1,10 +1,12 @@
 cc_library(
     name = "kero_grammar",
     srcs = [
-        "src/grammar/c/gen/parser.c",
-        "src/grammar/c/gen/parser.h",
-        "src/grammar/c/parser_auxil.h",
+        "src/grammar/bridge.cc",
+        "src/grammar/bridge.h",
+        "src/grammar/core.c",
+        "src/grammar/core.h",
         "src/grammar/parser.cc",
+        "src/grammar/parser.h",
     ],
     hdrs = [
         "src/grammar/parser.h",

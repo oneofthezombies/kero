@@ -1,24 +1,28 @@
 #ifndef KERO_GRAMMAR_PARSER_H
 #define KERO_GRAMMAR_PARSER_H
 
-#include <memory>
+#include <string_view>
 
-struct KeroGrammarParserAuxilTag;
-struct KeroGrammarParser_context_tag;
+struct KeroGrammarCore_context_tag;
 
 namespace kero {
 namespace grammar {
 
 class Parser {
 public:
-  Parser() noexcept;
+  Parser(const std::string_view source) noexcept;
   ~Parser() noexcept;
 
-  auto parse() noexcept -> void;
+  auto GetChar() noexcept -> int;
+  auto Error() noexcept -> void;
+
+  auto Parse() noexcept -> void;
 
 private:
-  std::unique_ptr<KeroGrammarParserAuxilTag> auxil_;
-  KeroGrammarParser_context_tag* context_{nullptr};
+  std::string_view source_;
+  size_t source_index_{0};
+  ::KeroGrammarCore_context_tag* core_context_{nullptr};
+  bool error_occurred_{false};
 };
 
 } // namespace grammar

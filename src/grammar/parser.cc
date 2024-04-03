@@ -1,22 +1,42 @@
-#include "parser.h"
+#include "./parser.h"
 
-#include <memory>
+#include <iostream>
 
-#include "./c/gen/parser.h"
-#include "./c/parser_auxil.h"
+#include "./core.h"
 
 namespace kero {
 namespace grammar {
 
-Parser::Parser() noexcept
-    : auxil_{std::make_unique<::KeroGrammarParserAuxilTag>()},
-      context_{::KeroGrammarParser_create(auxil_.get())} {}
+Parser::Parser(const std::string_view source) noexcept
+    : source_{source}, core_context_{::KeroGrammarCore_create(this)} {}
 
-Parser::~Parser() noexcept { ::KeroGrammarParser_destroy(context_); }
+Parser::~Parser() noexcept { ::KeroGrammarCore_destroy(core_context_); }
 
-auto Parser::parse() noexcept -> void {
+auto Parser::GetChar() noexcept -> int {
+  if (source_index_ >= source_.size()) {
+    return -1;
+  }
+  return source_[source_index_++];
+}
+
+auto Parser::Error() noexcept -> void { error_occurred_ = true; }
+
+auto Parser::Parse() noexcept -> void {
+  std::cout << "Parser::parse() called" << std::endl;
   int ret{0};
-  ::KeroGrammarParser_parse(context_, &ret);
+  while (true) {
+    if (::KeroGrammarCore_parse(core_context_, &ret) == 0) {
+      break;
+    }
+
+    if (error_occurred_) {
+      std::cout << "Parser::parse() ret " << ret << std::endl;
+      std::cout << "Parser::parse() has error" << std::endl;
+      break;
+    }
+  }
+
+  std::cout << "Parser::parse() returned " << ret << std::endl;
 }
 
 } // namespace grammar

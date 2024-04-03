@@ -1,12 +1,12 @@
 # Kero grammar
 # This file is written in the "PackCC 1.8.0" grammar.
 
-%prefix "KeroGrammarParser"
+%prefix "KeroGrammarCore"
 
-%auxil "KeroGrammarParserAuxil *"
+%auxil "void *" # Concreate type is kero::grammar::Parser*
 
-%header {
-#include "../parser_auxil.h"
+%source {
+#include "./bridge.h"
 }
 
 module <- _ end_of_file
