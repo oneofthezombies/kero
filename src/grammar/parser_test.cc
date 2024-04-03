@@ -137,63 +137,158 @@ TEST(ParserTest, IfTrueWithMultipleSingleLineComments) {
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, Function) {
+TEST(ParserTest, FunctionDefinition) {
   auto parser{kero::grammar::Parser{"function a() end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithParameter) {
+TEST(ParserTest, FunctionDefinitionWithParameter) {
   auto parser{kero::grammar::Parser{"function a(b) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithParameterAndWhitespace) {
+TEST(ParserTest, FunctionDefinitionWithParameterAndWhitespace) {
   auto parser{kero::grammar::Parser{"function a (b) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithParameterAndWhitespace2) {
+TEST(ParserTest, FunctionDefinitionWithParameterAndWhitespace2) {
   auto parser{kero::grammar::Parser{"function a( b) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithParameterAndWhitespace3) {
+TEST(ParserTest, FunctionDefinitionWithParameterAndWhitespace3) {
   auto parser{kero::grammar::Parser{"function a(b ) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithParameterAndWhitespace4) {
+TEST(ParserTest, FunctionDefinitionWithParameterAndWhitespace4) {
   auto parser{kero::grammar::Parser{"function a ( b) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithParameterAndWhitespace5) {
+TEST(ParserTest, FunctionDefinitionWithParameterAndWhitespace5) {
   auto parser{kero::grammar::Parser{"function a (b ) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithParameterAndWhitespace6) {
+TEST(ParserTest, FunctionDefinitionWithParameterAndWhitespace6) {
   auto parser{kero::grammar::Parser{"function a( b ) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithParameterAndWhitespace7) {
+TEST(ParserTest, FunctionDefinitionWithParameterAndWhitespace7) {
   auto parser{kero::grammar::Parser{"function a ( b ) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithMultipleParameters) {
+TEST(ParserTest, FunctionDefinitionWithMultipleParameters) {
   auto parser{kero::grammar::Parser{"function a(b, c) end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithBody) {
-  auto parser{kero::grammar::Parser{"function a() '' end"}};
+TEST(ParserTest, FunctionDefinitionWithBody) {
+  auto parser{kero::grammar::Parser{"function a() b() end"}};
   EXPECT_TRUE(parser.Parse());
 }
 
-TEST(ParserTest, FunctionWithSingleLineComment) {
+TEST(ParserTest, FunctionDefinitionWithSingleLineComment) {
   auto parser{kero::grammar::Parser{"function a() --comment\n"
                                     "end"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCall) {
+  auto parser{kero::grammar::Parser{"a()"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithParameter) {
+  auto parser{kero::grammar::Parser{"a(b)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithMultipleParameters) {
+  auto parser{kero::grammar::Parser{"a(b, c)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace) {
+  auto parser{kero::grammar::Parser{"a ()"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace2) {
+  auto parser{kero::grammar::Parser{"a( )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace3) {
+  auto parser{kero::grammar::Parser{"a ( )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace4) {
+  auto parser{kero::grammar::Parser{"a (b)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace5) {
+  auto parser{kero::grammar::Parser{"a( b)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace6) {
+  auto parser{kero::grammar::Parser{"a(b )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace7) {
+  auto parser{kero::grammar::Parser{"a ( b)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace8) {
+  auto parser{kero::grammar::Parser{"a (b )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace9) {
+  auto parser{kero::grammar::Parser{"a( b )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace10) {
+  auto parser{kero::grammar::Parser{"a ( b )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace11) {
+  auto parser{kero::grammar::Parser{"a (b, c)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace12) {
+  auto parser{kero::grammar::Parser{"a( b, c)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace13) {
+  auto parser{kero::grammar::Parser{"a(b, c )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace14) {
+  auto parser{kero::grammar::Parser{"a( b, c )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace15) {
+  auto parser{kero::grammar::Parser{"a ( b, c )"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionCallWithWhitespace16) {
+  auto parser{kero::grammar::Parser{"a (b, c )"}};
   EXPECT_TRUE(parser.Parse());
 }

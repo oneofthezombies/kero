@@ -12,8 +12,7 @@
 
 module <- _ body end_of_file
 
-# TODO: remove string
-body <- (statement / definition / string _)*
+body <- (statement / definition _)*
 
 statement <- if_statement / function_call_statement
 
@@ -29,9 +28,9 @@ else_body <- body
 
 # function call statement
 function_call_statement <- function_name _ (function_call_body_without_parenthesis / function_call_body_with_parenthesis)
-function_call_body_without_parenthesis <- function_argument
+function_call_body_without_parenthesis <- string
 function_call_body_with_parenthesis <- '(' _ function_arguments? _ ')'
-function_argument <- identifier
+function_argument <- identifier / string
 function_arguments <- function_argument _ (',' _ function_argument _)*
 
 definition <- function_definition
