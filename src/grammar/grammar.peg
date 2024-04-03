@@ -10,7 +10,7 @@
 #include "./bridge.h"
 }
 
-module <- _ (module_body _)* _ end_of_file
+module <- _ (module_body _)* end_of_file
 module_body <- statement / definition
 
 statement <- if_statement
