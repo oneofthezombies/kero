@@ -47,22 +47,24 @@ auto Parser::OnDebug(int event, const char* rule, size_t level, size_t pos,
             << buffer_view << std::endl;
 }
 
+auto Parser::OnCreateNode() noexcept -> void* {
+  std::cout << "Parser::OnCreateNode() called" << std::endl;
+  return nullptr;
+}
+
 auto Parser::Parse() noexcept -> void {
   std::cout << "Parser::parse() called" << std::endl;
-  int ret{0};
   while (true) {
+    void* ret{nullptr};
     if (::KeroGrammarCore_parse(core_context_, &ret) == 0) {
       break;
     }
 
     if (error_occurred_) {
-      std::cout << "Parser::parse() ret " << ret << std::endl;
       std::cout << "Parser::parse() has error" << std::endl;
       break;
     }
   }
-
-  std::cout << "Parser::parse() returned " << ret << std::endl;
 }
 
 } // namespace grammar

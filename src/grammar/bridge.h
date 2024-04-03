@@ -23,6 +23,8 @@ void KeroGrammarParser_OnDebug(void* auxil, int event, const char* rule,
   KeroGrammarParser_OnDebug(auxil, event, rule, level, pos, buffer, length)
 // #endif // KERO_DEBUG
 
+void* KeroGrammarParser_OnCreateNode(void* auxil);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

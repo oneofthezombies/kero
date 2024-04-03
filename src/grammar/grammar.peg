@@ -3,6 +3,7 @@
 
 %prefix "KeroGrammarCore"
 
+%value "void *" # Concreate type is kero::grammar::Node*
 %auxil "void *" # Concreate type is kero::grammar::Parser*
 
 %source {

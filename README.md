@@ -18,3 +18,7 @@ bazel run @hedron_compile_commands//:refresh_all
 For more information, please refer to the link below.  
 
 https://github.com/hedronvision/bazel-compile-commands-extractor
+
+## References
+
+PackCC - https://github.com/arithy/packcc

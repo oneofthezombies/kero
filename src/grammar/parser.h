@@ -26,6 +26,7 @@ public:
   auto OnError() noexcept -> void;
   auto OnDebug(int event, const char* rule, size_t level, size_t pos,
                const char* buffer, size_t length) noexcept -> void;
+  auto OnCreateNode() noexcept -> void*;
 
   auto Parse() noexcept -> void;
 

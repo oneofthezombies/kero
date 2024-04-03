@@ -68,7 +68,7 @@ typedef struct pcc_range_tag {
     size_t end;
 } pcc_range_t;
 
-typedef int pcc_value_t;
+typedef void *pcc_value_t;
 
 typedef void *pcc_auxil_t;
 
@@ -1378,7 +1378,7 @@ KeroGrammarCore_context_t *KeroGrammarCore_create(void *auxil) {
     return pcc_context__create(auxil);
 }
 
-int KeroGrammarCore_parse(KeroGrammarCore_context_t *ctx, int *ret) {
+int KeroGrammarCore_parse(KeroGrammarCore_context_t *ctx, void **ret) {
     if (pcc_apply_rule(ctx, pcc_evaluate_rule_module, &ctx->thunks, ret))
         pcc_do_action(ctx, &ctx->thunks, ret);
     else
