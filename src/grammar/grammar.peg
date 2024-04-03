@@ -49,8 +49,8 @@ identifier <- !keyword [a-zA-Z_] w*
 whitespace <- [ \t]
 end_of_line <- '\n' / '\r\n' / '\r'
 end_of_file <- !.
-d <- [0-9]
-w <- [a-zA-Z_] / d
+d <- [0-9] # decimal. like regex \d
+w <- [a-zA-Z_] / d # word. like regex \w
 
 # keyword
 keyword
