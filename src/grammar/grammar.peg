@@ -10,9 +10,10 @@
 #include "./bridge.h"
 }
 
-module <- _ statement* _ end_of_file
+module <- _ module_body* _ end_of_file
+module_body <- statement / definition
 
-statement <- if_statement / function_definition
+statement <- if_statement
 
 # if statement
 if_statement <- kw_if _ if_condition _ kw_then _ if_body _ (elseif_statement _)* (else_statement _)? kw_end
@@ -23,6 +24,8 @@ elseif_condition <- condition
 elseif_body <- block
 else_statement <- kw_else _ else_body
 else_body <- block
+
+definition <- function_definition
 
 # function definition
 function_definition <- kw_function _ function_name _ '(' _ function_parameters? _ ')' _ function_body? _ kw_end
