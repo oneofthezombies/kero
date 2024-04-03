@@ -7,6 +7,22 @@
 namespace kero {
 namespace grammar {
 
+auto operator<<(std::ostream& os, const DebugEvent event) noexcept
+    -> std::ostream& {
+  switch (event) {
+  case DebugEvent::kRuleEvaluating:
+    os << "RuleEvaluating";
+    break;
+  case DebugEvent::kRuleMatched:
+    os << "RuleMatched";
+    break;
+  case DebugEvent::kRuleNotMatched:
+    os << "RuleNotMatched";
+    break;
+  }
+  return os;
+}
+
 Parser::Parser(const std::string_view source) noexcept
     : source_{source}, core_context_{::KeroGrammarCore_create(this)} {}
 
@@ -20,6 +36,16 @@ auto Parser::OnGetChar() noexcept -> int {
 }
 
 auto Parser::OnError() noexcept -> void { error_occurred_ = true; }
+
+auto Parser::OnDebug(int event, const char* rule, size_t level, size_t pos,
+                     const char* buffer, size_t length) noexcept -> void {
+  const DebugEvent debug_event{static_cast<DebugEvent>(event)};
+  const std::string_view rule_view{rule};
+  const std::string_view buffer_view{buffer, length};
+  std::cout << "Parser::OnDebug() event " << debug_event << " rule "
+            << rule_view << " level " << level << " pos " << pos << " buffer "
+            << buffer_view << std::endl;
+}
 
 auto Parser::Parse() noexcept -> void {
   std::cout << "Parser::parse() called" << std::endl;

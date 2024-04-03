@@ -8,6 +8,15 @@ struct KeroGrammarCore_context_tag;
 namespace kero {
 namespace grammar {
 
+enum class DebugEvent : int32_t {
+  kRuleEvaluating = 0,
+  kRuleMatched = 1,
+  kRuleNotMatched = 2,
+};
+
+auto operator<<(std::ostream& os, const DebugEvent event) noexcept
+    -> std::ostream&;
+
 class Parser {
 public:
   Parser(const std::string_view source) noexcept;
@@ -15,6 +24,8 @@ public:
 
   auto OnGetChar() noexcept -> int;
   auto OnError() noexcept -> void;
+  auto OnDebug(int event, const char* rule, size_t level, size_t pos,
+               const char* buffer, size_t length) noexcept -> void;
 
   auto Parse() noexcept -> void;
 
