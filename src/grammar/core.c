@@ -1179,6 +1179,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_module(pcc_context_t *ctx) {
             const size_t p = ctx->cur;
             const size_t n = chunk->thunks.len;
             if (!pcc_apply_rule(ctx, pcc_evaluate_rule_module_body, &chunk->thunks, NULL)) goto L0001;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule__, &chunk->thunks, NULL)) goto L0001;
             if (ctx->cur == p) break;
             continue;
         L0001:;
