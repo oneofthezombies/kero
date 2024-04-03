@@ -1,2 +1,12 @@
 # Kero grammar
 # This file is written in the "PackCC 1.8.0" grammar.
+
+%prefix "parser"
+
+module <- _ end_of_file
+
+_ <- (space / comment)*
+comment <- "#" (!end_of_line .)* (end_of_line / end_of_file)
+space <- [ \t] / end_of_line
+end_of_line <- "\n" / "\r\n" / "\r"
+end_of_file <- !.
