@@ -14,6 +14,7 @@ module <- _ statement* _ end_of_file
 
 statement <- if_statement / identifier
 
+# if statement
 if_statement <- kw_if _ if_condition _ kw_then _ if_body _ (elseif_statement _)* (else_statement _)? kw_end
 if_condition <- condition
 if_body <- block
@@ -30,23 +31,28 @@ block <- string*
 # ignore
 _ <- (whitespace / end_of_line / comment)*
 
+# comment
 comment <- single_line_comment / multi_line_comment
 single_line_comment <- '--' (!end_of_line .)* (end_of_line / end_of_file)
 multi_line_comment <- '--[[' (!']]' .)* ']]'
 
+# string
 string <- single_quoted_string / double_quoted_string / multi_line_string
 single_quoted_string <- "'" (!"'" .)* "'"
 double_quoted_string <- '"' (!'"' .)* '"'
 multi_line_string <- '[[' (!']]' .)* ']]'
 
+# identifier
+identifier <- !keyword [a-zA-Z_] w*
+
+# miscellaneous
 whitespace <- [ \t]
 end_of_line <- '\n' / '\r\n' / '\r'
 end_of_file <- !.
 d <- [0-9]
 w <- [a-zA-Z_] / d
-identifier <- !keyword [a-zA-Z_] w*
 
-# keywords
+# keyword
 keyword
   <- kw_if
   / kw_elseif
