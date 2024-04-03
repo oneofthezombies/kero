@@ -292,3 +292,33 @@ TEST(ParserTest, FunctionCallWithWhitespace16) {
   auto parser{kero::grammar::Parser{"a (b, c )"}};
   EXPECT_TRUE(parser.Parse());
 }
+
+TEST(ParserTest, Return) {
+  auto parser{kero::grammar::Parser{"return"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, ReturnWithExpression) {
+  auto parser{kero::grammar::Parser{"return a"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, ReturnWithMultipleExpressions) {
+  auto parser{kero::grammar::Parser{"return a, b"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, ReturnWithParenthesesedExpression) {
+  auto parser{kero::grammar::Parser{"return (a)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, ReturnWithParenthesesedMultipleExpressions) {
+  auto parser{kero::grammar::Parser{"return (a, b)"}};
+  EXPECT_TRUE(parser.Parse());
+}
+
+TEST(ParserTest, FunctionDefinitionWithReturn) {
+  auto parser{kero::grammar::Parser{"function a() return end"}};
+  EXPECT_TRUE(parser.Parse());
+}
