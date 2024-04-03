@@ -69,9 +69,9 @@ typedef struct pcc_range_tag {
 
 typedef int pcc_value_t;
 
-typedef void *pcc_auxil_t;
+typedef KeroGrammarParserAuxil *pcc_auxil_t;
 
-typedef parser_context_t pcc_context_t;
+typedef KeroGrammarParser_context_t pcc_context_t;
 
 typedef struct pcc_value_table_tag {
     pcc_value_t *buf;
@@ -241,7 +241,7 @@ typedef struct pcc_memory_recycler_tag {
     size_t element_size;
 } pcc_memory_recycler_t;
 
-struct parser_context_tag {
+struct KeroGrammarParser_context_tag {
     size_t pos; /* the position in the input of the first character currently buffered */
     size_t cur; /* the current parsing position in the character buffer */
     size_t level;
@@ -1373,11 +1373,11 @@ L0000:;
     return NULL;
 }
 
-parser_context_t *parser_create(void *auxil) {
+KeroGrammarParser_context_t *KeroGrammarParser_create(KeroGrammarParserAuxil *auxil) {
     return pcc_context__create(auxil);
 }
 
-int parser_parse(parser_context_t *ctx, int *ret) {
+int KeroGrammarParser_parse(KeroGrammarParser_context_t *ctx, int *ret) {
     if (pcc_apply_rule(ctx, pcc_evaluate_rule_module, &ctx->thunks, ret))
         pcc_do_action(ctx, &ctx->thunks, ret);
     else
@@ -1387,6 +1387,6 @@ int parser_parse(parser_context_t *ctx, int *ret) {
     return pcc_refill_buffer(ctx, 1) >= 1;
 }
 
-void parser_destroy(parser_context_t *ctx) {
+void KeroGrammarParser_destroy(KeroGrammarParser_context_t *ctx) {
     pcc_context__destroy(ctx);
 }

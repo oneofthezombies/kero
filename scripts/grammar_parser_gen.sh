@@ -31,11 +31,8 @@ else
     echo "packcc found at $(command -v packcc)"
 fi
 
-# Change directory to <workspace>/src/grammar
-cd "$workspace/src/grammar"
+cd "$workspace/src/grammar/c/gen"
 
-# Call packcc -o parser grammar.peg
 packcc -o parser grammar.peg
 
-# Print parser generation message
-echo "parser.h and parser.c generated in $workspace/src/grammar"
+echo "parser.h and parser.c generated in $workspace/src/grammar/c/gen"
