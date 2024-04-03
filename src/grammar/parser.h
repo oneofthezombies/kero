@@ -28,7 +28,7 @@ public:
                const char* buffer, size_t length) noexcept -> void;
   auto OnCreateNode() noexcept -> void*;
 
-  auto Parse() noexcept -> void;
+  auto Parse() noexcept -> bool;
 
 private:
   std::string_view source_;

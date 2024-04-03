@@ -52,7 +52,7 @@ auto Parser::OnCreateNode() noexcept -> void* {
   return nullptr;
 }
 
-auto Parser::Parse() noexcept -> void {
+auto Parser::Parse() noexcept -> bool {
   std::cout << "Parser::parse() called" << std::endl;
   while (true) {
     void* ret{nullptr};
@@ -65,6 +65,8 @@ auto Parser::Parse() noexcept -> void {
       break;
     }
   }
+
+  return !error_occurred_;
 }
 
 } // namespace grammar
