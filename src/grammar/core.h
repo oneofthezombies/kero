@@ -9,7 +9,7 @@ extern "C" {
 
 typedef struct KeroGrammarCore_context_tag KeroGrammarCore_context_t;
 
-KeroGrammarCore_context_t *KeroGrammarCore_create(void *auxil);
+KeroGrammarCore_context_t *KeroGrammarCore_create(KeroParserAuxil *auxil);
 int KeroGrammarCore_parse(KeroGrammarCore_context_t *ctx, void **ret);
 void KeroGrammarCore_destroy(KeroGrammarCore_context_t *ctx);
 

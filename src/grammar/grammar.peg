@@ -4,99 +4,21 @@
 %prefix "KeroGrammarCore"
 
 %value "void *" # Concrete type is kero::grammar::Node*
-%auxil "void *" # Concrete type is kero::grammar::Parser*
+%auxil "KeroParserAuxil *"
 
 %source {
 #include "./bridge.h"
+#define PCC_GETCHAR(auxil) auxil->PccGetChar(auxil)
+#define PCC_ERROR(auxil) auxil->PccError(auxil)
 }
 
-module <- _ body end_of_file
+Module <- _ EndOfFile
 
-body <- (!return_statement expression / repeatable_statement _)* _ return_statement?
+_ <- (Whitespace / Comment)*
 
-# repeatable statement
-repeatable_statement <- if_statement / function_definition_statement
+Comment <- SingleLineComment
+SingleLineComment <- '//' (!EndOfLine .)* (EndOfLine / EndOfFile)
 
-# if statement
-if_statement <- kw_if _ if_condition _ kw_then _ if_body _ (elseif_statement _)* (else_statement _)? kw_end
-if_condition <- condition
-if_body <- body
-elseif_statement <- kw_elseif _ elseif_condition _ kw_then _ elseif_body
-elseif_condition <- condition
-elseif_body <- body
-else_statement <- kw_else _ else_body
-else_body <- body
-
-# function definition statement
-function_definition_statement <- kw_function _ function_name _ '(' _ function_parameters? _ ')' _ function_body? _ kw_end
-function_name <- identifier
-function_parameter <- identifier
-function_parameters <- function_parameter _ (',' _ function_parameter _)*
-function_body <- body
-
-# return statement
-return_statement <- kw_return _ (tuple / '(' _ tuple _ ')')?
-
-# expression
-expression <- function_call_expression / literal / identifier
-
-# function call expression
-function_call_expression <- function_name _ (function_call_body_without_parenthesis / function_call_body_with_parenthesis)
-function_call_body_without_parenthesis <- literal
-function_call_body_with_parenthesis <- '(' _ tuple? _ ')'
-
-# TODO
-condition <- kw_true / kw_false / kw_nil
-
-# tuple
-tuple <- expression _ (',' _ expression _)*
-
-# ignore
-_ <- (whitespace / end_of_line / comment)*
-
-# comment
-comment <- single_line_comment / multi_line_comment
-single_line_comment <- '--' (!end_of_line .)* (end_of_line / end_of_file)
-multi_line_comment <- '--[[' (!']]' .)* ']]'
-
-# literal
-literal <- single_quoted_literal / double_quoted_literal / multi_line_literal
-single_quoted_literal <- "'" (!"'" .)* "'"
-double_quoted_literal <- '"' (!'"' .)* '"'
-multi_line_literal <- '[[' (!']]' .)* ']]'
-
-# identifier
-identifier <- !keyword [a-zA-Z_] w*
-
-# miscellaneous
-whitespace <- [ \t]
-end_of_line <- '\n' / '\r\n' / '\r'
-end_of_file <- !.
-d <- [0-9] # decimal. like regex \d
-w <- [a-zA-Z_] / d # word. like regex \w
-
-# keyword
-keyword
-  <- kw_if
-  / kw_elseif
-  / kw_else
-  / kw_then
-  / kw_end
-  / kw_local
-  / kw_function
-  / kw_return
-  / kw_true
-  / kw_false
-  / kw_nil
-
-kw_if <- 'if' !w
-kw_elseif <- 'elseif' !w
-kw_else <- 'else' !w
-kw_then <- 'then' !w
-kw_end <- 'end' !w
-kw_local <- 'local' !w
-kw_function <- 'function' !w
-kw_return <- 'return' !w
-kw_true <- 'true' !w
-kw_false <- 'false' !w
-kw_nil <- 'nil' !w
+Whitespace <- [ \t]
+EndOfLine <- '\n' / '\r\n' / '\r'
+EndOfFile <- !.

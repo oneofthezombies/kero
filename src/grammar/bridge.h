@@ -7,7 +7,30 @@
 extern "C" {
 #endif // __cplusplus
 
+typedef enum _KeroObjectKind {
+  kKeroObjectKind_Parser = 0,
+} KeroObjectKind;
+
+typedef enum _KeroObjectOwnership {
+  kKeroObjectOwnership_Own = 0,
+  kKeroObjectOwnership_Borrow,
+} KeroObjectOwnership;
+
+typedef struct _KeroObject {
+  KeroObjectKind kind;
+  KeroObjectOwnership ownership;
+  void* data;
+} KeroObject;
+
+typedef struct _KeroParserAuxil {
+  int (*PccGetChar)(struct _KeroParserAuxil* auxil);
+  void (*PccError)(struct _KeroParserAuxil* auxil);
+  void (*PccDebug)(struct _KeroParserAuxil* auxil, int event, const char* rule,
+                   size_t level, size_t pos, const char* buffer, size_t length);
+} KeroParserAuxil;
+
 int KeroGrammarParser_OnGetChar(void* auxil);
+#define PCC_GETCHAR(auxil) auxil->PccGetChar(auxil)
 #define PCC_GETCHAR(auxil) KeroGrammarParser_OnGetChar(auxil)
 
 void KeroGrammarParser_OnError(void* auxil);
