@@ -1,15 +1,15 @@
 cc_library(
     name = "kero_grammar_parser",
     srcs = [
-        "src/grammar/parser/generated.c",
-        "src/grammar/parser/generated.h",
-        "src/grammar/parser/inline.h",
-    ],
+    ] + glob(["third_party/PEGTL-3.2.7/include/**/*.hpp"]),
     hdrs = [
         "src/grammar/parser/core.h",
     ],
-    copts = ["-std=c17"],
-    includes = ["src"],
+    copts = ["-std=c++20"],
+    includes = [
+        "src",
+        "third_party/PEGTL-3.2.7/include",
+    ],
 )
 
 cc_library(
