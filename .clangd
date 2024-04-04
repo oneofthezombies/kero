@@ -1,2 +1,10 @@
+If:
+  PathMatch: ["src/grammar/parser/.+\\.c$", "src/grammar/parser/.+\\.h$"]
+CompileFlags:
+  Add: [-std=c17]
+
+If:
+  PathMatch: ["src/.+\\.cc$", "src/.+\\.h$"]
+  PathExclude: ["src/grammar/parser/.+\\.c$", "src/grammar/parser/.+\\.h$"]
 CompileFlags:
   Add: [-std=c++20]

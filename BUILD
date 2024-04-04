@@ -1,19 +1,29 @@
 cc_library(
-    name = "kero_grammar",
+    name = "kero_grammar_parser",
     srcs = [
-        "src/grammar/bridge.cc",
-        "src/grammar/bridge.h",
-        "src/grammar/core.c",
-        "src/grammar/core.h",
-        "src/grammar/parser.cc",
-        "src/grammar/parser.h",
+        "src/grammar/parser/generated.c",
+        "src/grammar/parser/generated.h",
+        "src/grammar/parser/inline.h",
     ],
     hdrs = [
-        "src/grammar/parser.h",
+        "src/grammar/parser/core.h",
+    ],
+    copts = ["-std=c17"],
+    includes = ["src"],
+)
+
+cc_library(
+    name = "kero_grammar",
+    srcs = [
+        "src/grammar/parser_facade.cc",
+        "src/grammar/parser_facade.h",
+    ],
+    hdrs = [
     ],
     copts = ["-std=c++20"],
     includes = ["src"],
     deps = [
+        ":kero_grammar_parser",
     ],
 )
 

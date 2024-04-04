@@ -21,9 +21,9 @@ static size_t pcc_strnlen(const char *str, size_t maxlen) {
 #endif /* defined __GNUC__ && defined _WIN32 */
 #endif /* !_MSC_VER */
 
-#include "core.h"
+#include "generated.h"
 
-#include "./bridge.h"
+#include "inline.h"
 #if !defined __has_attribute || defined _MSC_VER
 #define __attribute__(x)
 #endif
@@ -68,11 +68,11 @@ typedef struct pcc_range_tag {
     size_t end;
 } pcc_range_t;
 
-typedef void *pcc_value_t;
+typedef struct KeroObject *pcc_value_t;
 
-typedef KeroParserAuxil *pcc_auxil_t;
+typedef struct KeroGrammarParserAuxil *pcc_auxil_t;
 
-typedef KeroGrammarCore_context_t pcc_context_t;
+typedef KeroGrammarParser_context_t pcc_context_t;
 
 typedef struct pcc_value_table_tag {
     pcc_value_t *buf;
@@ -242,7 +242,7 @@ typedef struct pcc_memory_recycler_tag {
     size_t element_size;
 } pcc_memory_recycler_t;
 
-struct KeroGrammarCore_context_tag {
+struct KeroGrammarParser_context_tag {
     size_t pos; /* the position in the input of the first character currently buffered */
     size_t cur; /* the current parsing position in the character buffer */
     size_t level;
@@ -1379,11 +1379,11 @@ L0000:;
     return NULL;
 }
 
-KeroGrammarCore_context_t *KeroGrammarCore_create(KeroParserAuxil *auxil) {
+KeroGrammarParser_context_t *KeroGrammarParser_create(struct KeroGrammarParserAuxil *auxil) {
     return pcc_context__create(auxil);
 }
 
-int KeroGrammarCore_parse(KeroGrammarCore_context_t *ctx, void **ret) {
+int KeroGrammarParser_parse(KeroGrammarParser_context_t *ctx, struct KeroObject **ret) {
     if (pcc_apply_rule(ctx, pcc_evaluate_rule_Module, &ctx->thunks, ret))
         pcc_do_action(ctx, &ctx->thunks, ret);
     else
@@ -1393,6 +1393,6 @@ int KeroGrammarCore_parse(KeroGrammarCore_context_t *ctx, void **ret) {
     return pcc_refill_buffer(ctx, 1) >= 1;
 }
 
-void KeroGrammarCore_destroy(KeroGrammarCore_context_t *ctx) {
+void KeroGrammarParser_destroy(KeroGrammarParser_context_t *ctx) {
     pcc_context__destroy(ctx);
 }

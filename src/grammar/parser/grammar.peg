@@ -1,15 +1,17 @@
 # Kero grammar
 # This file is written in the "PackCC 1.8.0" grammar.
 
-%prefix "KeroGrammarCore"
+%prefix "KeroGrammarParser"
 
-%value "void *" # Concrete type is kero::grammar::Node*
-%auxil "KeroParserAuxil *"
+%value "struct KeroObject *"
+%auxil "struct KeroGrammarParserAuxil *"
+
+%header {
+#include "core.h"
+}
 
 %source {
-#include "./bridge.h"
-#define PCC_GETCHAR(auxil) auxil->PccGetChar(auxil)
-#define PCC_ERROR(auxil) auxil->PccError(auxil)
+#include "inline.h"
 }
 
 Module <- _ EndOfFile
