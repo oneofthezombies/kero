@@ -5,7 +5,9 @@ cc_library(
     hdrs = [
         "src/grammar/parser/core.h",
     ],
-    copts = ["-std=c++20"],
+    copts = [
+        "-std=c++20",
+    ],
     includes = [
         "src",
         "third_party/PEGTL-3.2.7/include",
