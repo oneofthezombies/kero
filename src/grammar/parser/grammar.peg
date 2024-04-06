@@ -1,17 +1,17 @@
 # Kero grammar
 # This file is written in the "PackCC 1.8.0" grammar.
 
-%prefix "KeroGrammarParser"
+%prefix "KeroParser"
 
-%value "struct KeroObject *"
-%auxil "struct KeroGrammarParserAuxil *"
+%value "KeroObject *"
+%auxil "KeroParserAuxil *"
 
 %header {
 #include "core.h"
 }
 
 %source {
-#include "inline.h"
+#include "generated-c-inl.h"
 }
 
 Module <- _ EndOfFile

@@ -1,24 +1,24 @@
-// #ifndef KERO_GRAMMAR_PARSER_FACADE_H
-// #define KERO_GRAMMAR_PARSER_FACADE_H
+#ifndef KERO_GRAMMAR_PARSER_FACADE_H
+#define KERO_GRAMMAR_PARSER_FACADE_H
 
-// #include <memory>
-// #include <string_view>
+#include <memory>
+#include <string_view>
 
-// namespace kero {
+namespace kero {
 
-// class ParserImpl;
+class ParserImpl;
 
-// class ParserFacade {
-// public:
-//   ParserFacade(const std::string_view source) noexcept;
-//   ~ParserFacade() noexcept = default;
+class ParserFacade {
+public:
+  ParserFacade(const std::string_view Source) noexcept;
+  ~ParserFacade() noexcept = default;
 
-//   auto Parse() noexcept -> bool;
+  auto parse() noexcept -> bool;
 
-// private:
-//   std::unique_ptr<ParserImpl> impl_;
-// };
+private:
+  std::unique_ptr<ParserImpl> Impl;
+};
 
-// } // namespace kero
+} // namespace kero
 
-// #endif // KERO_GRAMMAR_PARSER_FACADE_H
+#endif // KERO_GRAMMAR_PARSER_FACADE_H

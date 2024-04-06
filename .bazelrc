@@ -1,4 +1,3 @@
 build --macos_minimum_os=10.15
 build --copt=-fno-rtti
 build --copt=-fno-exceptions
-build --copt=-std=c++20

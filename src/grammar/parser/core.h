@@ -1,30 +1,43 @@
 #ifndef KERO_GRAMMAR_PARSER_CORE_H
 #define KERO_GRAMMAR_PARSER_CORE_H
 
-#include "tao/pegtl.hpp"
+#include <stddef.h>
 
-namespace pegtl = tao::pegtl;
+typedef int (*KeroParserAuxil_PccGetChar)(struct KeroParserAuxilTag *Auxil);
+typedef void (*KeroParserAuxil_PccError)(struct KeroParserAuxilTag *Auxil);
+typedef void (*KeroParserAuxil_PccDebug)(struct KeroParserAuxilTag *Auxil,
+                                         int Event, const char *Rule,
+                                         size_t Level, size_t Pos,
+                                         const char *Buffer, size_t Length);
 
-namespace kero {
-struct prefix : pegtl::string<'H', 'e', 'l', 'l', 'o', ',', ' '> {};
-struct name : pegtl::plus<pegtl::alpha> {};
-struct grammar : pegtl::must<prefix, name, pegtl::one<'!'>, pegtl::eof> {};
-template <typename Rule> struct action {};
-template <> struct action<name> {
-  template <typename ParseInput>
-  static void apply(const ParseInput& in, std::string& v) {
-    v = in.string();
-  }
-};
+typedef struct KeroParserAuxilTag {
+  KeroParserAuxil_PccGetChar PccGetChar;
+  KeroParserAuxil_PccError PccError;
+  KeroParserAuxil_PccDebug PccDebug;
+} KeroParserAuxil;
 
-auto Test() -> bool {
-  std::string source = "Hello, World!";
-  std::string result;
-  pegtl::string_input<> input(source, "");
-  pegtl::parse<grammar, action>(input, result);
-  return result == "World";
-}
+typedef enum KeroObjectKindTag {
+  KeroObjectKind_Borrower = 0,
+} KeroObjectKind;
 
-} // namespace kero
+typedef enum KeroObjectOwnershipTag {
+  KeroObjectOwnership_Owned = 0,
+  KeroObjectOwnership_Borrowed,
+} KeroObjectOwnership;
+
+typedef void (*KeroObject_Destructor)(void *Data);
+
+typedef struct KeroObjectTag {
+  KeroObjectKind Kind;
+  KeroObjectOwnership Ownership;
+  void *Data;
+  KeroObject_Destructor Destructor;
+} KeroObject;
+
+KeroObject *KeroObject_create(KeroObjectKind Kind, void *Data,
+                              KeroObject_Destructor Destructor);
+void KeroObject_destroy(KeroObject *Object);
+
+KeroObject *KeroObject_createBorrower(KeroObject *Object);
 
 #endif // KERO_GRAMMAR_PARSER_CORE_H
