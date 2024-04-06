@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
 
 // // #include "./parser_facade.h"
-// #include "parser/core.h"
+#include "parser/core.h"
 
-// TEST(ParserTest, PEGTL) { kero::Test(); }
+TEST(ParserTest, PEGTL) { kero::Test(); }
 
 // TEST(ParserTest, Empty) {
 //   auto parser{kero::ParserFacade{""}};

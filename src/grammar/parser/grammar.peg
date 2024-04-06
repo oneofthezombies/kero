@@ -1,0 +1,26 @@
+# Kero grammar
+# This file is written in the "PackCC 1.8.0" grammar.
+
+%prefix "KeroGrammarParser"
+
+%value "struct KeroObject *"
+%auxil "struct KeroGrammarParserAuxil *"
+
+%header {
+#include "core.h"
+}
+
+%source {
+#include "inline.h"
+}
+
+Module <- _ EndOfFile
+
+_ <- (Whitespace / Comment)*
+
+Comment <- SingleLineComment
+SingleLineComment <- '//' (!EndOfLine .)* (EndOfLine / EndOfFile)
+
+Whitespace <- [ \t]
+EndOfLine <- '\n' / '\r\n' / '\r'
+EndOfFile <- !.
