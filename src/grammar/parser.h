@@ -11,6 +11,11 @@
 namespace kero {
 namespace grammar {
 
+class KGParserAuxilDeleter {
+public:
+  auto operator()(KGParserAuxil *auxil) const noexcept -> void;
+};
+
 class KGParserDeleter {
 public:
   auto operator()(KGParser_context_t *context) const noexcept -> void;
@@ -33,7 +38,7 @@ public:
 private:
   std::string_view Source;
   size_t SourcePos{0};
-  std::unique_ptr<KGParserAuxil> Auxil;
+  std::unique_ptr<KGParserAuxil, KGParserAuxilDeleter> Auxil;
   std::unique_ptr<KGParser_context_t, KGParserDeleter> Context;
   bool ErrorOccurred{false};
 };

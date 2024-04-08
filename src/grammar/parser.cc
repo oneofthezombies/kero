@@ -6,7 +6,7 @@
 using namespace kero::grammar;
 
 struct KGParserAuxilTag {
-  Parser *parser;
+  Parser *parser{nullptr};
 };
 
 void checkParserAuxil(KGParserAuxilTag *auxil) {
@@ -73,13 +73,21 @@ auto operator<<(std::ostream &os, const DebugEvent event) noexcept
 
 } // namespace
 
+auto kero::grammar::KGParserAuxilDeleter::operator()(
+    KGParserAuxil *auxil) const noexcept -> void {
+  if (auxil == nullptr) {
+    return;
+  }
+  delete auxil;
+}
+
 auto kero::grammar::KGParserDeleter::operator()(
     KGParser_context_t *context) const noexcept -> void {
   KGParser_destroy(context);
 }
 
 kero::grammar::Parser::Parser(const std::string_view Source) noexcept
-    : Source{Source}, Auxil{std::make_unique<KGParserAuxil>(this)},
+    : Source{Source}, Auxil{new KGParserAuxil{this}},
       Context{KGParser_create(Auxil.get())} {}
 
 auto kero::grammar::Parser::pccError() noexcept -> void {
@@ -127,7 +135,7 @@ auto kero::grammar::Parser::pccDebug(int event, const char *rule, size_t level,
   const std::string_view rule_view{rule};
   const std::string_view buffer_view{buffer, length};
   std::cout << "Parser::pccDebug() event " << debug_event << " rule "
-            << rule_view << " level " << level << " pos " << pos << "buffer"
+            << rule_view << " level " << level << " pos " << pos << " buffer "
             << buffer_view << '\n';
 }
 

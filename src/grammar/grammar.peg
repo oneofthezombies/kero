@@ -16,10 +16,11 @@
 
 Module <- _ EndOfFile
 
-_ <- (Whitespace / Comment)*
+_ <- (Whitespace / EndOfLine / Comment)*
 
-Comment <- SingleLineComment
+Comment <- SingleLineComment / MultiLineComment
 SingleLineComment <- '//' (!EndOfLine .)* (EndOfLine / EndOfFile)
+MultiLineComment <- '/*' (!'*/' .)* '*/'
 
 Whitespace <- [ \t]
 EndOfLine <- '\n' / '\r\n' / '\r'
