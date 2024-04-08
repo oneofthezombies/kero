@@ -23,7 +23,7 @@ static size_t pcc_strnlen(const char *str, size_t maxlen) {
 
 #include "parser_generated.h"
 
-#include "parser_generated_include.h"
+#include "parser_generated_c_include.h"
 #if !defined __has_attribute || defined _MSC_VER
 #define __attribute__(x)
 #endif
@@ -68,7 +68,7 @@ typedef struct pcc_range_tag {
     size_t end;
 } pcc_range_t;
 
-typedef KGObject *pcc_value_t;
+typedef KGNode *pcc_value_t;
 
 typedef KGParserAuxil *pcc_auxil_t;
 
@@ -1383,7 +1383,7 @@ KGParser_context_t *KGParser_create(KGParserAuxil *auxil) {
     return pcc_context__create(auxil);
 }
 
-int KGParser_parse(KGParser_context_t *ctx, KGObject **ret) {
+int KGParser_parse(KGParser_context_t *ctx, KGNode **ret) {
     if (pcc_apply_rule(ctx, pcc_evaluate_rule_Module, &ctx->thunks, ret))
         pcc_do_action(ctx, &ctx->thunks, ret);
     else

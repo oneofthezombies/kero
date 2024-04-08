@@ -7,12 +7,15 @@
 extern "C" {
 #endif
 
-typedef struct KGObject KGObject;
+typedef struct KGNodeTag KGNode;
 
-typedef struct KGParserAuxil KGParserAuxil;
+typedef struct KGParserAuxilTag KGParserAuxil;
 
-int KGParserAuxil_pccGetChar(KGParserAuxil *auxil);
 void KGParserAuxil_pccError(KGParserAuxil *auxil);
+int KGParserAuxil_pccGetChar(KGParserAuxil *auxil);
+void *KGParserAuxil_pccMalloc(KGParserAuxil *auxil, size_t size);
+void *KGParserAuxil_pccRealloc(KGParserAuxil *auxil, void *ptr, size_t size);
+void KGParserAuxil_pccFree(KGParserAuxil *auxil, void *ptr);
 void KGParserAuxil_pccDebug(KGParserAuxil *auxil, int event, const char *rule,
                             size_t level, size_t pos, const char *buffer,
                             size_t length);

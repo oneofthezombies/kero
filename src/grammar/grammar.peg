@@ -3,7 +3,7 @@
 
 %prefix "KGParser"
 
-%value "KGObject *"
+%value "KGNode *"
 %auxil "KGParserAuxil *"
 
 %header {
@@ -11,7 +11,7 @@
 }
 
 %source {
-#include "parser_generated_include.h"
+#include "parser_generated_c_include.h"
 }
 
 Module <- _ EndOfFile
