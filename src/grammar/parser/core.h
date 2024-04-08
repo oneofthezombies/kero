@@ -17,7 +17,7 @@ typedef struct KeroParserAuxilTag {
 } KeroParserAuxil;
 
 typedef enum KeroObjectKindTag {
-  KeroObjectKind_Borrower = 0,
+  KeroObjectKind_Node = 0,
 } KeroObjectKind;
 
 typedef enum KeroObjectOwnershipTag {
@@ -25,17 +25,13 @@ typedef enum KeroObjectOwnershipTag {
   KeroObjectOwnership_Borrowed,
 } KeroObjectOwnership;
 
-typedef void (*KeroObject_Destructor)(void *Data);
-
 typedef struct KeroObjectTag {
   KeroObjectKind Kind;
   KeroObjectOwnership Ownership;
   void *Data;
-  KeroObject_Destructor Destructor;
 } KeroObject;
 
-KeroObject *KeroObject_create(KeroObjectKind Kind, void *Data,
-                              KeroObject_Destructor Destructor);
+KeroObject *KeroObject_create(KeroObjectKind Kind, void *Data);
 void KeroObject_destroy(KeroObject *Object);
 
 KeroObject *KeroObject_createBorrower(KeroObject *Object);

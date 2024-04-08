@@ -11,7 +11,7 @@
 }
 
 %source {
-#include "generated-c-inl.h"
+#include "generated_c_include.h"
 }
 
 Module <- _ EndOfFile
