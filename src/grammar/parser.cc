@@ -229,6 +229,13 @@ auto kero::grammar::Parser::createNonTerminalNode(
     const size_t Start, const size_t End, const KGNodeKind Kind,
     std::vector<KGNodeId> &&Children) noexcept -> KGNodeId {
   const KGNodeId Id{findOrCreateNodeId({Start, End})};
+
+  // Remove null children
+  Children.erase(
+      std::remove_if(Children.begin(), Children.end(),
+                     [](const KGNodeId &Child) { return Child == 0; }),
+      Children.end());
+
   NodeMap[Id] = Node{std::move(Children), {}, Kind, false};
   std::cout << "Parser::createNonTerminalNode() id " << Id << " start " << Start
             << " end " << End << " kind " << static_cast<int>(Kind)
