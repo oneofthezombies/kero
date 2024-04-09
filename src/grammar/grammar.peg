@@ -14,42 +14,253 @@
 #include "parser_generated_c_include.h"
 }
 
-# Module
+# Scripts and Modules
 # --------
 
-Module <- MoModuleBody
+Module <- ModuleBody? _ EndOfInput
+
 ModuleBody <- ModuleItemList
-ModuleItemList <- ModuleItem / ModuleItemList ModuleItem
-ModuleItem <- StatementListItem
 
-_ <- (WhiteSpace / EndOfLine / Comment)*
+ModuleItemList
+    <- ModuleItem
+    / ModuleItemList _ ModuleItem
 
-# Comment
+ModuleItem
+    # <- ImportDeclaration
+    # / ExportDeclaration
+    # / StatementListItem
+    <- StatementListItem
+
+# Statement
 # --------
 
-Comment
-    <- MultiLineComment
-    / SingleLineComment
+Statement
+    # <- BlockStatement
+    # / VariableStatement
+    # / EmptyStatement
+    # / ExpressionStatement
+    # / IfStatement
+    # / BreakableStatement
+    # / ContinueStatement
+    # / BreakStatement
+    # / ReturnStatement
+    # / WithStatement
+    # / LabelledStatement
+    # / ThrowStatement
+    # / TryStatement
+    # / DebuggerStatement
+    <- IfStatement
 
-MultiLineComment <- '/*' MultiLineCommentChars? '*/'
+StatementListItem
+    <- Statement
+    # / Declaration
 
-MultiLineCommentChars
-    <- MultiLineNotAsteriskChar MultiLineCommentChars?
-    / '*' PostAsteriskCommentChars?
+IfStatement
+    <- 'if' _ '(' _ Expression _ ')' _ Statement _ 'else' _ Statement
+    / 'if' _ '(' _ Expression _ ')' _ Statement
 
-PostAsteriskCommentChars
-    <- MultiLineNotForwardSlashOrAsteriskChar MultiLineCommentChars?
-    / '*' PostAsteriskCommentChars?
+# Expression
+# --------
 
-MultiLineNotAsteriskChar <- SourceCharacter !'*'
+IdentifierReference
+    <- Identifier
+    / 'yield'
 
-MultiLineNotForwardSlashOrAsteriskChar <- SourceCharacter ![/*]
+Identifier
+    <- !ReservedWord IdentifierName
 
-SingleLineComment <- '//' SingleLineCommentChars?
+PrimaryExpression
+    <- 'this'
+    / IdentifierReference
+    / Literal
+    / ArrayLiteral
+    / ObjectLiteral
+    # / FunctionExpression
+    # / ClassExpression
+    # / GeneratorExpression
+    # / RegularExpressionLiteral
+    # / TemplateLiteral
+    # / CoverParenthesizedExpressionAndArrowParameterList
 
-SingleLineCommentChars <- SingleLineCommentChar SingleLineCommentChars?
+Literal
+    <- NullLiteral
+    / BooleanLiteral
+    / NumericLiteral
+    / StringLiteral
 
-SingleLineCommentChar <- SourceCharacter !LineTerminator
+ArrayLiteral
+    <- '[' _ Elision? _ ']'
+    / '[' _ ElementList _ ']'
+    / '[' _ ElementList _ ',' _ Elision? _ ']'
+
+ElementList
+    <- Elision? _ AssignmentExpression
+    / Elision? _ SpreadElement
+    / ElementList _ ',' _ Elision? _ AssignmentExpression
+    / ElementList _ ',' _ Elision? _ SpreadElement
+
+Elision
+    <- ','
+    / Elision ','
+
+SpreadElement <- '...' _ AssignmentExpression
+
+ObjectLiteral
+    <- '{' _ '}'
+    / '{' _ PropertyDefinitionList _ '}'
+    / '{' _ PropertyDefinitionList _ ',' _ '}'
+
+PropertyDefinitionList
+    <- PropertyDefinition
+    / PropertyDefinitionList _ ',' _ PropertyDefinition
+
+PropertyDefinition
+    <- IdentifierReference
+    / CoverInitializedName
+    / PropertyName _ ':' _ AssignmentExpression
+    # / MethodDefinition
+
+PropertyName
+    <- LiteralPropertyName
+    / ComputedPropertyName
+
+LiteralPropertyName
+    <- IdentifierName
+    / StringLiteral
+    / NumericLiteral
+
+ComputedPropertyName <- '[' _ AssignmentExpression _ ']'
+
+CoverInitializedName <- IdentifierReference _ Initializer
+
+Initializer <- '=' _ AssignmentExpression
+
+MemberExpression
+    <- PrimaryExpression
+    / MemberExpression _ '[' _ Expression _ ']'
+    # / MemberExpression _ '.' _ IdentifierName
+    # / MemberExpression _ TemplateLiteral
+    # / SuperProperty
+    # / MetaProperty
+    # / 'new' _ MemberExpression _ Arguments
+
+CallExpression
+    <- MemberExpression _ Arguments
+    # / SuperCall
+    / CallExpression _ Arguments
+    / CallExpression _ '[' _ Expression _ ']'
+    # / CallExpression _ '.' _ IdentifierName
+    # / CallExpression _ TemplateLiteral
+
+Arguments
+    <- '(' _ ')'
+    / '(' _ ArgumentList _ ')'
+
+ArgumentList
+    <- AssignmentExpression
+    / '...' _ AssignmentExpression
+    / ArgumentList _ ',' _ AssignmentExpression
+    / ArgumentList _ ',' _ '...' _ AssignmentExpression
+
+LeftHandSideExpression
+    # <- NewExpression
+    # / CallExpression
+    <- CallExpression
+
+PostfixExpression
+    <- LeftHandSideExpression
+    / LeftHandSideExpression _NoLineTerminator '++'
+    / LeftHandSideExpression _NoLineTerminator '--'
+
+UnaryExpression
+    <- PostfixExpression
+    # / 'delete' _ UnaryExpression
+    # / 'void' _ UnaryExpression
+    # / 'typeof' _ UnaryExpression
+    / '++' _ UnaryExpression
+    / '--' _ UnaryExpression
+    / '+' _ UnaryExpression
+    / '-' _ UnaryExpression
+    / '~' _ UnaryExpression
+    / '!' _ UnaryExpression
+
+MultiplicativeExpression
+    <- UnaryExpression
+    / MultiplicativeExpression _ MultiplicativeOperator _ UnaryExpression
+
+MultiplicativeOperator
+    <- '*'
+    / '/'
+    / '%'
+
+AdditiveExpression
+    <- MultiplicativeExpression
+    / AdditiveExpression _ '+' _ MultiplicativeExpression
+    / AdditiveExpression _ '-' _ MultiplicativeExpression
+
+ShiftExpression
+    <- AdditiveExpression
+    / ShiftExpression _ '<<' _ AdditiveExpression
+    / ShiftExpression _ '>>' _ AdditiveExpression
+    # / ShiftExpression _ '>>>' _ AdditiveExpression
+
+RelationalExpression
+    <- ShiftExpression
+    / RelationalExpression _ '<' _ ShiftExpression
+    / RelationalExpression _ '>' _ ShiftExpression
+    / RelationalExpression _ '<=' _ ShiftExpression
+    / RelationalExpression _ '>=' _ ShiftExpression
+    # / RelationalExpression _ 'instanceof' _ ShiftExpression
+    # / RelationalExpression _ 'in' _ ShiftExpression 
+    # TODO: [+In] RelationalExpression[In, ?Yield] in ShiftExpression[?Yield]
+
+EqualityExpression
+    <- RelationalExpression
+    / EqualityExpression _ '==' _ RelationalExpression
+    / EqualityExpression _ '!=' _ RelationalExpression
+    # / EqualityExpression _ '===' _ RelationalExpression
+    # / EqualityExpression _ '!==' _ RelationalExpression
+
+BitwiseANDExpression
+    <- EqualityExpression
+    / BitwiseANDExpression _ '&' _ EqualityExpression
+
+BitwiseXORExpression
+    <- BitwiseANDExpression
+    / BitwiseXORExpression _ '^' _ BitwiseANDExpression
+
+BitwiseORExpression
+    <- BitwiseXORExpression
+    / BitwiseORExpression _ '|' _ BitwiseXORExpression
+
+LogicalANDExpression
+    <- BitwiseORExpression
+    / LogicalANDExpression _ '&&' _ BitwiseORExpression
+
+LogicalORExpression
+    <- LogicalANDExpression
+    / LogicalORExpression _ '||' _ LogicalANDExpression
+
+ConditionalExpression
+    <- LogicalORExpression
+    / LogicalORExpression _ '?' _ AssignmentExpression _ ':' _ 
+        AssignmentExpression
+
+AssignmentExpression
+    <- ConditionalExpression
+    # / YieldExpression
+    # / ArrowFunction
+    # / LeftHandSideExpression _ '=' _ AssignmentExpression
+    # / LeftHandSideExpression _ AssignmentOperator _ AssignmentExpression
+
+Expression
+    <- AssignmentExpression
+    / Expression _ ',' _ AssignmentExpression
+
+# Lexical Grammar
+# --------
+
+SourceCharacter <- . # any Unicode code point
 
 WhiteSpace
     <- TAB
@@ -72,8 +283,7 @@ LineTerminatorSequence
     / PS
     / CR LF
 
-SourceCharacter <- .
-EndOfFile <- !.
+EndOfInput <- !.
 
 TAB <- '\t' # CHARACTER TABULATION
 SP <- ' ' # SPACE
@@ -88,3 +298,143 @@ ZWJ <- '\u200D' # ZERO WIDTH JOINER
 LS <- '\u2028' # LINE SEPARATOR
 PS <- '\u2029' # PARAGRAPH SEPARATOR
 ZWNBSP <- '\uFEFF' # ZERO WIDTH NO-BREAK SPACE
+
+_ <- (WhiteSpace / LineTerminatorSequence / Comment)*
+_NoLineTerminator <- (WhiteSpace / Comment)*
+
+Comment
+    <- MultiLineComment
+    / SingleLineComment
+
+# NOTE: https://262.ecma-international.org/6.0/#sec-comments parsing failed, 
+# so MultiLineComment was reimplemented.
+MultiLineComment <- '/*' (!'*/' SourceCharacter)* '*/'
+
+SingleLineComment  <- '//' SingleLineCommentChars?
+
+SingleLineCommentChars <- SingleLineCommentChar SingleLineCommentChars?
+
+SingleLineCommentChar <- !LineTerminator SourceCharacter
+
+IdentifierName
+    <- IdentifierStart
+    / IdentifierName IdentifierPart
+
+IdentifierStart
+    <- UnicodeIDStart
+    / '$'
+    / '_'
+    # / '\\' UnicodeEscapeSequence
+
+IdentifierPart
+    <- UnicodeIDContinue
+    / '$'
+    / '_'
+    # / '\\' UnicodeEscapeSequence
+    / ZWNJ
+    / ZWJ
+
+UnicodeIDStart <- [a-zA-Z]
+# TODO: any Unicode code point with the Unicode property “ID_Start” or 
+# “Other_ID_Start”
+
+UnicodeIDContinue <- [a-zA-Z0-9] 
+# TODO: any Unicode code point with the Unicode property “ID_Continue”, 
+# “Other_ID_Continue”, or “Other_ID_Start”
+
+ReservedWord
+    <- Keyword
+    / FutureReservedWord
+    / NullLiteral
+    / BooleanLiteral
+
+Keyword
+    <- 'break' / 'case' / 'catch' / 'class' / 'const' / 'continue' 
+    / 'debugger' / 'default' / 'delete' / 'do' / 'else' / 'export' / 'extends' 
+    / 'finally' / 'for' / 'function' / 'if' / 'import' / 'in' / 'instanceof'
+    / 'new' / 'return' / 'super' / 'switch' / 'this' / 'throw' / 'try'
+    / 'typeof' / 'var' / 'void' / 'while' / 'with' / 'yield'
+
+FutureReservedWord
+    <- 'enum' / 'await' / 'implements' / 'interface' / 'package' 
+    / 'private' / 'protected' / 'public'
+
+NullLiteral <- 'null'
+
+BooleanLiteral <- 'true' / 'false'
+
+NumericLiteral
+    <- DecimalLiteral
+    # / BinaryIntegerLiteral
+    # / OctalIntegerLiteral
+    # / HexIntegerLiteral
+    # / LegacyOctalIntegerLiteral
+
+DecimalLiteral 
+    <- DecimalIntegerLiteral '.' DecimalDigits? ExponentPart?
+    / '.' DecimalDigits ExponentPart?
+    / DecimalIntegerLiteral ExponentPart?
+
+DecimalIntegerLiteral
+    <- '0'
+    / NonZeroDigit DecimalDigits?
+
+DecimalDigits
+    <- DecimalDigit
+    / DecimalDigits DecimalDigit
+
+DecimalDigit <- [0-9]
+
+NonZeroDigit <- [1-9]
+
+ExponentPart <- ExponentIndicator SignedInteger
+
+ExponentIndicator <- [eE]
+
+SignedInteger
+    <- DecimalDigits
+    / '+' DecimalDigits
+    / '-' DecimalDigits
+
+StringLiteral
+    <- '"' DoubleStringCharacters? '"'
+    / "'" SingleStringCharacters? "'"
+
+DoubleStringCharacters
+    <- DoubleStringCharacter DoubleStringCharacters?
+
+SingleStringCharacters
+    <- SingleStringCharacter SingleStringCharacters?
+
+DoubleStringCharacter
+    <- !(["\\] / LineTerminator) SourceCharacter
+    / '\\' EscapeSequence
+    / LineContinuation
+
+SingleStringCharacter
+    <- !(['\\] / LineTerminator) SourceCharacter
+    / '\\' EscapeSequence
+    / LineContinuation
+
+LineContinuation 
+    <- '\\' LineTerminatorSequence
+
+EscapeSequence
+    <- CharacterEscapeSequence
+    / '0' !DecimalDigit
+    # / HexEscapeSequence
+    # / UnicodeEscapeSequence
+
+CharacterEscapeSequence
+    <- SingleEscapeCharacter
+    / NonEscapeCharacter
+
+SingleEscapeCharacter <- ['"\\bfnrtv]
+
+NonEscapeCharacter <- !(EscapeCharacter / LineTerminator) SourceCharacter
+
+EscapeCharacter
+    <- SingleEscapeCharacter
+    / DecimalDigit
+    # / 'x'
+    # / 'u'
