@@ -274,22 +274,7 @@ auto kero::grammar::Parser::parse() noexcept -> bool {
     }
   }
 
-  std::cout << "Parser::parse() finished" << '\n';
-  std::cout << "Parser::parse() return " << Ret << '\n';
-  for (const auto &[Id, Node] : NodeMap) {
-    std::cout << "Parser::parse() node id " << Id << " kind " << Node.Kind
-              << " is terminal " << Node.IsTerminal << '\n';
-    if (Node.IsTerminal) {
-      std::cout << "Parser::parse() node value " << Node.Value << '\n';
-    } else {
-      std::cout << "Parser::parse() node children ";
-      for (const auto &Child : Node.Children) {
-        std::cout << Child << ' ';
-      }
-      std::cout << '\n';
-    }
-  }
-
+  printTree(Ret, 0);
   return !ErrorOccurred;
 }
 
@@ -303,4 +288,55 @@ auto kero::grammar::Parser::findOrCreateNodeId(SourceSpan &&Span) noexcept
   const KGNodeId Id{NextNodeId++};
   NodeIdMap[Span] = Id;
   return Id;
+}
+
+auto kero::grammar::Parser::printTree(const KGNodeId NodeId,
+                                      const size_t level) const noexcept
+    -> void {
+  const auto Found = NodeMap.find(NodeId);
+  if (Found == NodeMap.end()) {
+    std::cout << "node " << NodeId << " not found" << '\n';
+    return;
+  }
+
+  const Node &N = Found->second;
+  if (N.IsTerminal) {
+    for (size_t i = 0; i < level; ++i) {
+      std::cout << "  ";
+    }
+    std::cout << "Node{";
+    std::cout << "Id: ";
+    std::cout << NodeId;
+    std::cout << ", ";
+    std::cout << "Kind: ";
+    std::cout << N.Kind;
+    std::cout << ", ";
+    std::cout << "Value: ";
+    if (N.Value.empty()) {
+      std::cout << "empty";
+    } else {
+      std::cout << N.Value;
+    }
+    std::cout << "}\n";
+    return;
+  }
+
+  for (size_t i = 0; i < level; ++i) {
+    std::cout << "  ";
+  }
+  std::cout << "Node{";
+  std::cout << "Id: ";
+  std::cout << NodeId;
+  std::cout << ", ";
+  std::cout << "Kind: ";
+  std::cout << N.Kind;
+  std::cout << ", ";
+  std::cout << "Children:\n";
+  for (const auto &Child : N.Children) {
+    printTree(Child, level + 1);
+  }
+  for (size_t i = 0; i < level; ++i) {
+    std::cout << "  ";
+  }
+  std::cout << "}\n";
 }

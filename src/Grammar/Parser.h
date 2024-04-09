@@ -75,6 +75,8 @@ public:
 
 private:
   auto findOrCreateNodeId(SourceSpan &&Span) noexcept -> KGNodeId;
+  auto printTree(const KGNodeId NodeId, const size_t level) const noexcept
+      -> void;
 
   std::unordered_map<SourceSpan, KGNodeId> NodeIdMap;
   size_t NextNodeId{1};
