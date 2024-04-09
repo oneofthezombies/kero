@@ -96,6 +96,10 @@ typedef enum KGNodeKindTag {
   KGNodeKind_KW_Private,
   KGNodeKind_KW_Protected,
   KGNodeKind_KW_Public,
+  KGNodeKind_Block,
+  KGNodeKind_BooleanLiteral_True,
+  KGNodeKind_BooleanLiteral_False,
+  KGNodeKind_NullLiteral,
 } KGNodeKind;
 
 #ifdef __cplusplus

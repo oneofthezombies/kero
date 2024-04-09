@@ -91,6 +91,10 @@ node_kinds = [
   "KW_Private",
   "KW_Protected",
   "KW_Public",
+  "Block",
+  "BooleanLiteral_True",
+  "BooleanLiteral_False",
+  "NullLiteral"
 ]
 
 enum_values = "\n".join([f"  KGNodeKind_{value} = 0," if i == 0 else f"  KGNodeKind_{value}," for i, value in enumerate(node_kinds)])

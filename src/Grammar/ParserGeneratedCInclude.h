@@ -12,7 +12,7 @@
   KGParserAuxil_pccDebug(Auxil, Event, Rule, Level, Pos, Buffer, Length)
 
 // TODO: Change this to DEBUG when debugging
-#undef PCC_DEBUG
+// #undef PCC_DEBUG
 
 #define KGNODE_NONTERMINAL0(Kind)                                              \
   KGParserAuxil_createNonTerminal0(auxil, _0s, _0e, Kind)

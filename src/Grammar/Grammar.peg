@@ -58,7 +58,7 @@ BlockStatement
     <- c0:Block { $$ = c0; }
 
 Block
-    <- PT_LeftBrace _ c0:StatementList? _ PT_RightBrace { $$ = c0; }
+    <- PT_LeftBrace _ c0:StatementList? _ PT_RightBrace { $$ = KGNODE_NONTERMINAL1(KGNodeKind_Block, c0); }
 
 StatementList
     <- c0:StatementListItem { $$ = c0; }
@@ -385,10 +385,10 @@ UnicodeIDContinue
     <- [a-zA-Z0-9] 
 
 ReservedWord
-    <- Keyword
-    / FutureReservedWord
-    / NullLiteral
-    / BooleanLiteral
+    <- s0:Keyword
+    / s0:FutureReservedWord 
+    / s0:NullLiteral
+    / s0:BooleanLiteral
 
 Keyword
     <- KW_Break 
@@ -594,11 +594,11 @@ PT_Backslash <- '\\'
 # Literals
 # --------
 
-NullLiteral <- 'null'
+NullLiteral <- 'null' { $$ = KGNODE_TERMINAL0(KGNodeKind_NullLiteral); }
 
 BooleanLiteral
-    <- 'true'
-    / 'false'
+    <- 'true' { $$ = KGNODE_TERMINAL0(KGNodeKind_BooleanLiteral_True); }
+    / 'false' { $$ = KGNODE_TERMINAL0(KGNodeKind_BooleanLiteral_False); }
 
 NumericLiteral
     <- DecimalLiteral

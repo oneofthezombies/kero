@@ -223,8 +223,8 @@ auto kero::grammar::Parser::pccDebug(const int Event, const char *const Rule,
   const DebugEvent E{static_cast<DebugEvent>(Event)};
   const std::string_view RV{Rule};
   const std::string_view BV{Buffer, Length};
-  std::cout << "Parser::pccDebug() event " << E << " rule " << RV << " level "
-            << Level << " pos " << Pos << " buffer " << BV << '\n';
+  std::cout << "Debug{Event: " << E << ", Rule: " << RV << ", Level: " << Level
+            << ", Pos: " << Pos << ", Buffer: '" << BV << "' }\n";
 }
 
 auto kero::grammar::Parser::createNonTerminalNode(

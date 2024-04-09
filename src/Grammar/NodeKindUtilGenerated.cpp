@@ -274,6 +274,18 @@ auto kero::grammar::operator<<(std::ostream &OS, KGNodeKind Kind) -> std::ostrea
   case KGNodeKind_KW_Public:
     OS << "KW_Public";
     break;
+  case KGNodeKind_Block:
+    OS << "Block";
+    break;
+  case KGNodeKind_BooleanLiteral_True:
+    OS << "BooleanLiteral_True";
+    break;
+  case KGNodeKind_BooleanLiteral_False:
+    OS << "BooleanLiteral_False";
+    break;
+  case KGNodeKind_NullLiteral:
+    OS << "NullLiteral";
+    break;
   }
   return OS;
 }
