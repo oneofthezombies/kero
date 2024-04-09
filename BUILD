@@ -1,14 +1,17 @@
 cc_library(
-    name = "kero_grammar_parser",
+    name = "KeroGrammarParser",
     srcs = [
-        "src/grammar/parser.cc",
-        "src/grammar/parser_auxil.h",
-        "src/grammar/parser_generated.c",
-        "src/grammar/parser_generated.h",
-        "src/grammar/parser_generated_c_include.h",
+        "src/Grammar/NodeKindGenerated.h",
+        "src/Grammar/NodeKindUtilGenerated.cpp",
+        "src/Grammar/NodeKindUtilGenerated.h",
+        "src/Grammar/Parser.cpp",
+        "src/Grammar/ParserAuxil.h",
+        "src/Grammar/ParserGenerated.c",
+        "src/Grammar/ParserGenerated.h",
+        "src/Grammar/ParserGeneratedCInclude.h",
     ],
     hdrs = [
-        "src/grammar/parser.h",
+        "src/Grammar/Parser.h",
     ],
     copts = [
         "-std=c17",
@@ -19,12 +22,12 @@ cc_library(
 )
 
 cc_test(
-    name = "kero_grammar_test",
+    name = "KeroGrammarTest",
     srcs = [
-        "src/grammar/parser_test.cc",
+        "src/Grammar/ParserTest.cpp",
     ],
     deps = [
-        ":kero_grammar_parser",
+        ":KeroGrammarParser",
         "@googletest//:gtest_main",
     ],
 )

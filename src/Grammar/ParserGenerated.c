@@ -21,9 +21,9 @@ static size_t pcc_strnlen(const char *str, size_t maxlen) {
 #endif /* defined __GNUC__ && defined _WIN32 */
 #endif /* !_MSC_VER */
 
-#include "parser_generated.h"
+#include "ParserGenerated.h"
 
-#include "parser_generated_c_include.h"
+#include "ParserGeneratedCInclude.h"
 #if !defined __has_attribute || defined _MSC_VER
 #define __attribute__(x)
 #endif

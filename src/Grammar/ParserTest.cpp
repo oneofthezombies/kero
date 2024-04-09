@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "parser.h"
+#include "Parser.h"
 
 TEST(ParserTest, Empty) { EXPECT_TRUE(kero::grammar::Parser{""}.parse()); }
 

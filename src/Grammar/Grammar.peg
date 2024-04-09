@@ -7,11 +7,11 @@
 %auxil "KGParserAuxil *"
 
 %header {
-#include "parser_auxil.h"
+#include "ParserAuxil.h"
 }
 
 %source {
-#include "parser_generated_c_include.h"
+#include "ParserGeneratedCInclude.h"
 }
 
 # Scripts and Modules

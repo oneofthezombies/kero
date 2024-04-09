@@ -1,4 +1,6 @@
-#include "parser.h"
+#include "Parser.h"
+
+#include "NodeKindUtilGenerated.h"
 
 #include <cassert>
 #include <iostream>
@@ -275,9 +277,8 @@ auto kero::grammar::Parser::parse() noexcept -> bool {
   std::cout << "Parser::parse() finished" << '\n';
   std::cout << "Parser::parse() return " << Ret << '\n';
   for (const auto &[Id, Node] : NodeMap) {
-    std::cout << "Parser::parse() node id " << Id << " kind "
-              << static_cast<int>(Node.Kind) << " is terminal "
-              << Node.IsTerminal << '\n';
+    std::cout << "Parser::parse() node id " << Id << " kind " << Node.Kind
+              << " is terminal " << Node.IsTerminal << '\n';
     if (Node.IsTerminal) {
       std::cout << "Parser::parse() node value " << Node.Value << '\n';
     } else {

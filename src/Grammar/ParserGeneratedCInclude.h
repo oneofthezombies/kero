@@ -11,7 +11,7 @@
 #define PCC_DEBUG(Auxil, Event, Rule, Level, Pos, Buffer, Length)              \
   KGParserAuxil_pccDebug(Auxil, Event, Rule, Level, Pos, Buffer, Length)
 
-// TODO: Remove this line
+// TODO: Change this to DEBUG when debugging
 #undef PCC_DEBUG
 
 #define KGNODE_NONTERMINAL0(Kind)                                              \
