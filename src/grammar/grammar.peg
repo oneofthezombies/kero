@@ -14,14 +14,77 @@
 #include "parser_generated_c_include.h"
 }
 
-Module <- _ EndOfFile
+# Module
+# --------
 
-_ <- (Whitespace / EndOfLine / Comment)*
+Module <- MoModuleBody
+ModuleBody <- ModuleItemList
+ModuleItemList <- ModuleItem / ModuleItemList ModuleItem
+ModuleItem <- StatementListItem
 
-Comment <- SingleLineComment / MultiLineComment
-SingleLineComment <- '//' (!EndOfLine .)* (EndOfLine / EndOfFile)
-MultiLineComment <- '/*' (!'*/' .)* '*/'
+_ <- (WhiteSpace / EndOfLine / Comment)*
 
-Whitespace <- [ \t]
-EndOfLine <- '\n' / '\r\n' / '\r'
+# Comment
+# --------
+
+Comment
+    <- MultiLineComment
+    / SingleLineComment
+
+MultiLineComment <- '/*' MultiLineCommentChars? '*/'
+
+MultiLineCommentChars
+    <- MultiLineNotAsteriskChar MultiLineCommentChars?
+    / '*' PostAsteriskCommentChars?
+
+PostAsteriskCommentChars
+    <- MultiLineNotForwardSlashOrAsteriskChar MultiLineCommentChars?
+    / '*' PostAsteriskCommentChars?
+
+MultiLineNotAsteriskChar <- SourceCharacter !'*'
+
+MultiLineNotForwardSlashOrAsteriskChar <- SourceCharacter ![/*]
+
+SingleLineComment <- '//' SingleLineCommentChars?
+
+SingleLineCommentChars <- SingleLineCommentChar SingleLineCommentChars?
+
+SingleLineCommentChar <- SourceCharacter !LineTerminator
+
+WhiteSpace
+    <- TAB
+    / VT
+    / FF
+    / SP
+    / NBSP
+    / ZWNBSP
+
+LineTerminator
+    <- LF
+    / CR
+    / LS
+    / PS
+
+LineTerminatorSequence
+    <- LF
+    / CR !LF
+    / LS
+    / PS
+    / CR LF
+
+SourceCharacter <- .
 EndOfFile <- !.
+
+TAB <- '\t' # CHARACTER TABULATION
+SP <- ' ' # SPACE
+LF <- '\n' # LINE FEED (LF)
+CR <- '\r' # CARRIAGE RETURN (CR)
+
+VT <- '\u000B' # LINE TABULATION
+FF <- '\u000C' # FORM FEED (FF)
+NBSP <- '\u00A0' # NO-BREAK SPACE
+ZWNJ <- '\u200C' # ZERO WIDTH NON-JOINER
+ZWJ <- '\u200D' # ZERO WIDTH JOINER
+LS <- '\u2028' # LINE SEPARATOR
+PS <- '\u2029' # PARAGRAPH SEPARATOR
+ZWNBSP <- '\uFEFF' # ZERO WIDTH NO-BREAK SPACE

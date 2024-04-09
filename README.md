@@ -23,5 +23,5 @@ https://github.com/hedronvision/bazel-compile-commands-extractor
 
 PackCC - https://github.com/arithy/packcc
 PEGTL - https://github.com/taocpp/PEGTL
-ECMAScript - https://262.ecma-international.org/6.0/#sec-syntactic-and-lexical-grammars
+ECMAScript - https://262.ecma-international.org/6.0/#sec-ecmascript-language-lexical-grammar
 TypeScript - https://javascript.xgqfrms.xyz/pdfs/TypeScript%20Language%20Specification.pdf
