@@ -143,6 +143,7 @@ auto kero::grammar::operator<<(std::ostream &OS, KGNodeKind Kind) -> std::ostrea
 }}
 """
 
+print("Checking WORKSPACE file")
 if os.path.exists("WORKSPACE"):
   workspace = os.getcwd()
 elif os.path.exists("../WORKSPACE"):
@@ -151,23 +152,30 @@ else:
   print("WORKSPACE file not found.")
   exit(1)
 
+print(f"Changing directory to {workspace}")
 os.chdir(workspace)
 
-if not os.path.exists("packcc"):
-  print("packcc could not be found")
+print("Checking if packcc is installed")
+if os.system("packcc --version") != 0:
+  print("packcc is not installed")
   exit(1)
 else:
-  print(f"packcc found at {os.path.abspath('packcc')}")
+  print("packcc is installed")
 
+print("Generating NodeKindGenerated.h and NodeKindUtilGenerated.h/cpp")
 with open("src/Grammar/NodeKindGenerated.h", "w") as f:
   f.write(header_content)
-
 with open("src/Grammar/NodeKindUtilGenerated.h", "w") as f:
   f.write(util_header_content)
-
 with open("src/Grammar/NodeKindUtilGenerated.cpp", "w") as f:
   f.write(util_source_content)
+print("NodeKindGenerated.h, NodeKindUtilGenerated.h/cpp generated in src/Grammar")
 
+print("Changing directory to src/Grammar")
 os.chdir("src/Grammar")
-os.system("packcc -o ParserGenerated grammar.peg")
-print("ParserGenerated.h and ParserGenerated.c generated in src/Grammar")
+
+print("Generating ParserGenerated.h/c")
+if os.system("packcc -o ParserGenerated Grammar.peg") != 0:
+  print("packcc failed to generate parser")
+  exit(1)
+print("ParserGenerated.h/c generated in src/Grammar")
