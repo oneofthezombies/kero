@@ -3,7 +3,7 @@
 
 %prefix "KGParser"
 
-%value "KGNode *"
+%value "KGNodeId"
 %auxil "KGParserAuxil *"
 
 %header {
@@ -17,31 +17,33 @@
 # Scripts and Modules
 # --------
 
-Module <- _ mb:ModuleBody? _ EndOfInput {
-        $$ = KGNode_create(auxil, KGNodeKind_Module, $0s, $0e);
-    }
+Module
+    # NOTE: !InputElementDiv fails if there are unused rules when parsing peg 
+    # grammar, so !InputElementDiv was added after EndOfInput.
+    <- _ c0:ModuleBody? _ EndOfInput !InputElementDiv { $$ = KGNODE_NONTERMINAL1(KGNodeKind_Module, c0); }
 
-ModuleBody <- ModuleItemList
+ModuleBody
+    <- c0:ModuleItemList { $$ = c0; }
 
 ModuleItemList
-    <- ModuleItem
-    / ModuleItemList _ ModuleItem
+    <- c0:ModuleItem { $$ = c0; }
+    / c0:ModuleItemList _ c1:ModuleItem { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ModuleItemList, c0, c1); }
 
 ModuleItem
     # <- ImportDeclaration
     # / ExportDeclaration
     # / StatementListItem
-    <- StatementListItem
+    <- c0:StatementListItem { $$ = c0; }
 
 # Statement
 # --------
 
 Statement
-    <- BlockStatement
+    <- c0:BlockStatement { $$ = c0; }
     # / VariableStatement
     # / EmptyStatement
     # / ExpressionStatement
-    / IfStatement
+    / c0:IfStatement { $$ = c0; }
     # / BreakableStatement
     # / ContinueStatement
     # / BreakStatement
@@ -52,37 +54,40 @@ Statement
     # / TryStatement
     # / DebuggerStatement
 
-BlockStatement <- Block
+BlockStatement
+    <- c0:Block { $$ = c0; }
 
-Block <- '{' _ StatementList? _ '}'
+Block
+    <- PT_LeftBrace _ c0:StatementList? _ PT_RightBrace { $$ = c0; }
 
 StatementList
-    <- StatementListItem
-    / StatementList _ StatementListItem
+    <- c0:StatementListItem { $$ = c0; }
+    / c0:StatementList _ c1:StatementListItem { $$ = KGNODE_NONTERMINAL2(KGNodeKind_StatementList, c0, c1); }
 
 StatementListItem
-    <- Statement
+    <- c0:Statement { $$ = c0; }
     # / Declaration
 
 IfStatement
-    <- 'if' _ '(' _ Expression _ ')' _ Statement _ 'else' _ Statement
-    / 'if' _ '(' _ Expression _ ')' _ Statement
+    <- KW_If _ PT_LeftParenthesis _ c0:Expression _ PT_RightParenthesis _ c1:Statement _ KW_Else _ c2:Statement { $$ = KGNODE_NONTERMINAL3(KGNodeKind_IfStatement_IfElse, c0, c1, c2); }
+    / KW_If _ PT_LeftParenthesis _ c0:Expression _ PT_RightParenthesis _ c1:Statement { $$ = KGNODE_NONTERMINAL2(KGNodeKind_IfStatement_If, c0, c1); }
 
 # Expression
 # --------
 
 IdentifierReference
-    <- Identifier
-    / 'yield'
+    <- c0:Identifier { $$ = c0; }
+    / c0:KW_Yield { $$ = c0; }
 
-Identifier <- !ReservedWord IdentifierName
+Identifier
+    <- !ReservedWord c0:IdentifierName { $$ = c0; }
 
 PrimaryExpression
-    <- 'this'
-    / IdentifierReference
-    / Literal
-    / ArrayLiteral
-    / ObjectLiteral
+    <- c0:KW_This { $$ = c0; }
+    / c0:IdentifierReference { $$ = c0; }
+    / c0:Literal { $$ = c0; }
+    / c0:ArrayLiteral { $$ = c0; }
+    / c0:ObjectLiteral { $$ = c0; }
     # / FunctionExpression
     # / ClassExpression
     # / GeneratorExpression
@@ -91,187 +96,198 @@ PrimaryExpression
     # / CoverParenthesizedExpressionAndArrowParameterList
 
 Literal
-    <- NullLiteral
-    / BooleanLiteral
-    / NumericLiteral
-    / StringLiteral
+    <- c0:NullLiteral { $$ = c0; }
+    / c0:BooleanLiteral { $$ = c0; }
+    / c0:NumericLiteral { $$ = c0; }
+    / c0:StringLiteral { $$ = c0; }
 
 ArrayLiteral
-    <- '[' _ Elision? _ ']'
-    / '[' _ ElementList _ ']'
-    / '[' _ ElementList _ ',' _ Elision? _ ']'
+    <- PT_LeftBracket _ Elision? _ PT_RightBracket { $$ = KGNODE_TERMINAL0(KGNodeKind_ArrayLiteral_Empty); }
+    / PT_LeftBracket _ c0:ElementList _ PT_RightBracket { $$ = c0; }
+    / PT_LeftBracket _ c0:ElementList _ PT_Comma _ Elision? _ PT_RightBracket { $$ = c0; }
 
 ElementList
-    <- Elision? _ AssignmentExpression
-    / Elision? _ SpreadElement
-    / ElementList _ ',' _ Elision? _ AssignmentExpression
-    / ElementList _ ',' _ Elision? _ SpreadElement
+    <- Elision? _ c0:AssignmentExpression { $$ = c0; }
+    / Elision? _ c0:SpreadElement { $$ = c0; }
+    / c0:ElementList _ PT_Comma _ Elision? _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ArrayLiteral_List, c0, c1); }
+    / c0:ElementList _ PT_Comma _ Elision? _ c1:SpreadElement { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ArrayLiteral_List, c0, c1); }
 
 Elision
-    <- ','
-    / Elision ','
+    <- PT_Comma
+    / Elision PT_Comma
 
-SpreadElement <- '...' _ AssignmentExpression
+SpreadElement
+    <- PT_Ellipsis _ c0:AssignmentExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_SpreadElement, c0); }
 
 ObjectLiteral
-    <- '{' _ '}'
-    / '{' _ PropertyDefinitionList _ '}'
-    / '{' _ PropertyDefinitionList _ ',' _ '}'
+    <- PT_LeftBrace _ PT_RightBrace { $$ = KGNODE_TERMINAL0(KGNodeKind_ObjectLiteral_Empty); }
+    / PT_LeftBrace _ c0:PropertyDefinitionList _ PT_RightBrace { $$ = KGNODE_NONTERMINAL1(KGNodeKind_ObjectLiteral, c0); }
+    / PT_LeftBrace _ c0:PropertyDefinitionList _ PT_Comma _ PT_RightBrace { $$ = KGNODE_NONTERMINAL1(KGNodeKind_ObjectLiteral, c0); }
 
 PropertyDefinitionList
-    <- PropertyDefinition
-    / PropertyDefinitionList _ ',' _ PropertyDefinition
+    <- c0:PropertyDefinition { $$ = c0; }
+    / c0:PropertyDefinitionList _ PT_Comma _ c1:PropertyDefinition { $$ = KGNODE_NONTERMINAL2(KGNodeKind_PropertyDefinitionList, c0, c1); }
 
 PropertyDefinition
-    <- IdentifierReference
-    / CoverInitializedName
-    / PropertyName _ ':' _ AssignmentExpression
+    <- c0:IdentifierReference { $$ = c0; }
+    / c0:CoverInitializedName { $$ = c0; }
+    / c0:PropertyName _ PT_Colon _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_PropertyDefinition, c0, c1); }
     # / MethodDefinition
 
 PropertyName
-    <- LiteralPropertyName
-    / ComputedPropertyName
+    <- c0:LiteralPropertyName { $$ = c0; }
+    / c0:ComputedPropertyName { $$ = c0; }
 
 LiteralPropertyName
-    <- IdentifierName
-    / StringLiteral
-    / NumericLiteral
+    <- c0:IdentifierName { $$ = c0; }
+    / c0:StringLiteral { $$ = c0; }
+    / c0:NumericLiteral { $$ = c0; }
 
-ComputedPropertyName <- '[' _ AssignmentExpression _ ']'
+ComputedPropertyName
+    <- PT_LeftBracket _ c0:AssignmentExpression _ PT_RightBracket { $$ = c0; }
 
-CoverInitializedName <- IdentifierReference _ Initializer
+CoverInitializedName 
+    <- c0:IdentifierReference _ c1:Initializer { $$ = KGNODE_NONTERMINAL2(KGNodeKind_CoverInitializedName, c0, c1); }
 
-Initializer <- '=' _ AssignmentExpression
+Initializer
+    <- PT_Assign _ c0:AssignmentExpression { $$ = c0; }
 
 MemberExpression
-    <- PrimaryExpression
-    / MemberExpression _ '[' _ Expression _ ']'
-    # / MemberExpression _ '.' _ IdentifierName
+    <- c0:PrimaryExpression { $$ = c0; }
+    / c0:MemberExpression _ PT_LeftBracket _ c1:Expression _ PT_RightBracket { $$ = KGNODE_NONTERMINAL2(KGNodeKind_MemberExpression, c0, c1); }
+    # / MemberExpression _ PT_Period _ IdentifierName
     # / MemberExpression _ TemplateLiteral
     # / SuperProperty
     # / MetaProperty
-    # / 'new' _ MemberExpression _ Arguments
+    # / KW_New _ MemberExpression _ Arguments
 
 NewExpression
-    <- MemberExpression
-    / 'new' _ NewExpression
+    <- c0:MemberExpression { $$ = c0; }
+    / KW_New _ c0:NewExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_NewExpression, c0); }
 
 CallExpression
-    <- MemberExpression _ Arguments
+    <- c0:MemberExpression _ c1:Arguments { $$ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1); }
     # / SuperCall
-    / CallExpression _ Arguments
-    / CallExpression _ '[' _ Expression _ ']'
-    # / CallExpression _ '.' _ IdentifierName
+    / c0:CallExpression _ c1:Arguments { $$ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1); }
+    / c0:CallExpression _ PT_LeftBracket _ c1:Expression _ PT_RightBracket { $$ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1); }
+    # / CallExpression _ PT_Period _ IdentifierName
     # / CallExpression _ TemplateLiteral
 
 Arguments
-    <- '(' _ ')'
-    / '(' _ ArgumentList _ ')'
+    <- PT_LeftParenthesis _ PT_RightParenthesis { $$ = KGNODE_TERMINAL0(KGNodeKind_Arguments_Empty); }
+    / PT_LeftParenthesis _ c0:ArgumentList _ PT_RightParenthesis { $$ = c0; }
 
 ArgumentList
-    <- AssignmentExpression
-    / '...' _ AssignmentExpression
-    / ArgumentList _ ',' _ AssignmentExpression
-    / ArgumentList _ ',' _ '...' _ AssignmentExpression
+    <- c0:AssignmentExpression { $$ = c0; }
+    / PT_Ellipsis _ c0:AssignmentExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_Arguments_Ellipsis, c0); }
+    / c0:ArgumentList _ PT_Comma _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_Arguments_List, c0, c1); }
+    / c0:ArgumentList _ PT_Comma _ PT_Ellipsis _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_Arguments_List_Ellipsis, c0, c1); }
 
 LeftHandSideExpression
-    <- NewExpression
-    / CallExpression
+    <- c0:NewExpression { $$ = c0; }
+    / c0:CallExpression { $$ = c0; }
 
 PostfixExpression
-    <- LeftHandSideExpression
-    / LeftHandSideExpression _NoLineTerminator '++'
-    / LeftHandSideExpression _NoLineTerminator '--'
+    <- c0:LeftHandSideExpression { $$ = c0; }
+    / c0:LeftHandSideExpression _NoLineTerminator PT_PlusPlus { $$ = KGNODE_NONTERMINAL1(KGNodeKind_PostfixExpression_PlusPlus, c0); }
+    / c0:LeftHandSideExpression _NoLineTerminator PT_MinusMinus { $$ = KGNODE_NONTERMINAL1(KGNodeKind_PostfixExpression_MinusMinus, c0); }
 
 UnaryExpression
-    <- PostfixExpression
-    # / 'delete' _ UnaryExpression
-    # / 'void' _ UnaryExpression
-    # / 'typeof' _ UnaryExpression
-    / '++' _ UnaryExpression
-    / '--' _ UnaryExpression
-    / '+' _ UnaryExpression
-    / '-' _ UnaryExpression
-    / '~' _ UnaryExpression
-    / '!' _ UnaryExpression
+    <- c0:PostfixExpression { $$ = c0; }
+    # / KW_Delete _ UnaryExpression
+    # / KW_Void _ UnaryExpression
+    # / KW_Typeof _ UnaryExpression
+    / PT_PlusPlus _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_PlusPlus, c0); }
+    / PT_MinusMinus _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_MinusMinus, c0); }
+    / PT_Plus _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Plus, c0); }
+    / PT_Minus _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Minus, c0); }
+    / PT_Tilde _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Tilde, c0); }
+    / PT_Bang _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Bang, c0); }
 
 MultiplicativeExpression
-    <- UnaryExpression
-    / MultiplicativeExpression _ MultiplicativeOperator _ UnaryExpression
+    <- c0:UnaryExpression { $$ = c0; }
+    / c0:MultiplicativeExpression _ c1:MultiplicativeOperator _ c2:UnaryExpression { $$ = KGNODE_NONTERMINAL3(KGNodeKind_MultiplicativeExpression, c0, c1, c2); }
 
 MultiplicativeOperator
-    <- '*'
-    / '/'
-    / '%'
+    <- PT_Asterisk { $$ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Asterisk); }
+    / PT_Div { $$ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Div); }
+    / PT_Percent { $$ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Percent); }
 
 AdditiveExpression
-    <- MultiplicativeExpression
-    / AdditiveExpression _ '+' _ MultiplicativeExpression
-    / AdditiveExpression _ '-' _ MultiplicativeExpression
+    <- c0:MultiplicativeExpression { $$ = c0; }
+    / c0:AdditiveExpression _ PT_Plus _ c1:MultiplicativeExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_AdditiveExpression_Plus, c0, c1); }
+    / c0:AdditiveExpression _ PT_Minus _ c1:MultiplicativeExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_AdditiveExpression_Minus, c0, c1); }
 
 ShiftExpression
-    <- AdditiveExpression
-    / ShiftExpression _ '<<' _ AdditiveExpression
-    / ShiftExpression _ '>>' _ AdditiveExpression
-    # / ShiftExpression _ '>>>' _ AdditiveExpression
+    <- c0:AdditiveExpression { $$ = c0; }
+    / c0:ShiftExpression _ PT_LeftShift _ c1:AdditiveExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ShiftExpression_LeftShift, c0, c1); }
+    / c0:ShiftExpression _ PT_RightShift _ c1:AdditiveExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ShiftExpression_RightShift, c0, c1); }
+    # / ShiftExpression _ PT_UnsignedRightShift _ AdditiveExpression
 
 RelationalExpression
-    <- ShiftExpression
-    / RelationalExpression _ '<' _ ShiftExpression
-    / RelationalExpression _ '>' _ ShiftExpression
-    / RelationalExpression _ '<=' _ ShiftExpression
-    / RelationalExpression _ '>=' _ ShiftExpression
-    # / RelationalExpression _ 'instanceof' _ ShiftExpression
-    # / RelationalExpression _ 'in' _ ShiftExpression 
+    <- c0:ShiftExpression { $$ = c0; }
+    / c0:RelationalExpression _ PT_LessThan _ c1:ShiftExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_LessThan, c0, c1); }
+    / c0:RelationalExpression _ PT_GreaterThan _ c1:ShiftExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_GreaterThan, c0, c1); }
+    / c0:RelationalExpression _ PT_LessThanOrEqual _ c1:ShiftExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_LessThanOrEqual, c0, c1); }
+    / c0:RelationalExpression _ PT_GreaterThanOrEqual _ c1:ShiftExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_GreaterThanOrEqual, c0, c1); }
+    # / RelationalExpression _ KW_Instanceof _ ShiftExpression
+    # / RelationalExpression _ KW_In _ ShiftExpression 
     # TODO: [+In] RelationalExpression[In, ?Yield] in ShiftExpression[?Yield]
 
 EqualityExpression
-    <- RelationalExpression
-    / EqualityExpression _ '==' _ RelationalExpression
-    / EqualityExpression _ '!=' _ RelationalExpression
-    # / EqualityExpression _ '===' _ RelationalExpression
-    # / EqualityExpression _ '!==' _ RelationalExpression
+    <- c0:RelationalExpression { $$ = c0; }
+    / c0:EqualityExpression _ PT_Equal _ c1:RelationalExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_EqualityExpression_Equal, c0, c1); }
+    / c0:EqualityExpression _ PT_NotEqual _ c1:RelationalExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_EqualityExpression_NotEqual, c0, c1); }
+    # / EqualityExpression _ PT_StrictEqual _ RelationalExpression
+    # / EqualityExpression _ PT_NotStrictEqual _ RelationalExpression
 
 BitwiseANDExpression
-    <- EqualityExpression
-    / BitwiseANDExpression _ '&' _ EqualityExpression
+    <- c0:EqualityExpression { $$ = c0; }
+    / c0:BitwiseANDExpression _ PT_BitwiseAND _ c1:EqualityExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseANDExpression, c0, c1); }
 
 BitwiseXORExpression
-    <- BitwiseANDExpression
-    / BitwiseXORExpression _ '^' _ BitwiseANDExpression
+    <- c0:BitwiseANDExpression { $$ = c0; }
+    / c0:BitwiseXORExpression _ PT_BitwiseXOR _ c1:BitwiseANDExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseXORExpression, c0, c1); }
 
 BitwiseORExpression
-    <- BitwiseXORExpression
-    / BitwiseORExpression _ '|' _ BitwiseXORExpression
+    <- c0:BitwiseXORExpression { $$ = c0; }
+    / c0:BitwiseORExpression _ PT_BitwiseOR _ c1:BitwiseXORExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseORExpression, c0, c1); }
 
 LogicalANDExpression
-    <- BitwiseORExpression
-    / LogicalANDExpression _ '&&' _ BitwiseORExpression
+    <- c0:BitwiseORExpression { $$ = c0; }
+    / c0:LogicalANDExpression _ PT_LogicalAND _ c1:BitwiseORExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_LogicalANDExpression, c0, c1); }
 
 LogicalORExpression
-    <- LogicalANDExpression
-    / LogicalORExpression _ '||' _ LogicalANDExpression
+    <- c0:LogicalANDExpression { $$ = c0; }
+    / c0:LogicalORExpression _ PT_LogicalOR _ c1:LogicalANDExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_LogicalORExpression, c0, c1); }
 
 ConditionalExpression
-    <- LogicalORExpression
-    / LogicalORExpression _ '?' _ AssignmentExpression _ ':' _ 
-        AssignmentExpression
+    <- c0:LogicalORExpression { $$ = c0; }
+    / c0:LogicalORExpression _ PT_Question _ c1:AssignmentExpression _ PT_Colon _  c2:AssignmentExpression { $$ = KGNODE_NONTERMINAL3(KGNodeKind_ConditionalExpression, c0, c1, c2); }
 
 AssignmentExpression
-    <- ConditionalExpression
+    <- c0:ConditionalExpression { $$ = c0; }
     # / YieldExpression
     # / ArrowFunction
-    # / LeftHandSideExpression _ '=' _ AssignmentExpression
+    # / LeftHandSideExpression _ PT_Assign _ AssignmentExpression
     # / LeftHandSideExpression _ AssignmentOperator _ AssignmentExpression
 
 Expression
-    <- AssignmentExpression
-    / Expression _ ',' _ AssignmentExpression
+    <- c0:AssignmentExpression { $$ = c0; }
+    / c0:Expression _ PT_Comma _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_Expression, c0, c1); }
 
 # Lexical Grammar
 # --------
 
 SourceCharacter <- . # any Unicode code point
+
+InputElementDiv
+    <- WhiteSpace
+    / LineTerminator 
+    / Comment 
+    / CommonToken 
+    / DivPunctuator
+    / RightBracePunctuator
 
 WhiteSpace
     <- TAB
@@ -311,7 +327,9 @@ PS <- '\u2029' # PARAGRAPH SEPARATOR
 ZWNBSP <- '\uFEFF' # ZERO WIDTH NO-BREAK SPACE
 
 _ <- (WhiteSpace / LineTerminatorSequence / Comment)*
-_NoLineTerminator <- (WhiteSpace / Comment)*
+
+_NoLineTerminator
+    <- (WhiteSpace / Comment)*
 
 Comment
     <- MultiLineComment
@@ -319,13 +337,24 @@ Comment
 
 # NOTE: https://262.ecma-international.org/6.0/#sec-comments parsing failed, 
 # so MultiLineComment was reimplemented.
-MultiLineComment <- '/*' (!'*/' SourceCharacter)* '*/'
+MultiLineComment
+    <- '/*' (!'*/' SourceCharacter)* '*/'
 
-SingleLineComment  <- '//' SingleLineCommentChars?
+SingleLineComment
+    <- '//' SingleLineCommentChars?
 
-SingleLineCommentChars <- SingleLineCommentChar SingleLineCommentChars?
+SingleLineCommentChars
+    <- SingleLineCommentChar SingleLineCommentChars?
 
-SingleLineCommentChar <- !LineTerminator SourceCharacter
+SingleLineCommentChar
+    <- !LineTerminator SourceCharacter
+
+CommonToken
+    <- IdentifierName
+    / Punctuator
+    / NumericLiteral
+    / StringLiteral
+    # / Template
 
 IdentifierName
     <- IdentifierStart
@@ -333,25 +362,27 @@ IdentifierName
 
 IdentifierStart
     <- UnicodeIDStart
-    / '$'
-    / '_'
-    # / '\\' UnicodeEscapeSequence
+    / PT_Dollar
+    / PT_Underscore
+    # / PT_Backslash UnicodeEscapeSequence
 
 IdentifierPart
     <- UnicodeIDContinue
-    / '$'
-    / '_'
-    # / '\\' UnicodeEscapeSequence
+    / PT_Dollar
+    / PT_Underscore
+    # / PT_Backslash UnicodeEscapeSequence
     / ZWNJ
-    / ZWJ
+    / ZWJ 
 
-UnicodeIDStart <- [a-zA-Z]
-# TODO: any Unicode code point with the Unicode property “ID_Start” or 
-# “Other_ID_Start”
+UnicodeIDStart
+    # TODO: any Unicode code point with the Unicode property “ID_Start” or 
+    # “Other_ID_Start”
+    <- [a-zA-Z]
 
-UnicodeIDContinue <- [a-zA-Z0-9] 
-# TODO: any Unicode code point with the Unicode property “ID_Continue”, 
-# “Other_ID_Continue”, or “Other_ID_Start”
+UnicodeIDContinue 
+    # TODO: any Unicode code point with the Unicode property “ID_Continue”, 
+    # “Other_ID_Continue”, or “Other_ID_Start”
+    <- [a-zA-Z0-9] 
 
 ReservedWord
     <- Keyword
@@ -360,19 +391,214 @@ ReservedWord
     / BooleanLiteral
 
 Keyword
-    <- 'break' / 'case' / 'catch' / 'class' / 'const' / 'continue' 
-    / 'debugger' / 'default' / 'delete' / 'do' / 'else' / 'export' / 'extends' 
-    / 'finally' / 'for' / 'function' / 'if' / 'import' / 'in' / 'instanceof'
-    / 'new' / 'return' / 'super' / 'switch' / 'this' / 'throw' / 'try'
-    / 'typeof' / 'var' / 'void' / 'while' / 'with' / 'yield'
+    <- KW_Break 
+    / KW_Case 
+    / KW_Catch 
+    / KW_Class 
+    / KW_Const 
+    / KW_Continue 
+    / KW_Debugger 
+    / KW_Default 
+    / KW_Delete 
+    / KW_Do 
+    / KW_Else 
+    / KW_Export 
+    / KW_Extends 
+    / KW_Finally 
+    / KW_For
+    / KW_Function
+    / KW_If 
+    / KW_Import 
+    / KW_In 
+    / KW_Instanceof 
+    / KW_New 
+    / KW_Return
+    / KW_Super
+    / KW_Switch 
+    / KW_This
+    / KW_Throw
+    / KW_Try
+    / KW_Typeof
+    / KW_Var
+    / KW_Void
+    / KW_While 
+    / KW_With
+    / KW_Yield
+
+KW_Break <- 'break' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Break); }
+KW_Case <- 'case' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Case); }
+KW_Catch <- 'catch' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Catch); }
+KW_Class <- 'class' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Class); }
+KW_Const <- 'const' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Const); }
+KW_Continue <- 'continue' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Continue); }
+KW_Debugger <- 'debugger' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Debugger); }
+KW_Default <- 'default' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Default); }
+KW_Delete <- 'delete' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Delete); }
+KW_Do <- 'do' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Do); }
+KW_Else <- 'else' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Else); }
+KW_Export <- 'export' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Export); }
+KW_Extends <- 'extends' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Extends); }
+KW_Finally <- 'finally' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Finally); }
+KW_For <- 'for' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_For); }
+KW_Function <- 'function' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Function); }
+KW_If <- 'if' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_If); }
+KW_Import <- 'import' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Import); }
+KW_In <- 'in' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_In); }
+KW_Instanceof <- 'instanceof' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Instanceof); }
+KW_New <- 'new' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_New); }
+KW_Return <- 'return' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Return); }
+KW_Super <- 'super' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Super); }
+KW_Switch <- 'switch' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Switch); }
+KW_This <- 'this' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_This); }
+KW_Throw <- 'throw' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Throw); }
+KW_Try <- 'try' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Try); }
+KW_Typeof <- 'typeof' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Typeof); }
+KW_Var <- 'var' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Var); }
+KW_Void <- 'void' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Void); }
+KW_While <- 'while' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_While); }
+KW_With <- 'with' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_With); }
+KW_Yield <- 'yield' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Yield); }
 
 FutureReservedWord
-    <- 'enum' / 'await' / 'implements' / 'interface' / 'package' 
-    / 'private' / 'protected' / 'public'
+    <- KW_Enum 
+    / KW_Await 
+    / KW_Implements 
+    / KW_Interface 
+    / KW_Package 
+    / KW_Private 
+    / KW_Protected 
+    / KW_Public
+
+KW_Enum <- 'enum' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Enum); }
+KW_Await <- 'await' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Await); }
+KW_Implements <- 'implements' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Implements); }
+KW_Interface <- 'interface' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Interface); }
+KW_Package <- 'package' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Package); }
+KW_Private <- 'private' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Private); }
+KW_Protected <- 'protected' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Protected); }
+KW_Public <- 'public' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Public); }
+
+# Punctuators
+# --------
+
+Punctuator
+    <- PT_LeftBrace
+    / PT_LeftParenthesis
+    / PT_RightParenthesis
+    / PT_LeftBracket
+    / PT_RightBracket
+    / PT_Period
+    / PT_Ellipsis
+    / PT_Semicolon
+    / PT_Comma
+    / PT_LessThan
+    / PT_GreaterThan
+    / PT_LessThanOrEqual
+    / PT_GreaterThanOrEqual
+    / PT_Equal
+    / PT_NotEqual
+    / PT_StrictEqual
+    / PT_NotStrictEqual
+    / PT_Plus
+    / PT_Minus
+    / PT_Asterisk
+    / PT_Percent
+    / PT_PlusPlus
+    / PT_MinusMinus
+    / PT_LeftShift
+    / PT_RightShift
+    / PT_UnsignedRightShift
+    / PT_BitwiseAND
+    / PT_BitwiseOR
+    / PT_BitwiseXOR
+    / PT_Bang
+    / PT_Tilde
+    / PT_LogicalAND
+    / PT_LogicalOR
+    / PT_Question
+    / PT_Colon
+    / PT_Assign
+    / PT_PlusAssign
+    / PT_MinusAssign
+    / PT_AsteriskAssign
+    / PT_PercentAssign
+    / PT_LeftShiftAssign
+    / PT_RightShiftAssign
+    / PT_UnsignedRightShiftAssign
+    / PT_BitwiseANDAssign
+    / PT_BitwiseORAssign
+    / PT_BitwiseXORAssign
+    / PT_ArrowFunction
+
+DivPunctuator
+    <- PT_Div
+    / PT_DivAssign 
+
+RightBracePunctuator
+    <- PT_RightBrace 
+
+PT_LeftBrace <- '{' 
+PT_RightBrace <- '}' 
+PT_LeftParenthesis <- '(' 
+PT_RightParenthesis <- ')' 
+PT_LeftBracket <- '['
+PT_RightBracket <- ']' 
+PT_Period <- '.' 
+PT_Ellipsis <- '...' 
+PT_Semicolon <- ';' 
+PT_Comma <- ',' 
+PT_LessThan <- '<' 
+PT_GreaterThan <- '>'
+PT_LessThanOrEqual <- '<=' 
+PT_GreaterThanOrEqual <- '>=' 
+PT_Equal <- '=='
+PT_NotEqual <- '!=' 
+PT_StrictEqual <- '===' 
+PT_NotStrictEqual <- '!==' 
+PT_Plus <- '+' 
+PT_Minus <- '-' 
+PT_Asterisk <- '*' 
+PT_Percent <- '%' 
+PT_PlusPlus <- '++' 
+PT_MinusMinus <- '--' 
+PT_LeftShift <- '<<' 
+PT_RightShift <- '>>' 
+PT_UnsignedRightShift <- '>>>' 
+PT_BitwiseAND <- '&'
+PT_BitwiseOR <- '|' 
+PT_BitwiseXOR <- '^' 
+PT_Bang <- '!' 
+PT_Tilde <- '~' 
+PT_LogicalAND <- '&&' 
+PT_LogicalOR <- '||' 
+PT_Question <- '?' 
+PT_Colon <- ':' 
+PT_Assign <- '=' 
+PT_PlusAssign <- '+=' 
+PT_MinusAssign <- '-='
+PT_AsteriskAssign <- '*=' 
+PT_PercentAssign <- '%=' 
+PT_LeftShiftAssign <- '<<=' 
+PT_RightShiftAssign <- '>>=' 
+PT_UnsignedRightShiftAssign <- '>>>=' 
+PT_BitwiseANDAssign <- '&=' 
+PT_BitwiseORAssign <- '|=' 
+PT_BitwiseXORAssign <- '^=' 
+PT_ArrowFunction <- '=>' 
+PT_Div <- '/' 
+PT_DivAssign <- '/=' 
+PT_Dollar <- '$' 
+PT_Underscore <- '_' 
+PT_Backslash <- '\\'
+
+# Literals
+# --------
 
 NullLiteral <- 'null'
 
-BooleanLiteral <- 'true' / 'false'
+BooleanLiteral
+    <- 'true'
+    / 'false'
 
 NumericLiteral
     <- DecimalLiteral
@@ -382,8 +608,8 @@ NumericLiteral
     # / LegacyOctalIntegerLiteral
 
 DecimalLiteral 
-    <- DecimalIntegerLiteral '.' DecimalDigits? ExponentPart?
-    / '.' DecimalDigits ExponentPart?
+    <- DecimalIntegerLiteral PT_Period DecimalDigits? ExponentPart? 
+    / PT_Period DecimalDigits ExponentPart?
     / DecimalIntegerLiteral ExponentPart?
 
 DecimalIntegerLiteral
@@ -404,8 +630,8 @@ ExponentIndicator <- [eE]
 
 SignedInteger
     <- DecimalDigits
-    / '+' DecimalDigits
-    / '-' DecimalDigits
+    / PT_Plus DecimalDigits
+    / PT_Minus DecimalDigits
 
 StringLiteral
     <- '"' DoubleStringCharacters? '"'
@@ -419,16 +645,16 @@ SingleStringCharacters
 
 DoubleStringCharacter
     <- !(["\\] / LineTerminator) SourceCharacter
-    / '\\' EscapeSequence
+    / PT_Backslash EscapeSequence
     / LineContinuation
 
 SingleStringCharacter
     <- !(['\\] / LineTerminator) SourceCharacter
-    / '\\' EscapeSequence
+    / PT_Backslash EscapeSequence
     / LineContinuation
 
 LineContinuation 
-    <- '\\' LineTerminatorSequence
+    <- PT_Backslash LineTerminatorSequence
 
 EscapeSequence
     <- CharacterEscapeSequence

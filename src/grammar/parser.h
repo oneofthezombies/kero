@@ -5,11 +5,32 @@
 #include "parser_generated.h"
 
 #include <cstddef>
+#include <limits>
 #include <memory>
+#include <string>
 #include <string_view>
+#include <unordered_map>
+#include <vector>
 
-namespace kero {
-namespace grammar {
+namespace kero::grammar {
+
+struct SourceSpan {
+  size_t Start; // Inclusive
+  size_t End;   // Exclusive
+
+  auto operator==(const SourceSpan &Other) const noexcept -> bool;
+};
+
+} // namespace kero::grammar
+
+template <> struct std::hash<kero::grammar::SourceSpan> {
+  auto operator()(const kero::grammar::SourceSpan &Span) const noexcept
+      -> size_t {
+    return std::hash<size_t>{}(Span.Start) ^ std::hash<size_t>{}(Span.End);
+  }
+};
+
+namespace kero::grammar {
 
 class KGParserAuxilDeleter {
 public:
@@ -21,9 +42,18 @@ public:
   auto operator()(KGParser_context_t *Context) const noexcept -> void;
 };
 
+struct Node {
+  std::vector<KGNodeId> Children;
+  std::string_view Value;
+  KGNodeKind Kind;
+  bool IsTerminal{false};
+};
+
+constexpr KGNodeId NullNodeId{0};
+
 class Parser {
 public:
-  explicit Parser(const std::string_view Source) noexcept;
+  explicit Parser(std::string &&Source) noexcept;
 
   auto pccError() noexcept -> void;
   auto pccGetChar() noexcept -> int;
@@ -34,20 +64,29 @@ public:
                 const size_t Pos, const char *const Buffer,
                 const size_t Length) noexcept -> void;
 
-  auto createNode(const KGNodeKind Kind, const size_t Start,
-                  const size_t End) noexcept -> KGNode *;
+  auto createNonTerminalNode(const size_t Start, const size_t End,
+                             const KGNodeKind Kind,
+                             std::vector<KGNodeId> &&Children) noexcept
+      -> KGNodeId;
+  auto createTerminalNode(const size_t Start, const size_t End,
+                          const KGNodeKind Kind,
+                          const std::string_view Value) noexcept -> KGNodeId;
 
   auto parse() noexcept -> bool;
 
 private:
-  std::string_view Source;
+  auto findOrCreateNodeId(SourceSpan &&Span) noexcept -> KGNodeId;
+
+  std::unordered_map<SourceSpan, KGNodeId> NodeIdMap;
+  size_t NextNodeId{1};
+  std::unordered_map<KGNodeId, Node> NodeMap;
+  std::string Source;
   size_t SourcePos{0};
   std::unique_ptr<KGParserAuxil, KGParserAuxilDeleter> Auxil;
   std::unique_ptr<KGParser_context_t, KGParserDeleter> Context;
   bool ErrorOccurred{false};
 };
 
-} // namespace grammar
-} // namespace kero
+} // namespace kero::grammar
 
 #endif // KERO_GRAMMAR_PARSER_H
