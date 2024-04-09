@@ -1,8 +1,6 @@
-"""
-import fs from "fs";
+import os
 
-const enumName = "KGNodeKind";
-const values = [
+node_kinds = [
   "Module",
   "ModuleItemList",
   "StatementList",
@@ -93,33 +91,28 @@ const values = [
   "KW_Private",
   "KW_Protected",
   "KW_Public",
-];
+]
 
-const enumValues = values
-  .map((value, index) =>
-    index === 0 ? `  KGNodeKind_${value} = 0,` : `  KGNodeKind_${value},`
-  )
-  .join("\n");
-
-const headerContent = `#ifndef KERO_GRAMMAR_NODE_KIND_GENERATED_H
+enum_values = "\n".join([f"  KGNodeKind_{value} = 0," if i == 0 else f"  KGNodeKind_{value}," for i, value in enumerate(node_kinds)])
+header_content = f"""#ifndef KERO_GRAMMAR_NODE_KIND_GENERATED_H
 #define KERO_GRAMMAR_NODE_KIND_GENERATED_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" {{
 #endif
 
-typedef enum KGNodeKindTag {
-${enumValues}
-} KGNodeKind;
+typedef enum KGNodeKindTag {{
+{enum_values}
+}} KGNodeKind;
 
 #ifdef __cplusplus
-}
+}}
 #endif
 
 #endif // KERO_GRAMMAR_NODE_KIND_GENERATED_H
-`;
+"""
 
-const utilHeaderContent = `#ifndef KERO_GRAMMAR_NODE_KIND_UTIL_GENERATED_H
+util_header_content = """#ifndef KERO_GRAMMAR_NODE_KIND_UTIL_GENERATED_H
 #define KERO_GRAMMAR_NODE_KIND_UTIL_GENERATED_H
 
 #include "NodeKindGenerated.h"
@@ -133,72 +126,48 @@ auto operator<<(std::ostream &OS, KGNodeKind Kind) -> std::ostream &;
 } // namespace kero::grammar
 
 #endif // KERO_GRAMMAR_NODE_KIND_UTIL_GENERATED_H
-`;
+"""
 
-const enumStringValues = values
-  .map(
-    (value) => `  case KGNodeKind_${value}:
-    OS << "${value}";
-    break;`
-  )
-  .join("\n");
-
-const utilSourceContent = `#include "NodeKindUtilGenerated.h"
+enum_string_values = "\n".join([f"""  case KGNodeKind_{value}:
+    OS << "{value}";
+    break;""" for value in node_kinds])
+util_source_content = f"""#include "NodeKindUtilGenerated.h"
 
 using namespace kero::grammar;
 
-auto kero::grammar::operator<<(std::ostream &OS, KGNodeKind Kind) -> std::ostream & {
-  switch (Kind) {
-${enumStringValues}
-  }
+auto kero::grammar::operator<<(std::ostream &OS, KGNodeKind Kind) -> std::ostream & {{
+  switch (Kind) {{
+{enum_string_values}
+  }}
   return OS;
-}
-`;
-
-fs.writeFileSync("src/Grammar/NodeKindGenerated.h", headerContent);
-fs.writeFileSync("src/Grammar/NodeKindUtilGenerated.h", utilHeaderContent);
-fs.writeFileSync("src/Grammar/NodeKindUtilGenerated.cpp", utilSourceContent);
-
+}}
 """
 
-"""
-#!/usr/bin/env bash
+if os.path.exists("WORKSPACE"):
+  workspace = os.getcwd()
+elif os.path.exists("../WORKSPACE"):
+  workspace = os.path.abspath(os.path.join(os.getcwd(), ".."))
+else:
+  print("WORKSPACE file not found.")
+  exit(1)
 
-# --verbose flag to enable debug output
-for arg in "$@"; do
-  if [ "$arg" = "--verbose" ]; then
-    set -x
-  fi
-done
+os.chdir(workspace)
 
-set -e
-set -o pipefail
+if not os.path.exists("packcc"):
+  print("packcc could not be found")
+  exit(1)
+else:
+  print(f"packcc found at {os.path.abspath('packcc')}")
 
-# Check if WORKSPACE file exists in the root directory or one level down
-if [ -f "WORKSPACE" ]; then
-    workspace=$(pwd)
-elif [ -f "../WORKSPACE" ]; then
-    workspace=$(cd .. && pwd)
-else
-    echo "WORKSPACE file not found."
-    exit 1
-fi
+with open("src/Grammar/NodeKindGenerated.h", "w") as f:
+  f.write(header_content)
 
-# Change directory to <workspace>
-cd "$workspace"
+with open("src/Grammar/NodeKindUtilGenerated.h", "w") as f:
+  f.write(util_header_content)
 
-# Check packcc command
-if ! command -v packcc &> /dev/null; then
-    echo "packcc could not be found"
-    exit 1
-else
-    echo "packcc found at $(command -v packcc)"
-fi
+with open("src/Grammar/NodeKindUtilGenerated.cpp", "w") as f:
+  f.write(util_source_content)
 
-cd "$workspace/src/Grammar"
-
-packcc -o ParserGenerated grammar.peg
-
-echo "ParserGenerated.h and ParserGenerated.c generated in $workspace/src/Grammar"
-
-"""
+os.chdir("src/Grammar")
+os.system("packcc -o ParserGenerated grammar.peg")
+print("ParserGenerated.h and ParserGenerated.c generated in src/Grammar")
