@@ -74,13 +74,12 @@ public:
   auto parse() noexcept -> bool;
 
 private:
-  auto findOrCreateNodeId(SourceSpan &&Span) noexcept -> KGNodeId;
+  auto createNodeId() noexcept -> KGNodeId;
   auto printTree(const KGNodeId NodeId, const size_t level) const noexcept
       -> void;
 
-  std::unordered_map<SourceSpan, KGNodeId> NodeIdMap;
-  size_t NextNodeId{1};
   std::unordered_map<KGNodeId, Node> NodeMap;
+  size_t NextNodeId{1};
   std::string Source;
   size_t SourcePos{0};
   std::unique_ptr<KGParserAuxil, KGParserAuxilDeleter> Auxil;

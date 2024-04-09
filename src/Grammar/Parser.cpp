@@ -230,7 +230,7 @@ auto kero::grammar::Parser::pccDebug(const int Event, const char *const Rule,
 auto kero::grammar::Parser::createNonTerminalNode(
     const size_t Start, const size_t End, const KGNodeKind Kind,
     std::vector<KGNodeId> &&Children) noexcept -> KGNodeId {
-  const KGNodeId Id{findOrCreateNodeId({Start, End})};
+  const KGNodeId Id{createNodeId()};
 
   // Remove null children
   Children.erase(
@@ -239,24 +239,28 @@ auto kero::grammar::Parser::createNonTerminalNode(
       Children.end());
 
   NodeMap[Id] = Node{std::move(Children), {}, Kind, false};
-  std::cout << "Parser::createNonTerminalNode() id " << Id << " start " << Start
-            << " end " << End << " kind " << static_cast<int>(Kind)
-            << " children ";
+  std::cout << "Span{Start: " << Start << ", End: " << End << "}\n";
+  std::cout << "Node{Id: " << Id << ", Kind: " << Kind
+            << ", Children Count: " << NodeMap[Id].Children.size()
+            << ", Children: {";
   for (const auto &Child : NodeMap[Id].Children) {
-    std::cout << Child << ' ';
+    std::cout << ' ' << Child;
   }
-  std::cout << '\n';
+  if (!NodeMap[Id].Children.empty()) {
+    std::cout << ' ';
+  }
+  std::cout << "}\n";
   return Id;
 }
 
 auto kero::grammar::Parser::createTerminalNode(
     const size_t Start, const size_t End, const KGNodeKind Kind,
     const std::string_view Value) noexcept -> KGNodeId {
-  const KGNodeId Id{findOrCreateNodeId({Start, End})};
+  const KGNodeId Id{createNodeId()};
   NodeMap[Id] = Node{{}, Value, Kind, true};
-  std::cout << "Parser::createTerminalNode() id " << Id << " start " << Start
-            << " end " << End << " kind " << static_cast<int>(Kind) << " value "
-            << Value << '\n';
+  std::cout << "Span{Start: " << Start << ", End: " << End << "}\n";
+  std::cout << "Node{Id: " << Id << ", Kind: " << Kind
+            << ", Value: " << ((Value.size() == 0) ? "empty" : Value) << "}\n";
   return Id;
 }
 
@@ -278,15 +282,8 @@ auto kero::grammar::Parser::parse() noexcept -> bool {
   return !ErrorOccurred;
 }
 
-auto kero::grammar::Parser::findOrCreateNodeId(SourceSpan &&Span) noexcept
-    -> KGNodeId {
-  const auto Found = NodeIdMap.find(Span);
-  if (Found != NodeIdMap.end()) {
-    return Found->second;
-  }
-
+auto kero::grammar::Parser::createNodeId() noexcept -> KGNodeId {
   const KGNodeId Id{NextNodeId++};
-  NodeIdMap[Span] = Id;
   return Id;
 }
 
@@ -331,7 +328,10 @@ auto kero::grammar::Parser::printTree(const KGNodeId NodeId,
   std::cout << "Kind: ";
   std::cout << N.Kind;
   std::cout << ", ";
-  std::cout << "Children:\n";
+  std::cout << "Children Count: ";
+  std::cout << N.Children.size();
+  std::cout << ", ";
+  std::cout << "Children: {\n";
   for (const auto &Child : N.Children) {
     printTree(Child, level + 1);
   }
