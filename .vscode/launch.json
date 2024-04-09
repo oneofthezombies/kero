@@ -8,7 +8,7 @@
       "type": "lldb",
       "request": "launch",
       "name": "Debug Grammar Test",
-      "program": "${workspaceFolder}/bazel-bin/kero_grammar_test",
+      "program": "${workspaceFolder}/bazel-bin/KeroGrammarTest",
       "args": [],
       "cwd": "${workspaceFolder}",
       "linux": {

@@ -6,7 +6,7 @@
     {
       "label": "Build Grammar Test",
       "type": "shell",
-      "command": "bazel build //:kero_grammar_test --compilation_mode=dbg",
+      "command": "bazel build //:KeroGrammarTest --compilation_mode=dbg",
       "group": {
         "kind": "build",
         "isDefault": true
