@@ -17,7 +17,7 @@
 # Scripts and Modules
 # --------
 
-Module <- ModuleBody? _ EndOfInput
+Module <- _ ModuleBody? _ EndOfInput
 
 ModuleBody <- ModuleItemList
 
@@ -35,11 +35,11 @@ ModuleItem
 # --------
 
 Statement
-    # <- BlockStatement
+    <- BlockStatement
     # / VariableStatement
     # / EmptyStatement
     # / ExpressionStatement
-    # / IfStatement
+    / IfStatement
     # / BreakableStatement
     # / ContinueStatement
     # / BreakStatement
@@ -49,7 +49,14 @@ Statement
     # / ThrowStatement
     # / TryStatement
     # / DebuggerStatement
-    <- IfStatement
+
+BlockStatement <- Block
+
+Block <- '{' _ StatementList? _ '}'
+
+StatementList
+    <- StatementListItem
+    / StatementList _ StatementListItem
 
 StatementListItem
     <- Statement
@@ -66,8 +73,7 @@ IdentifierReference
     <- Identifier
     / 'yield'
 
-Identifier
-    <- !ReservedWord IdentifierName
+Identifier <- !ReservedWord IdentifierName
 
 PrimaryExpression
     <- 'this'
@@ -144,6 +150,10 @@ MemberExpression
     # / MetaProperty
     # / 'new' _ MemberExpression _ Arguments
 
+NewExpression
+    <- MemberExpression
+    / 'new' _ NewExpression
+
 CallExpression
     <- MemberExpression _ Arguments
     # / SuperCall
@@ -163,9 +173,8 @@ ArgumentList
     / ArgumentList _ ',' _ '...' _ AssignmentExpression
 
 LeftHandSideExpression
-    # <- NewExpression
-    # / CallExpression
-    <- CallExpression
+    <- NewExpression
+    / CallExpression
 
 PostfixExpression
     <- LeftHandSideExpression

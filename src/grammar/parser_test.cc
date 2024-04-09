@@ -69,3 +69,17 @@ TEST(ParserTest, MultiLineComment) {
   EXPECT_TRUE(kero::grammar::Parser{"\r/* comment */"}.parse());
   EXPECT_TRUE(kero::grammar::Parser{"\r\n/* comment */"}.parse());
 }
+
+TEST(ParserTest, IfStatement) {
+  EXPECT_TRUE(kero::grammar::Parser{"if (true) {}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if (false) {}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if (true) {\n}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if (true) {//\n}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if//\n(true) {}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if(true) {}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if(//\ntrue) {}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if(true//\n) {}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if(true)//\n{}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if(true){//\n}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if(true){}//\n"}.parse());
+}
