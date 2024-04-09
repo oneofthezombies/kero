@@ -82,4 +82,6 @@ TEST(ParserTest, IfStatement) {
   EXPECT_TRUE(kero::grammar::Parser{"if(true)//\n{}"}.parse());
   EXPECT_TRUE(kero::grammar::Parser{"if(true){//\n}"}.parse());
   EXPECT_TRUE(kero::grammar::Parser{"if(true){}//\n"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if (true) {} else if (true) {}"}.parse());
+  EXPECT_TRUE(kero::grammar::Parser{"if (true) {} else {}"}.parse());
 }
