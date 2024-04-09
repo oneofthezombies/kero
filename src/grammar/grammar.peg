@@ -17,7 +17,9 @@
 # Scripts and Modules
 # --------
 
-Module <- _ ModuleBody? _ EndOfInput
+Module <- _ mb:ModuleBody? _ EndOfInput {
+        $$ = KGNode_create(auxil, KGNodeKind_Module, $0s, $0e);
+    }
 
 ModuleBody <- ModuleItemList
 

@@ -2,10 +2,7 @@
 
 #include "parser.h"
 
-TEST(ParserTest, Empty) {
-  auto parser{kero::grammar::Parser{""}};
-  EXPECT_TRUE(parser.parse());
-}
+TEST(ParserTest, Empty) { EXPECT_TRUE(kero::grammar::Parser{""}.parse()); }
 
 TEST(ParserTest, WhiteSpace) {
   EXPECT_TRUE(kero::grammar::Parser{" "}.parse());

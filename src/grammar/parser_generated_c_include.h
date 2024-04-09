@@ -3,10 +3,10 @@
  * "parser_generated.c".
  */
 
-#define PCC_ERROR(auxil) KGParserAuxil_pccError(auxil)
-#define PCC_GETCHAR(auxil) KGParserAuxil_pccGetChar(auxil)
-#define PCC_MALLOC(auxil, size) KGParserAuxil_pccMalloc(auxil, size)
-#define PCC_REALLOC(auxil, ptr, size) KGParserAuxil_pccRealloc(auxil, ptr, size)
-#define PCC_FREE(auxil, ptr) KGParserAuxil_pccFree(auxil, ptr)
-#define PCC_DEBUG(auxil, event, rule, level, pos, buffer, length)              \
-  KGParserAuxil_pccDebug(auxil, event, rule, level, pos, buffer, length)
+#define PCC_ERROR(Auxil) KGParserAuxil_pccError(Auxil)
+#define PCC_GETCHAR(Auxil) KGParserAuxil_pccGetChar(Auxil)
+#define PCC_MALLOC(Auxil, Size) KGParserAuxil_pccMalloc(Auxil, Size)
+#define PCC_REALLOC(Auxil, Ptr, Size) KGParserAuxil_pccRealloc(Auxil, Ptr, Size)
+#define PCC_FREE(Auxil, Ptr) KGParserAuxil_pccFree(Auxil, Ptr)
+#define PCC_DEBUG(Auxil, Event, Rule, Level, Pos, Buffer, Length)              \
+  KGParserAuxil_pccDebug(Auxil, Event, Rule, Level, Pos, Buffer, Length)

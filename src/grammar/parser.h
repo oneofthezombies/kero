@@ -13,25 +13,29 @@ namespace grammar {
 
 class KGParserAuxilDeleter {
 public:
-  auto operator()(KGParserAuxil *auxil) const noexcept -> void;
+  auto operator()(KGParserAuxil *Auxil) const noexcept -> void;
 };
 
 class KGParserDeleter {
 public:
-  auto operator()(KGParser_context_t *context) const noexcept -> void;
+  auto operator()(KGParser_context_t *Context) const noexcept -> void;
 };
 
 class Parser {
 public:
-  explicit Parser(const std::string_view source) noexcept;
+  explicit Parser(const std::string_view Source) noexcept;
 
   auto pccError() noexcept -> void;
   auto pccGetChar() noexcept -> int;
-  auto pccMalloc(size_t size) noexcept -> void *;
-  auto pccRealloc(void *ptr, size_t size) noexcept -> void *;
-  auto pccFree(void *ptr) noexcept -> void;
-  auto pccDebug(int event, const char *rule, size_t level, size_t pos,
-                const char *buffer, size_t length) noexcept -> void;
+  auto pccMalloc(const size_t Size) noexcept -> void *;
+  auto pccRealloc(void *Ptr, const size_t Size) noexcept -> void *;
+  auto pccFree(void *Ptr) noexcept -> void;
+  auto pccDebug(const int Event, const char *const Rule, const size_t Level,
+                const size_t Pos, const char *const Buffer,
+                const size_t Length) noexcept -> void;
+
+  auto createNode(const KGNodeKind Kind, const size_t Start,
+                  const size_t End) noexcept -> KGNode *;
 
   auto parse() noexcept -> bool;
 

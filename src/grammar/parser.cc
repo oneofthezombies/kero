@@ -6,84 +6,98 @@
 using namespace kero::grammar;
 
 struct KGParserAuxilTag {
-  Parser *parser{nullptr};
+  ::Parser *Parser{nullptr};
 };
 
-void checkParserAuxil(KGParserAuxilTag *auxil) {
-  assert(auxil != nullptr && "auxil must not be nullptr.");
-  assert(auxil->parser != nullptr && "parser must not be nullptr.");
+void checkParserAuxil(const KGParserAuxilTag *const Auxil) {
+  assert(Auxil != nullptr && "auxil must not be nullptr.");
+  assert(Auxil->Parser != nullptr && "parser must not be nullptr.");
 }
 
-void KGParserAuxil_pccError(KGParserAuxilTag *auxil) {
-  checkParserAuxil(auxil);
-  auxil->parser->pccError();
+void KGParserAuxil_pccError(const KGParserAuxilTag *const Auxil) {
+  checkParserAuxil(Auxil);
+  Auxil->Parser->pccError();
 }
 
-int KGParserAuxil_pccGetChar(KGParserAuxilTag *auxil) {
-  checkParserAuxil(auxil);
-  return auxil->parser->pccGetChar();
+int KGParserAuxil_pccGetChar(const KGParserAuxilTag *const Auxil) {
+  checkParserAuxil(Auxil);
+  return Auxil->Parser->pccGetChar();
 }
 
-void *KGParserAuxil_pccMalloc(KGParserAuxilTag *auxil, size_t size) {
-  checkParserAuxil(auxil);
-  return auxil->parser->pccMalloc(size);
+void *KGParserAuxil_pccMalloc(const KGParserAuxilTag *const Auxil,
+                              const size_t Size) {
+  checkParserAuxil(Auxil);
+  return Auxil->Parser->pccMalloc(Size);
 }
 
-void *KGParserAuxil_pccRealloc(KGParserAuxilTag *auxil, void *ptr,
-                               size_t size) {
-  checkParserAuxil(auxil);
-  return auxil->parser->pccRealloc(ptr, size);
+void *KGParserAuxil_pccRealloc(const KGParserAuxilTag *const Auxil, void *Ptr,
+                               const size_t Size) {
+  checkParserAuxil(Auxil);
+  return Auxil->Parser->pccRealloc(Ptr, Size);
 }
 
-void KGParserAuxil_pccFree(KGParserAuxilTag *auxil, void *ptr) {
-  checkParserAuxil(auxil);
-  auxil->parser->pccFree(ptr);
+void KGParserAuxil_pccFree(const KGParserAuxilTag *const Auxil, void *Ptr) {
+  checkParserAuxil(Auxil);
+  Auxil->Parser->pccFree(Ptr);
 }
 
-void KGParserAuxil_pccDebug(KGParserAuxilTag *auxil, int event,
-                            const char *rule, size_t level, size_t pos,
-                            const char *buffer, size_t length) {
-  checkParserAuxil(auxil);
-  auxil->parser->pccDebug(event, rule, level, pos, buffer, length);
+void KGParserAuxil_pccDebug(const KGParserAuxilTag *const Auxil,
+                            const int Event, const char *const Rule,
+                            const size_t Level, const size_t Pos,
+                            const char *const Buffer, const size_t Length) {
+  checkParserAuxil(Auxil);
+  Auxil->Parser->pccDebug(Event, Rule, Level, Pos, Buffer, Length);
+}
+
+struct Span {
+  size_t Begin{0}; // inclusive
+  size_t End{0};   // exclusive
+};
+
+KGNode *KGNode_create(const KGParserAuxilTag *const Auxil,
+                      const KGNodeKind Kind, const size_t Start,
+                      const size_t End) {
+  checkParserAuxil(Auxil);
+  return Auxil->Parser->createNode(Kind, Start, End);
 }
 
 namespace {
 
 enum class DebugEvent : int32_t {
-  kRuleEvaluating = 0,
-  kRuleMatched = 1,
-  kRuleNotMatched = 2,
+  RuleEvaluating = 0,
+  RuleMatched = 1,
+  RuleNotMatched = 2,
 };
 
-auto operator<<(std::ostream &os, const DebugEvent event) noexcept
+auto operator<<(std::ostream &OS, const DebugEvent Event) noexcept
     -> std::ostream & {
-  switch (event) {
-  case DebugEvent::kRuleEvaluating:
-    os << "RuleEvaluating";
+  switch (Event) {
+  case DebugEvent::RuleEvaluating:
+    OS << "RuleEvaluating";
     break;
-  case DebugEvent::kRuleMatched:
-    os << "RuleMatched";
+  case DebugEvent::RuleMatched:
+    OS << "RuleMatched";
     break;
-  case DebugEvent::kRuleNotMatched:
-    os << "RuleNotMatched";
+  case DebugEvent::RuleNotMatched:
+    OS << "RuleNotMatched";
     break;
   }
-  return os;
+  return OS;
 }
 
 } // namespace
 
 auto kero::grammar::KGParserAuxilDeleter::operator()(
-    KGParserAuxil *auxil) const noexcept -> void {
-  if (auxil == nullptr) {
+    KGParserAuxil *Auxil) const noexcept -> void {
+  if (Auxil == nullptr) {
     return;
   }
-  delete auxil;
+  delete Auxil;
 }
 
 auto kero::grammar::KGParserDeleter::operator()(
-    KGParser_context_t *context) const noexcept -> void {
-  KGParser_destroy(context);
+    KGParser_context_t *Context) const noexcept -> void {
+  KGParser_destroy(Context);
 }
 
 kero::grammar::Parser::Parser(const std::string_view Source) noexcept
@@ -101,54 +115,65 @@ auto kero::grammar::Parser::pccGetChar() noexcept -> int {
   return Source[SourcePos++];
 }
 
-auto kero::grammar::Parser::pccMalloc(size_t size) noexcept -> void * {
-  void *p = std::malloc(size);
-  if (p == nullptr) {
+auto kero::grammar::Parser::pccMalloc(const size_t Size) noexcept -> void * {
+  void *P = std::malloc(Size);
+  if (P == nullptr) {
     std::cerr << "Parser::pccMalloc() failed to allocate memory" << '\n'
               << std::flush;
     std::exit(EXIT_FAILURE);
   }
-  return p;
+  return P;
 }
 
-auto kero::grammar::Parser::pccRealloc(void *ptr, size_t size) noexcept
+auto kero::grammar::Parser::pccRealloc(void *Ptr, const size_t Size) noexcept
     -> void * {
-  void *p = std::realloc(ptr, size);
-  if (p == nullptr) {
+  void *P = std::realloc(Ptr, Size);
+  if (P == nullptr) {
     std::cerr << "Parser::pccRealloc() failed to reallocate memory" << '\n'
               << std::flush;
     std::exit(EXIT_FAILURE);
   }
-  return p;
+  return P;
 }
 
-auto kero::grammar::Parser::pccFree(void *ptr) noexcept -> void {
-  if (ptr != nullptr) {
-    std::free(ptr);
+auto kero::grammar::Parser::pccFree(void *Ptr) noexcept -> void {
+  if (Ptr != nullptr) {
+    std::free(Ptr);
   }
 }
 
-auto kero::grammar::Parser::pccDebug(int event, const char *rule, size_t level,
-                                     size_t pos, const char *buffer,
-                                     size_t length) noexcept -> void {
-  const DebugEvent debug_event{static_cast<DebugEvent>(event)};
-  const std::string_view rule_view{rule};
-  const std::string_view buffer_view{buffer, length};
-  std::cout << "Parser::pccDebug() event " << debug_event << " rule "
-            << rule_view << " level " << level << " pos " << pos << " buffer "
-            << buffer_view << '\n';
+auto kero::grammar::Parser::pccDebug(const int Event, const char *const Rule,
+                                     const size_t Level, const size_t Pos,
+                                     const char *const Buffer,
+                                     const size_t Length) noexcept -> void {
+  const DebugEvent E{static_cast<DebugEvent>(Event)};
+  const std::string_view RV{Rule};
+  const std::string_view BV{Buffer, Length};
+  std::cout << "Parser::pccDebug() event " << E << " rule " << RV << " level "
+            << Level << " pos " << Pos << " buffer " << BV << '\n';
+}
+
+auto kero::grammar::Parser::createNode(const KGNodeKind Kind,
+                                       const size_t Start,
+                                       const size_t End) noexcept -> KGNode * {
+  std::cout << "Parser::createNode() called" << '\n';
+  std::cout << "Kind: " << Kind << " Start: " << Start << " End: " << End
+            << '\n';
+  std::string_view Span{Source.data() + Start, End - Start};
+  std::cout << "Span: " << Span << '\n';
+  return nullptr;
 }
 
 auto kero::grammar::Parser::parse() noexcept -> bool {
-  std::cout << "Parser::parse() called" << std::endl;
+  std::cout << "Parser::parse() called" << '\n';
   while (true) {
-    KGNode *ret{nullptr};
-    if (KGParser_parse(Context.get(), &ret) == 0) {
+    KGNode *Ret{nullptr};
+    if (KGParser_parse(Context.get(), &Ret) == 0) {
       break;
     }
 
     if (ErrorOccurred) {
-      std::cout << "Parser::parse() has error" << std::endl;
+      std::cout << "Parser::parse() has error" << '\n';
       break;
     }
   }
