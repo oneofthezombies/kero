@@ -289,42 +289,18 @@ InputElementDiv
     / DivPunctuator
     / RightBracePunctuator
 
-WhiteSpace
-    <- TAB
-    / VT
-    / FF
-    / SP
-    / NBSP
-    / ZWNBSP
+WhiteSpace <- [\t\v\f \u00A0\uFEFF]
 
-LineTerminator
-    <- LF
-    / CR
-    / LS
-    / PS
+LineTerminator <- [\n\r\u2028\u2029]
 
 LineTerminatorSequence
-    <- LF
-    / CR !LF
-    / LS
-    / PS
-    / CR LF
+    <- '\n'
+    / '\r' !'\n'
+    / '\u2028'
+    / '\u2029'
+    / '\r\n'
 
 EndOfInput <- !.
-
-TAB <- '\t' # CHARACTER TABULATION
-SP <- ' ' # SPACE
-LF <- '\n' # LINE FEED (LF)
-CR <- '\r' # CARRIAGE RETURN (CR)
-
-VT <- '\v' # LINE TABULATION
-FF <- '\f' # FORM FEED (FF)
-NBSP <- '\u00A0' # NO-BREAK SPACE
-ZWNJ <- '\u200C' # ZERO WIDTH NON-JOINER
-ZWJ <- '\u200D' # ZERO WIDTH JOINER
-LS <- '\u2028' # LINE SEPARATOR
-PS <- '\u2029' # PARAGRAPH SEPARATOR
-ZWNBSP <- '\uFEFF' # ZERO WIDTH NO-BREAK SPACE
 
 _ <- (WhiteSpace / LineTerminatorSequence / Comment)*
 
@@ -371,8 +347,8 @@ IdentifierPart
     / PT_Dollar
     / PT_Underscore
     # / PT_Backslash UnicodeEscapeSequence
-    / ZWNJ
-    / ZWJ 
+    / '\u200C' # ZERO WIDTH NON-JOINER
+    / '\u200D' # ZERO WIDTH JOINER
 
 UnicodeIDStart
     # TODO: any Unicode code point with the Unicode property “ID_Start” or 
@@ -385,45 +361,45 @@ UnicodeIDContinue
     <- [a-zA-Z0-9] 
 
 ReservedWord
-    <- s0:Keyword
-    / s0:FutureReservedWord 
-    / s0:NullLiteral
-    / s0:BooleanLiteral
+    <- s0:Keyword { $$ = s0; }
+    / s0:FutureReservedWord { $$ = s0; }
+    / s0:NullLiteral { $$ = s0; }
+    / s0:BooleanLiteral { $$ = s0; }
 
 Keyword
-    <- KW_Break 
-    / KW_Case 
-    / KW_Catch 
-    / KW_Class 
-    / KW_Const 
-    / KW_Continue 
-    / KW_Debugger 
-    / KW_Default 
-    / KW_Delete 
-    / KW_Do 
-    / KW_Else 
-    / KW_Export 
-    / KW_Extends 
-    / KW_Finally 
-    / KW_For
-    / KW_Function
-    / KW_If 
-    / KW_Import 
-    / KW_In 
-    / KW_Instanceof 
-    / KW_New 
-    / KW_Return
-    / KW_Super
-    / KW_Switch 
-    / KW_This
-    / KW_Throw
-    / KW_Try
-    / KW_Typeof
-    / KW_Var
-    / KW_Void
-    / KW_While 
-    / KW_With
-    / KW_Yield
+    <- c0:KW_Break { $$ = c0; }
+    / c0:KW_Case { $$ = c0; }
+    / c0:KW_Catch { $$ = c0; }
+    / c0:KW_Class { $$ = c0; }
+    / c0:KW_Const { $$ = c0; }
+    / c0:KW_Continue { $$ = c0; }
+    / c0:KW_Debugger { $$ = c0; }
+    / c0:KW_Default { $$ = c0; }
+    / c0:KW_Delete { $$ = c0; }
+    / c0:KW_Do { $$ = c0; }
+    / c0:KW_Else { $$ = c0; }
+    / c0:KW_Export { $$ = c0; }
+    / c0:KW_Extends { $$ = c0; }
+    / c0:KW_Finally { $$ = c0; }
+    / c0:KW_For { $$ = c0; }
+    / c0:KW_Function { $$ = c0; }
+    / c0:KW_If { $$ = c0; }
+    / c0:KW_Import { $$ = c0; }
+    / c0:KW_In { $$ = c0; }
+    / c0:KW_Instanceof { $$ = c0; }
+    / c0:KW_New { $$ = c0; }
+    / c0:KW_Return { $$ = c0; }
+    / c0:KW_Super { $$ = c0; }
+    / c0:KW_Switch { $$ = c0; }
+    / c0:KW_This { $$ = c0; }
+    / c0:KW_Throw { $$ = c0; }
+    / c0:KW_Try { $$ = c0; }
+    / c0:KW_Typeof { $$ = c0; }
+    / c0:KW_Var { $$ = c0; }
+    / c0:KW_Void { $$ = c0; }
+    / c0:KW_While { $$ = c0; }
+    / c0:KW_With { $$ = c0; }
+    / c0:KW_Yield { $$ = c0; }
 
 KW_Break <- 'break' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Break); }
 KW_Case <- 'case' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Case); }
@@ -460,14 +436,14 @@ KW_With <- 'with' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_With); }
 KW_Yield <- 'yield' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Yield); }
 
 FutureReservedWord
-    <- KW_Enum 
-    / KW_Await 
-    / KW_Implements 
-    / KW_Interface 
-    / KW_Package 
-    / KW_Private 
-    / KW_Protected 
-    / KW_Public
+    <- c0:KW_Enum { $$ = c0; }
+    / c0:KW_Await { $$ = c0; }
+    / c0:KW_Implements { $$ = c0; }
+    / c0:KW_Interface { $$ = c0; }
+    / c0:KW_Package { $$ = c0; }
+    / c0:KW_Private { $$ = c0; }
+    / c0:KW_Protected { $$ = c0; }
+    / c0:KW_Public { $$ = c0; }
 
 KW_Enum <- 'enum' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Enum); }
 KW_Await <- 'await' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Await); }
@@ -482,114 +458,114 @@ KW_Public <- 'public' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Public); }
 # --------
 
 Punctuator
-    <- PT_LeftBrace
-    / PT_LeftParenthesis
-    / PT_RightParenthesis
-    / PT_LeftBracket
-    / PT_RightBracket
-    / PT_Period
-    / PT_Ellipsis
-    / PT_Semicolon
-    / PT_Comma
-    / PT_LessThan
-    / PT_GreaterThan
-    / PT_LessThanOrEqual
-    / PT_GreaterThanOrEqual
-    / PT_Equal
-    / PT_NotEqual
-    / PT_StrictEqual
-    / PT_NotStrictEqual
-    / PT_Plus
-    / PT_Minus
-    / PT_Asterisk
-    / PT_Percent
-    / PT_PlusPlus
-    / PT_MinusMinus
-    / PT_LeftShift
-    / PT_RightShift
-    / PT_UnsignedRightShift
-    / PT_BitwiseAND
-    / PT_BitwiseOR
-    / PT_BitwiseXOR
-    / PT_Bang
-    / PT_Tilde
-    / PT_LogicalAND
-    / PT_LogicalOR
-    / PT_Question
-    / PT_Colon
-    / PT_Assign
-    / PT_PlusAssign
-    / PT_MinusAssign
-    / PT_AsteriskAssign
-    / PT_PercentAssign
-    / PT_LeftShiftAssign
-    / PT_RightShiftAssign
-    / PT_UnsignedRightShiftAssign
-    / PT_BitwiseANDAssign
-    / PT_BitwiseORAssign
-    / PT_BitwiseXORAssign
-    / PT_ArrowFunction
+    <- c0:PT_LeftBrace { $$ = c0; }
+    / c0:PT_LeftParenthesis { $$ = c0; }
+    / c0:PT_RightParenthesis { $$ = c0; }
+    / c0:PT_LeftBracket { $$ = c0; }
+    / c0:PT_RightBracket { $$ = c0; }
+    / c0:PT_Period { $$ = c0; }
+    / c0:PT_Ellipsis { $$ = c0; }
+    / c0:PT_Semicolon { $$ = c0; }
+    / c0:PT_Comma { $$ = c0; }
+    / c0:PT_LessThan { $$ = c0; }
+    / c0:PT_GreaterThan { $$ = c0; }
+    / c0:PT_LessThanOrEqual { $$ = c0; }
+    / c0:PT_GreaterThanOrEqual { $$ = c0; }
+    / c0:PT_Equal { $$ = c0; }
+    / c0:PT_NotEqual { $$ = c0; }
+    / c0:PT_StrictEqual { $$ = c0; }
+    / c0:PT_NotStrictEqual { $$ = c0; }
+    / c0:PT_Plus { $$ = c0; }
+    / c0:PT_Minus { $$ = c0; }
+    / c0:PT_Asterisk { $$ = c0; }
+    / c0:PT_Percent { $$ = c0; }
+    / c0:PT_PlusPlus { $$ = c0; }
+    / c0:PT_MinusMinus { $$ = c0; }
+    / c0:PT_LeftShift { $$ = c0; }
+    / c0:PT_RightShift { $$ = c0; }
+    / c0:PT_UnsignedRightShift { $$ = c0; }
+    / c0:PT_BitwiseAND { $$ = c0; }
+    / c0:PT_BitwiseOR { $$ = c0; }
+    / c0:PT_BitwiseXOR { $$ = c0; }
+    / c0:PT_Bang { $$ = c0; }
+    / c0:PT_Tilde { $$ = c0; }
+    / c0:PT_LogicalAND { $$ = c0; }
+    / c0:PT_LogicalOR { $$ = c0; }
+    / c0:PT_Question { $$ = c0; }
+    / c0:PT_Colon { $$ = c0; }
+    / c0:PT_Assign { $$ = c0; }
+    / c0:PT_PlusAssign { $$ = c0; }
+    / c0:PT_MinusAssign { $$ = c0; }
+    / c0:PT_AsteriskAssign { $$ = c0; }
+    / c0:PT_PercentAssign { $$ = c0; }
+    / c0:PT_LeftShiftAssign { $$ = c0; }
+    / c0:PT_RightShiftAssign { $$ = c0; }
+    / c0:PT_UnsignedRightShiftAssign { $$ = c0; }
+    / c0:PT_BitwiseANDAssign { $$ = c0; }
+    / c0:PT_BitwiseORAssign { $$ = c0; }
+    / c0:PT_BitwiseXORAssign { $$ = c0; }
+    / c0:PT_ArrowFunction { $$ = c0; }
 
 DivPunctuator
-    <- PT_Div
-    / PT_DivAssign 
+    <- c0:PT_Div { $$ = c0; }
+    / c0:PT_DivAssign { $$ = c0; }
 
 RightBracePunctuator
-    <- PT_RightBrace 
+    <- c0:PT_RightBrace { $$ = c0; }
 
-PT_LeftBrace <- '{' 
-PT_RightBrace <- '}' 
-PT_LeftParenthesis <- '(' 
-PT_RightParenthesis <- ')' 
-PT_LeftBracket <- '['
-PT_RightBracket <- ']' 
-PT_Period <- '.' 
-PT_Ellipsis <- '...' 
-PT_Semicolon <- ';' 
-PT_Comma <- ',' 
-PT_LessThan <- '<' 
-PT_GreaterThan <- '>'
-PT_LessThanOrEqual <- '<=' 
-PT_GreaterThanOrEqual <- '>=' 
-PT_Equal <- '=='
-PT_NotEqual <- '!=' 
-PT_StrictEqual <- '===' 
-PT_NotStrictEqual <- '!==' 
-PT_Plus <- '+' 
-PT_Minus <- '-' 
-PT_Asterisk <- '*' 
-PT_Percent <- '%' 
-PT_PlusPlus <- '++' 
-PT_MinusMinus <- '--' 
-PT_LeftShift <- '<<' 
-PT_RightShift <- '>>' 
-PT_UnsignedRightShift <- '>>>' 
-PT_BitwiseAND <- '&'
-PT_BitwiseOR <- '|' 
-PT_BitwiseXOR <- '^' 
-PT_Bang <- '!' 
-PT_Tilde <- '~' 
-PT_LogicalAND <- '&&' 
-PT_LogicalOR <- '||' 
-PT_Question <- '?' 
-PT_Colon <- ':' 
-PT_Assign <- '=' 
-PT_PlusAssign <- '+=' 
-PT_MinusAssign <- '-='
-PT_AsteriskAssign <- '*=' 
-PT_PercentAssign <- '%=' 
-PT_LeftShiftAssign <- '<<=' 
-PT_RightShiftAssign <- '>>=' 
-PT_UnsignedRightShiftAssign <- '>>>=' 
-PT_BitwiseANDAssign <- '&=' 
-PT_BitwiseORAssign <- '|=' 
-PT_BitwiseXORAssign <- '^=' 
-PT_ArrowFunction <- '=>' 
-PT_Div <- '/' 
-PT_DivAssign <- '/=' 
-PT_Dollar <- '$' 
-PT_Underscore <- '_' 
-PT_Backslash <- '\\'
+PT_LeftBrace <- '{' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LeftBrace); }
+PT_RightBrace <- '}' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_RightBrace); }
+PT_LeftParenthesis <- '(' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LeftParenthesis); }
+PT_RightParenthesis <- ')' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_RightParenthesis); }
+PT_LeftBracket <- '[' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LeftBracket); }
+PT_RightBracket <- ']' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_RightBracket); }
+PT_Period <- '.' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Period); }
+PT_Ellipsis <- '...' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Ellipsis); }
+PT_Semicolon <- ';' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Semicolon); }
+PT_Comma <- ',' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Comma); }
+PT_LessThan <- '<' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LessThan); }
+PT_GreaterThan <- '>' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_GreaterThan); }
+PT_LessThanOrEqual <- '<=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LessThanOrEqual); }
+PT_GreaterThanOrEqual <- '>=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_GreaterThanOrEqual); }
+PT_Equal <- '==' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Equal); }
+PT_NotEqual <- '!=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_NotEqual); }
+PT_StrictEqual <- '===' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_StrictEqual); }
+PT_NotStrictEqual <- '!==' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_NotStrictEqual); }
+PT_Plus <- '+' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Plus); }
+PT_Minus <- '-' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Minus); }
+PT_Asterisk <- '*' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Asterisk); }
+PT_Percent <- '%' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Percent); }
+PT_PlusPlus <- '++' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_PlusPlus); }
+PT_MinusMinus <- '--' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_MinusMinus); }
+PT_LeftShift <- '<<' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LeftShift); }
+PT_RightShift <- '>>' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_RightShift); }
+PT_UnsignedRightShift <- '>>>' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_UnsignedRightShift); }
+PT_BitwiseAND <- '&' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_BitwiseAND); }
+PT_BitwiseOR <- '|' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_BitwiseOR); }
+PT_BitwiseXOR <- '^' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_BitwiseXOR); }
+PT_Bang <- '!' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Bang); }
+PT_Tilde <- '~' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Tilde); }
+PT_LogicalAND <- '&&' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LogicalAND); }
+PT_LogicalOR <- '||' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LogicalOR); }
+PT_Question <- '?' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Question); }
+PT_Colon <- ':' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Colon); }
+PT_Assign <- '=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Assign); }
+PT_PlusAssign <- '+=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_PlusAssign); }
+PT_MinusAssign <- '-=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_MinusAssign); }
+PT_AsteriskAssign <- '*=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_AsteriskAssign); }
+PT_PercentAssign <- '%=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_PercentAssign); }
+PT_LeftShiftAssign <- '<<=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_LeftShiftAssign); }
+PT_RightShiftAssign <- '>>=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_RightShiftAssign); }
+PT_UnsignedRightShiftAssign <- '>>>=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_UnsignedRightShiftAssign); }
+PT_BitwiseANDAssign <- '&=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_BitwiseANDAssign); }
+PT_BitwiseORAssign <- '|=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_BitwiseORAssign); }
+PT_BitwiseXORAssign <- '^=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_BitwiseXORAssign); }
+PT_ArrowFunction <- '=>' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_ArrowFunction); }
+PT_Div <- '/' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Div); }
+PT_DivAssign <- '/=' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_DivAssign); }
+PT_Dollar <- '$' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Dollar); }
+PT_Underscore <- '_' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Underscore); }
+PT_Backslash <- '\\' { $$ = CREATE_TERMINAL0(KCNodeKind_PT_Backslash); }
 
 # Literals
 # --------
