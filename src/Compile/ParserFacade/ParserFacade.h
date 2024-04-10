@@ -1,8 +1,8 @@
 #ifndef KERO_GRAMMAR_PARSER_H
 #define KERO_GRAMMAR_PARSER_H
 
-#include "ParserAuxil.h"
-#include "ParserGenerated.h"
+#include "Compile/Parser/Core.h"
+#include "Compile/Parser/ParserGenerated.h"
 
 #include <cstddef>
 #include <memory>

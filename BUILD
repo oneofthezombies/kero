@@ -43,6 +43,9 @@ cc_test(
     srcs = [
         "src/Compile/ParserFacade/ParserFacadeTest.cpp",
     ],
+    copts = [
+        "-std=c++20",
+    ],
     deps = [
         ":KeroCompileParserFacade",
         "@googletest//:gtest_main",

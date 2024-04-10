@@ -9,61 +9,42 @@ extern "C" {
 
 #include <stddef.h>
 
-typedef struct KCParserAuxilTag KCParserAuxil;
-
-void KCParserAuxilPccError(const KCParserAuxil *const Auxil);
-int KCParserAuxilPccGetChar(const KCParserAuxil *const Auxil);
-void *KCParserAuxilPccMalloc(const KCParserAuxil *const Auxil,
-                             const size_t Size);
-void *KCParserAuxilPccRealloc(const KCParserAuxil *const Auxil, void *Ptr,
-                              const size_t Size);
-void KCParserAuxilPccFree(const KCParserAuxil *const Auxil, void *Ptr);
-void KCParserAuxilPccDebug(const KCParserAuxil *const Auxil, const int Event,
-                           const char *const Rule, const size_t Level,
-                           const size_t Pos, const char *const Buffer,
-                           const size_t Length);
-
 typedef size_t KCNodeId;
 
-KCNodeId KCParserAuxilCeateNonTerminal0(const KCParserAuxil *const Auxil,
-                                        const size_t Start, const size_t End,
-                                        const KCNodeKind Kind);
-KCNodeId KCParserAuxilCreateNonTerminal1(const KCParserAuxil *const Auxil,
-                                         const size_t Start, const size_t End,
-                                         const KCNodeKind Kind,
-                                         const KCNodeId Child0);
-KCNodeId KCParserAuxilCreateNonTerminal2(const KCParserAuxil *const Auxil,
-                                         const size_t Start, const size_t End,
-                                         const KCNodeKind Kind,
-                                         const KCNodeId Child0,
-                                         const KCNodeId Child1);
-KCNodeId KCParserAuxilCreateNonTerminal3(const KCParserAuxil *const Auxil,
-                                         const size_t Start, const size_t End,
-                                         const KCNodeKind Kind,
-                                         const KCNodeId Child0,
-                                         const KCNodeId Child1,
-                                         const KCNodeId Child2);
-KCNodeId KCParserAuxilCreateNonTerminal4(
-    const KCParserAuxil *const Auxil, const size_t Start, const size_t End,
-    const KCNodeKind Kind, const KCNodeId Child0, const KCNodeId Child1,
-    const KCNodeId Child2, const KCNodeId Child3);
-KCNodeId KCParserAuxilCreateNonTerminal5(
-    const KCParserAuxil *const Auxil, const size_t Start, const size_t End,
-    const KCNodeKind Kind, const KCNodeId Child0, const KCNodeId Child1,
-    const KCNodeId Child2, const KCNodeId Child3, const KCNodeId Child4);
-KCNodeId KCParserAuxilCreateNonTerminal6(
-    const KCParserAuxil *const Auxil, const size_t Start, const size_t End,
-    const KCNodeKind Kind, const KCNodeId Child0, const KCNodeId Child1,
-    const KCNodeId Child2, const KCNodeId Child3, const KCNodeId Child4,
-    const KCNodeId Child5);
+typedef struct KCParserAuxilTag {
+  void (*Error)(const struct KCParserAuxilTag *const Auxil);
+  int (*GetChar)(const struct KCParserAuxilTag *const Auxil);
+  void *(*Malloc)(const struct KCParserAuxilTag *const Auxil,
+                  const size_t Size);
+  void *(*Realloc)(const struct KCParserAuxilTag *const Auxil, void *Ptr,
+                   const size_t Size);
+  void (*Free)(const struct KCParserAuxilTag *const Auxil, void *Ptr);
+  void (*Debug)(const struct KCParserAuxilTag *const Auxil, const int Event,
+                const char *const Rule, const size_t Level, const size_t Pos,
+                const char *const Buffer, const size_t Length);
 
-KCNodeId KCParserAuxilCreateTerminal0(const KCParserAuxil *const Auxil,
-                                      const size_t Start, const size_t End,
-                                      const KCNodeKind Kind);
-KCNodeId KCParserAuxilCreateTerminal1(const KCParserAuxil *const Auxil,
-                                      const size_t Start, const size_t End,
-                                      const KCNodeKind Kind,
-                                      const char *const Value);
+  KCNodeId (*CreateNonTerminal0)(const struct KCParserAuxilTag *const Auxil,
+                                 const size_t Start, const size_t End,
+                                 const KCNodeKind Kind);
+  KCNodeId (*CreateNonTerminal1)(const struct KCParserAuxilTag *const Auxil,
+                                 const size_t Start, const size_t End,
+                                 const KCNodeKind Kind, const KCNodeId Child0);
+  KCNodeId (*CreateNonTerminal2)(const struct KCParserAuxilTag *const Auxil,
+                                 const size_t Start, const size_t End,
+                                 const KCNodeKind Kind, const KCNodeId Child0,
+                                 const KCNodeId Child1);
+  KCNodeId (*CreateNonTerminal3)(const struct KCParserAuxilTag *const Auxil,
+                                 const size_t Start, const size_t End,
+                                 const KCNodeKind Kind, const KCNodeId Child0,
+                                 const KCNodeId Child1, const KCNodeId Child2);
+
+  KCNodeId (*CreateTerminal0)(const struct KCParserAuxilTag *const Auxil,
+                              const size_t Start, const size_t End,
+                              const KCNodeKind Kind);
+  KCNodeId (*CreateTerminal1)(const struct KCParserAuxilTag *const Auxil,
+                              const size_t Start, const size_t End,
+                              const KCNodeKind Kind, const char *const Value);
+} KCParserAuxil;
 
 #ifdef __cplusplus
 }
