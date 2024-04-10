@@ -16,6 +16,9 @@
           "/proc/self/cwd": "${workspaceFolder}"
         }
       },
+      "osx": {
+        "sourceMap": { ".": "${workspaceFolder}" }
+      },
       "preLaunchTask": "Build CompileParserFacade Test"
     }
   ]

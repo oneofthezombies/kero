@@ -210,7 +210,6 @@ auto kero::compile::ParserImpl::debug(const int Event, const char *const Rule,
                                       const char *const Buffer,
                                       const size_t Length) noexcept -> void {
   assert(Rule != nullptr && "Rule must not be null");
-  assert(Buffer != nullptr && "Buffer must not be null");
   std::cout << "Debug{";
   std::cout << "Event: "
             << KCParserEventToString(static_cast<ParserEvent>(Event));
