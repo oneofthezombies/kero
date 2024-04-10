@@ -30,6 +30,7 @@ cc_library(
     ],
     copts = [
         "-std=c++20",
+        "-fno-rtti",
     ],
     includes = [
         "src",
@@ -46,6 +47,7 @@ cc_test(
     ],
     copts = [
         "-std=c++20",
+        "-fno-rtti",
     ],
     deps = [
         ":KeroCompileParserFacade",
