@@ -1,92 +1,109 @@
-#ifndef KERO_GRAMMAR_PARSER_H
-#define KERO_GRAMMAR_PARSER_H
+#ifndef KERO_COMPILE_PARSER_FACADE_PARSER_FACADE_H
+#define KERO_COMPILE_PARSER_FACADE_PARSER_FACADE_H
 
-#include "Compile/Parser/Core.h"
 #include "Compile/Parser/ParserGenerated.h"
 
-#include <cstddef>
 #include <memory>
 #include <string>
 #include <string_view>
-#include <unordered_map>
-#include <vector>
 
-namespace kero::grammar {
+namespace kero::compile {
 
-struct SourceSpan {
+using ParserAuxil = KCParserAuxil;
+using ParserContext = KCParser_context_t;
+using ParserEvent = KCParserEvent;
+using NodeKind = KCNodeKind;
+using NodeId = KCNodeId;
+
+struct Span {
   size_t Start; // Inclusive
   size_t End;   // Exclusive
 
-  auto operator==(const SourceSpan &Other) const noexcept -> bool;
+  explicit Span(const size_t Start, const size_t End) noexcept;
+
+  auto operator==(const Span &Other) const noexcept -> bool;
 };
 
-} // namespace kero::grammar
-
-template <> struct std::hash<kero::grammar::SourceSpan> {
-  auto operator()(const kero::grammar::SourceSpan &Span) const noexcept
-      -> size_t {
-    return std::hash<size_t>{}(Span.Start) ^ std::hash<size_t>{}(Span.End);
-  }
-};
-
-namespace kero::grammar {
-
-class KGParserAuxilDeleter {
-public:
-  auto operator()(KGParserAuxil *Auxil) const noexcept -> void;
-};
-
-class KGParserDeleter {
-public:
-  auto operator()(KGParser_context_t *Context) const noexcept -> void;
-};
+auto operator<<(std::ostream &Out, const Span &S) -> std::ostream &;
 
 struct Node {
-  std::vector<KGNodeId> Children;
-  std::string_view Value;
-  KGNodeKind Kind;
-  bool IsTerminal{false};
+  std::vector<NodeId> Children;
+  std::optional<std::string_view> Value;
+  Span Location;
+  NodeKind Kind;
+  bool IsTerminal;
+
+  explicit Node(Span &&Location, const NodeKind Kind,
+                const std::string_view Value) noexcept;
+  explicit Node(Span &&Location, const NodeKind Kind,
+                std::vector<NodeId> &&Children) noexcept;
 };
 
-constexpr KGNodeId NullNodeId{0};
+auto operator<<(std::ostream &Out, const Node &N) -> std::ostream &;
 
-class Parser {
+constexpr NodeId NullNodeId{0};
+
+class ParserAuxilDeleter {
 public:
-  explicit Parser(std::string &&Source) noexcept;
+  auto operator()(ParserAuxil *Auxil) const noexcept -> void;
+};
 
-  auto pccError() noexcept -> void;
-  auto pccGetChar() noexcept -> int;
-  auto pccMalloc(const size_t Size) noexcept -> void *;
-  auto pccRealloc(void *Ptr, const size_t Size) noexcept -> void *;
-  auto pccFree(void *Ptr) noexcept -> void;
-  auto pccDebug(const int Event, const char *const Rule, const size_t Level,
-                const size_t Pos, const char *const Buffer,
-                const size_t Length) noexcept -> void;
+class ParserContextDeleter {
+public:
+  auto operator()(ParserContext *Context) const noexcept -> void;
+};
 
-  auto createNonTerminalNode(const size_t Start, const size_t End,
-                             const KGNodeKind Kind,
-                             std::vector<KGNodeId> &&Children) noexcept
-      -> KGNodeId;
-  auto createTerminalNode(const size_t Start, const size_t End,
-                          const KGNodeKind Kind,
-                          const std::string_view Value) noexcept -> KGNodeId;
+class ParserImpl {
+public:
+  explicit ParserImpl(std::string &&Source) noexcept;
+  ~ParserImpl() noexcept = default;
 
   auto parse() noexcept -> bool;
 
 private:
-  auto createNodeId() noexcept -> KGNodeId;
-  auto printTree(const KGNodeId NodeId, const size_t level) const noexcept
-      -> void;
+  auto initAuxil() noexcept -> void;
+  auto error() noexcept -> void;
+  auto getChar() noexcept -> int;
+  auto malloc(const size_t Size) noexcept -> void *;
+  auto realloc(void *Ptr, const size_t Size) noexcept -> void *;
+  auto free(void *Ptr) noexcept -> void;
+  auto debug(const int Event, const char *const Rule, const size_t Level,
+             const size_t Pos, const char *const Buffer,
+             const size_t Length) noexcept -> void;
 
-  std::unordered_map<KGNodeId, Node> NodeMap;
+  auto createNonTerminalNode(const size_t Start, const size_t End,
+                             const NodeKind Kind,
+                             std::vector<NodeId> &&Children) noexcept -> NodeId;
+  auto createTerminalNode(const size_t Start, const size_t End,
+                          const NodeKind Kind,
+                          const std::string_view Value) noexcept -> NodeId;
+
+  auto createNodeId() noexcept -> NodeId;
+  auto dumpRec(std::ostream &OS, const NodeId Id,
+               const size_t level) const noexcept -> void;
+
+  static auto fromAuxil(const ParserAuxil *const Auxil) noexcept
+      -> ParserImpl &;
+
+  std::unordered_map<NodeId, Node> NodeMap;
   size_t NextNodeId{1};
   std::string Source;
   size_t SourcePos{0};
-  std::unique_ptr<KGParserAuxil, KGParserAuxilDeleter> Auxil;
-  std::unique_ptr<KGParser_context_t, KGParserDeleter> Context;
+  std::unique_ptr<ParserAuxil, ParserAuxilDeleter> Auxil;
+  std::unique_ptr<ParserContext, ParserContextDeleter> Context;
   bool ErrorOccurred{false};
 };
 
-} // namespace kero::grammar
+class ParserFacade {
+public:
+  explicit ParserFacade(std::string &&Source) noexcept;
 
-#endif // KERO_GRAMMAR_PARSER_H
+  auto parse() noexcept -> bool;
+
+private:
+  std::unique_ptr<ParserImpl> Impl;
+};
+
+} // namespace kero::compile
+
+#endif // KERO_COMPILE_PARSER_FACADE_PARSER_FACADE_H

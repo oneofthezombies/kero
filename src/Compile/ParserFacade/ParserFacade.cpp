@@ -1,342 +1,292 @@
-#include "Parser.h"
+#include "ParserFacade.h"
 
-#include "NodeKindUtilGenerated.h"
+#include "Compile/Parser/Core.h"
+#include "Compile/Parser/ParserGenerated.h"
 
 #include <cassert>
 #include <iostream>
 
-using namespace kero::grammar;
+using namespace kero::compile;
 
-struct KGParserAuxilTag {
-  ::Parser *Parser{nullptr};
-};
+kero::compile::Span::Span(const size_t Start, const size_t End) noexcept
+    : Start{Start}, End{End} {}
 
-void checkParserAuxil(const KGParserAuxilTag *const Auxil) {
-  assert(Auxil != nullptr && "auxil must not be nullptr.");
-  assert(Auxil->Parser != nullptr && "parser must not be nullptr.");
-}
-
-void KGParserAuxil_pccError(const KGParserAuxilTag *const Auxil) {
-  checkParserAuxil(Auxil);
-  Auxil->Parser->pccError();
-}
-
-int KGParserAuxil_pccGetChar(const KGParserAuxilTag *const Auxil) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->pccGetChar();
-}
-
-void *KGParserAuxil_pccMalloc(const KGParserAuxilTag *const Auxil,
-                              const size_t Size) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->pccMalloc(Size);
-}
-
-void *KGParserAuxil_pccRealloc(const KGParserAuxilTag *const Auxil, void *Ptr,
-                               const size_t Size) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->pccRealloc(Ptr, Size);
-}
-
-void KGParserAuxil_pccFree(const KGParserAuxilTag *const Auxil, void *Ptr) {
-  checkParserAuxil(Auxil);
-  Auxil->Parser->pccFree(Ptr);
-}
-
-void KGParserAuxil_pccDebug(const KGParserAuxilTag *const Auxil,
-                            const int Event, const char *const Rule,
-                            const size_t Level, const size_t Pos,
-                            const char *const Buffer, const size_t Length) {
-  checkParserAuxil(Auxil);
-  Auxil->Parser->pccDebug(Event, Rule, Level, Pos, Buffer, Length);
-}
-
-KGNodeId KGParserAuxil_createNonTerminal0(const KGParserAuxilTag *const Auxil,
-                                          const size_t Start, const size_t End,
-                                          const KGNodeKind Kind) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createNonTerminalNode(Start, End, Kind, {});
-}
-
-KGNodeId KGParserAuxil_createNonTerminal1(const KGParserAuxilTag *const Auxil,
-                                          const size_t Start, const size_t End,
-                                          const KGNodeKind Kind,
-                                          const KGNodeId Child0) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createNonTerminalNode(Start, End, Kind, {Child0});
-}
-
-KGNodeId KGParserAuxil_createNonTerminal2(const KGParserAuxilTag *const Auxil,
-                                          const size_t Start, const size_t End,
-                                          const KGNodeKind Kind,
-                                          const KGNodeId Child0,
-                                          const KGNodeId Child1) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createNonTerminalNode(Start, End, Kind,
-                                              {Child0, Child1});
-}
-
-KGNodeId KGParserAuxil_createNonTerminal3(const KGParserAuxilTag *const Auxil,
-                                          const size_t Start, const size_t End,
-                                          const KGNodeKind Kind,
-                                          const KGNodeId Child0,
-                                          const KGNodeId Child1,
-                                          const KGNodeId Child2) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createNonTerminalNode(Start, End, Kind,
-                                              {Child0, Child1, Child2});
-}
-
-KGNodeId KGParserAuxil_createNonTerminal4(
-    const KGParserAuxilTag *const Auxil, const size_t Start, const size_t End,
-    const KGNodeKind Kind, const KGNodeId Child0, const KGNodeId Child1,
-    const KGNodeId Child2, const KGNodeId Child3) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createNonTerminalNode(Start, End, Kind,
-                                              {Child0, Child1, Child2, Child3});
-}
-
-KGNodeId KGParserAuxil_createNonTerminal5(
-    const KGParserAuxilTag *const Auxil, const size_t Start, const size_t End,
-    const KGNodeKind Kind, const KGNodeId Child0, const KGNodeId Child1,
-    const KGNodeId Child2, const KGNodeId Child3, const KGNodeId Child4) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createNonTerminalNode(
-      Start, End, Kind, {Child0, Child1, Child2, Child3, Child4});
-}
-
-KGNodeId KGParserAuxil_createNonTerminal6(
-    const KGParserAuxilTag *const Auxil, const size_t Start, const size_t End,
-    const KGNodeKind Kind, const KGNodeId Child0, const KGNodeId Child1,
-    const KGNodeId Child2, const KGNodeId Child3, const KGNodeId Child4,
-    const KGNodeId Child5) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createNonTerminalNode(
-      Start, End, Kind, {Child0, Child1, Child2, Child3, Child4, Child5});
-}
-
-KGNodeId KGParserAuxil_createTerminal0(const KGParserAuxilTag *const Auxil,
-                                       const size_t Start, const size_t End,
-                                       const KGNodeKind Kind) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createTerminalNode(Start, End, Kind, {});
-}
-
-KGNodeId KGParserAuxil_createTerminal1(const KGParserAuxilTag *const Auxil,
-                                       const size_t Start, const size_t End,
-                                       const KGNodeKind Kind,
-                                       const char *const Value) {
-  checkParserAuxil(Auxil);
-  return Auxil->Parser->createTerminalNode(Start, End, Kind, Value);
-}
-
-namespace {
-
-enum class DebugEvent : int32_t {
-  RuleEvaluating = 0,
-  RuleMatched = 1,
-  RuleNotMatched = 2,
-};
-
-auto operator<<(std::ostream &OS, const DebugEvent Event) noexcept
-    -> std::ostream & {
-  switch (Event) {
-  case DebugEvent::RuleEvaluating:
-    OS << "RuleEvaluating";
-    break;
-  case DebugEvent::RuleMatched:
-    OS << "RuleMatched";
-    break;
-  case DebugEvent::RuleNotMatched:
-    OS << "RuleNotMatched";
-    break;
-  }
-  return OS;
-}
-
-} // namespace
-
-auto kero::grammar::SourceSpan::operator==(
-    const SourceSpan &Other) const noexcept -> bool {
+auto kero::compile::Span::operator==(const Span &Other) const noexcept -> bool {
   return Start == Other.Start && End == Other.End;
 }
 
-auto kero::grammar::KGParserAuxilDeleter::operator()(
-    KGParserAuxil *Auxil) const noexcept -> void {
+auto kero::compile::operator<<(std::ostream &Out, const Span &S)
+    -> std::ostream & {
+  Out << "Span{Start: " << S.Start << ", End: " << S.End << "}";
+  return Out;
+}
+
+kero::compile::Node::Node(Span &&Location, const NodeKind Kind,
+                          const std::string_view Value) noexcept
+    : Value{Value}, Location{Location}, Kind{Kind}, IsTerminal{true} {}
+
+kero::compile::Node::Node(Span &&Location, const NodeKind Kind,
+                          std::vector<NodeId> &&Children) noexcept
+    : Children{std::move(Children)}, Location{Location}, Kind{Kind},
+      IsTerminal{false} {}
+
+auto kero::compile::operator<<(std::ostream &Out, const Node &N)
+    -> std::ostream & {
+  Out << "Node{";
+  Out << "Kind: " << N.Kind;
+  Out << ", ";
+  if (N.IsTerminal) {
+    if (!N.Value) {
+      Out << "Value: empty";
+    } else {
+      Out << "Value: '" << *N.Value << "'";
+    }
+  } else {
+    Out << "Children: [";
+    for (size_t i = 0; i < N.Children.size(); ++i) {
+      Out << N.Children[i];
+      if (i + 1 < N.Children.size()) {
+        Out << ", ";
+      }
+    }
+    Out << "]";
+  }
+  Out << "}";
+  return Out;
+}
+
+auto kero::compile::ParserAuxilDeleter::operator()(
+    ParserAuxil *Auxil) const noexcept -> void {
   if (Auxil == nullptr) {
     return;
   }
   delete Auxil;
 }
 
-auto kero::grammar::KGParserDeleter::operator()(
-    KGParser_context_t *Context) const noexcept -> void {
-  KGParser_destroy(Context);
+auto kero::compile::ParserContextDeleter::operator()(
+    ParserContext *Context) const noexcept -> void {
+  if (Context == nullptr) {
+    return;
+  }
+  KCParser_destroy(Context);
 }
 
-kero::grammar::Parser::Parser(std::string &&Source) noexcept
-    : Source{std::move(Source)}, Auxil{new KGParserAuxil{this}},
-      Context{KGParser_create(Auxil.get())} {}
+kero::compile::ParserImpl::ParserImpl(std::string &&Source) noexcept
+    : Source{std::move(Source)} {
+  initAuxil();
+  Context.reset(KCParser_create(Auxil.get()));
+}
 
-auto kero::grammar::Parser::pccError() noexcept -> void {
+auto kero::compile::ParserImpl::parse() noexcept -> bool {
+  std::cout << "ParserImpl{";
+  std::cout << "Source: '" << Source << "'";
+  std::cout << "}\n";
+
+  NodeId Ret{0};
+  while (true) {
+    if (KCParser_parse(Context.get(), &Ret) == 0) {
+      break;
+    }
+
+    if (ErrorOccurred) {
+      break;
+    }
+  }
+
+  if (ErrorOccurred) {
+    std::cout << "Error occurred" << '\n';
+  }
+
+  dumpRec(std::cout, Ret, 0);
+  return !ErrorOccurred;
+}
+
+auto kero::compile::ParserImpl::initAuxil() noexcept -> void {
+  assert(!Auxil && "Auxil already set up");
+  Auxil.reset(new ParserAuxil{this});
+  Auxil->Error = [](const ParserAuxil *const Auxil) {
+    ParserImpl::fromAuxil(Auxil).error();
+  };
+  Auxil->GetChar = [](const ParserAuxil *const Auxil) {
+    return ParserImpl::fromAuxil(Auxil).getChar();
+  };
+  Auxil->Malloc = [](const ParserAuxil *const Auxil, const size_t Size) {
+    return ParserImpl::fromAuxil(Auxil).malloc(Size);
+  };
+  Auxil->Realloc = [](const ParserAuxil *const Auxil, void *const Ptr,
+                      const size_t Size) {
+    return ParserImpl::fromAuxil(Auxil).realloc(Ptr, Size);
+  };
+  Auxil->Free = [](const ParserAuxil *const Auxil, void *const Ptr) {
+    ParserImpl::fromAuxil(Auxil).free(Ptr);
+  };
+  Auxil->Debug = [](const ParserAuxil *const Auxil, const int Event,
+                    const char *const Rule, const size_t Level,
+                    const size_t Pos, const char *const Buffer,
+                    const size_t Length) {
+    ParserImpl::fromAuxil(Auxil).debug(Event, Rule, Level, Pos, Buffer, Length);
+  };
+  Auxil->CreateNonTerminal0 = [](const ParserAuxil *const Auxil,
+                                 const size_t Start, const size_t End,
+                                 const NodeKind Kind) {
+    return ParserImpl::fromAuxil(Auxil).createNonTerminalNode(Start, End, Kind,
+                                                              {});
+  };
+  Auxil->CreateNonTerminal1 = [](const ParserAuxil *const Auxil,
+                                 const size_t Start, const size_t End,
+                                 const NodeKind Kind, const NodeId Child0) {
+    return ParserImpl::fromAuxil(Auxil).createNonTerminalNode(Start, End, Kind,
+                                                              {Child0});
+  };
+  Auxil->CreateNonTerminal2 = [](const ParserAuxil *const Auxil,
+                                 const size_t Start, const size_t End,
+                                 const NodeKind Kind, const NodeId Child0,
+                                 const NodeId Child1) {
+    return ParserImpl::fromAuxil(Auxil).createNonTerminalNode(Start, End, Kind,
+                                                              {Child0, Child1});
+  };
+  Auxil->CreateNonTerminal3 = [](const ParserAuxil *const Auxil,
+                                 const size_t Start, const size_t End,
+                                 const NodeKind Kind, const NodeId Child0,
+                                 const NodeId Child1, const NodeId Child2) {
+    return ParserImpl::fromAuxil(Auxil).createNonTerminalNode(
+        Start, End, Kind, {Child0, Child1, Child2});
+  };
+  Auxil->CreateTerminal0 = [](const ParserAuxil *const Auxil,
+                              const size_t Start, const size_t End,
+                              const NodeKind Kind) {
+    return ParserImpl::fromAuxil(Auxil).createTerminalNode(Start, End, Kind,
+                                                           {});
+  };
+  Auxil->CreateTerminal1 = [](const ParserAuxil *const Auxil,
+                              const size_t Start, const size_t End,
+                              const NodeKind Kind, const char *const Value) {
+    return ParserImpl::fromAuxil(Auxil).createTerminalNode(Start, End, Kind,
+                                                           Value);
+  };
+}
+
+auto kero::compile::ParserImpl::error() noexcept -> void {
   ErrorOccurred = true;
 }
 
-auto kero::grammar::Parser::pccGetChar() noexcept -> int {
+auto kero::compile::ParserImpl::getChar() noexcept -> int {
   if (SourcePos >= Source.size()) {
     return -1;
   }
   return Source[SourcePos++];
 }
 
-auto kero::grammar::Parser::pccMalloc(const size_t Size) noexcept -> void * {
+auto kero::compile::ParserImpl::malloc(const size_t Size) noexcept -> void * {
   void *P = std::malloc(Size);
   if (P == nullptr) {
-    std::cerr << "Parser::pccMalloc() failed to allocate memory" << '\n'
+    std::cerr << "ParserImpl::malloc() failed to allocate memory" << '\n'
               << std::flush;
     std::exit(EXIT_FAILURE);
   }
   return P;
 }
 
-auto kero::grammar::Parser::pccRealloc(void *Ptr, const size_t Size) noexcept
+auto kero::compile::ParserImpl::realloc(void *Ptr, const size_t Size) noexcept
     -> void * {
   void *P = std::realloc(Ptr, Size);
   if (P == nullptr) {
-    std::cerr << "Parser::pccRealloc() failed to reallocate memory" << '\n'
+    std::cerr << "ParserImpl::realloc() failed to reallocate memory" << '\n'
               << std::flush;
     std::exit(EXIT_FAILURE);
   }
   return P;
 }
 
-auto kero::grammar::Parser::pccFree(void *Ptr) noexcept -> void {
-  if (Ptr != nullptr) {
-    std::free(Ptr);
+auto kero::compile::ParserImpl::free(void *Ptr) noexcept -> void {
+  if (Ptr == nullptr) {
+    return;
   }
+  std::free(Ptr);
 }
 
-auto kero::grammar::Parser::pccDebug(const int Event, const char *const Rule,
-                                     const size_t Level, const size_t Pos,
-                                     const char *const Buffer,
-                                     const size_t Length) noexcept -> void {
-  const DebugEvent E{static_cast<DebugEvent>(Event)};
-  const std::string_view RV{Rule};
-  const std::string_view BV{Buffer, Length};
-  std::cout << "Debug{Event: " << E << ", Rule: " << RV << ", Level: " << Level
-            << ", Pos: " << Pos << ", Buffer: '" << BV << "' }\n";
+auto kero::compile::ParserImpl::debug(const int Event, const char *const Rule,
+                                      const size_t Level, const size_t Pos,
+                                      const char *const Buffer,
+                                      const size_t Length) noexcept -> void {
+  assert(Rule != nullptr && "Rule must not be null");
+  assert(Buffer != nullptr && "Buffer must not be null");
+  std::cout << "Debug{";
+  std::cout << "Event: "
+            << KCParserEventToString(static_cast<ParserEvent>(Event));
+  std::cout << ", ";
+  std::cout << "Rule: " << Rule;
+  std::cout << ", ";
+  std::cout << "Level: " << Level;
+  std::cout << ", ";
+  std::cout << "Pos: " << Pos;
+  std::cout << ", ";
+  std::cout << "Buffer: '" << std::string_view{Buffer, Length} << "'";
+  std::cout << "}\n";
 }
 
-auto kero::grammar::Parser::createNonTerminalNode(
-    const size_t Start, const size_t End, const KGNodeKind Kind,
-    std::vector<KGNodeId> &&Children) noexcept -> KGNodeId {
-  const KGNodeId Id{createNodeId()};
-
+auto kero::compile::ParserImpl::createNonTerminalNode(
+    const size_t Start, const size_t End, const NodeKind Kind,
+    std::vector<NodeId> &&Children) noexcept -> NodeId {
   // Remove null children
   Children.erase(
       std::remove_if(Children.begin(), Children.end(),
-                     [](const KGNodeId &Child) { return Child == 0; }),
+                     [](const NodeId &Child) { return Child == NullNodeId; }),
       Children.end());
 
-  NodeMap[Id] = Node{std::move(Children), {}, Kind, false};
-  std::cout << "Span{Start: " << Start << ", End: " << End << "}\n";
-  std::cout << "Node{Id: " << Id << ", Kind: " << Kind
-            << ", Children Count: " << NodeMap[Id].Children.size()
-            << ", Children: {";
-  for (const auto &Child : NodeMap[Id].Children) {
-    std::cout << ' ' << Child;
-  }
-  if (!NodeMap[Id].Children.empty()) {
-    std::cout << ' ';
-  }
-  std::cout << "}\n";
+  const NodeId Id{createNodeId()};
+  NodeMap.emplace(Id, Node{Span{Start, End}, Kind, std::move(Children)});
   return Id;
 }
 
-auto kero::grammar::Parser::createTerminalNode(
-    const size_t Start, const size_t End, const KGNodeKind Kind,
-    const std::string_view Value) noexcept -> KGNodeId {
-  const KGNodeId Id{createNodeId()};
-  NodeMap[Id] = Node{{}, Value, Kind, true};
-  std::cout << "Span{Start: " << Start << ", End: " << End << "}\n";
-  std::cout << "Node{Id: " << Id << ", Kind: " << Kind
-            << ", Value: " << ((Value.size() == 0) ? "empty" : Value) << "}\n";
+auto kero::compile::ParserImpl::createTerminalNode(
+    const size_t Start, const size_t End, const NodeKind Kind,
+    const std::string_view Value) noexcept -> NodeId {
+  const NodeId Id{createNodeId()};
+  NodeMap.emplace(Id, Node{Span{Start, End}, Kind, Value});
   return Id;
 }
 
-auto kero::grammar::Parser::parse() noexcept -> bool {
-  std::cout << "Parser::parse() called" << '\n';
-  KGNodeId Ret{0};
-  while (true) {
-    if (KGParser_parse(Context.get(), &Ret) == 0) {
-      break;
-    }
-
-    if (ErrorOccurred) {
-      std::cout << "Parser::parse() has error" << '\n';
-      break;
-    }
-  }
-
-  printTree(Ret, 0);
-  return !ErrorOccurred;
-}
-
-auto kero::grammar::Parser::createNodeId() noexcept -> KGNodeId {
-  const KGNodeId Id{NextNodeId++};
+auto kero::compile::ParserImpl::createNodeId() noexcept -> NodeId {
+  const NodeId Id{NextNodeId++};
   return Id;
 }
 
-auto kero::grammar::Parser::printTree(const KGNodeId NodeId,
-                                      const size_t level) const noexcept
+auto kero::compile::ParserImpl::dumpRec(std::ostream &OS, const NodeId Id,
+                                        const size_t level) const noexcept
     -> void {
-  const auto Found = NodeMap.find(NodeId);
+  const auto Found = NodeMap.find(Id);
   if (Found == NodeMap.end()) {
-    std::cout << "node " << NodeId << " not found" << '\n';
+    OS << "Node Id: " << Id << " not found" << '\n';
     return;
   }
 
   const Node &N = Found->second;
-  if (N.IsTerminal) {
-    for (size_t i = 0; i < level; ++i) {
-      std::cout << "  ";
-    }
-    std::cout << "Node{";
-    std::cout << "Id: ";
-    std::cout << NodeId;
-    std::cout << ", ";
-    std::cout << "Kind: ";
-    std::cout << N.Kind;
-    std::cout << ", ";
-    std::cout << "Value: ";
-    if (N.Value.empty()) {
-      std::cout << "empty";
-    } else {
-      std::cout << N.Value;
-    }
-    std::cout << "}\n";
-    return;
-  }
-
   for (size_t i = 0; i < level; ++i) {
-    std::cout << "  ";
+    OS << "  ";
   }
-  std::cout << "Node{";
-  std::cout << "Id: ";
-  std::cout << NodeId;
-  std::cout << ", ";
-  std::cout << "Kind: ";
-  std::cout << N.Kind;
-  std::cout << ", ";
-  std::cout << "Children Count: ";
-  std::cout << N.Children.size();
-  std::cout << ", ";
-  std::cout << "Children: {\n";
-  for (const auto &Child : N.Children) {
-    printTree(Child, level + 1);
+  OS << N << '\n';
+  for (const NodeId ChildId : N.Children) {
+    dumpRec(OS, ChildId, level + 1);
   }
-  for (size_t i = 0; i < level; ++i) {
-    std::cout << "  ";
-  }
-  std::cout << "}\n";
 }
+
+auto kero::compile::ParserImpl::fromAuxil(
+    const ParserAuxil *const Auxil) noexcept -> ParserImpl & {
+  assert(Auxil != nullptr && "Auxil must not be null");
+  assert(Auxil->UserData != nullptr && "UserData must not be null");
+  return *static_cast<ParserImpl *>(Auxil->UserData);
+}
+
+kero::compile::ParserFacade::ParserFacade(std::string &&Source) noexcept
+    : Impl{std::make_unique<ParserImpl>(std::move(Source))} {}
+
+auto kero::compile::ParserFacade::parse() noexcept -> bool {
+  return Impl->parse();
+}
+
+template <> struct std::hash<kero::compile::Span> {
+  auto operator()(const kero::compile::Span &Span) const noexcept -> size_t {
+    return std::hash<size_t>{}(Span.Start) ^ std::hash<size_t>{}(Span.End);
+  }
+};

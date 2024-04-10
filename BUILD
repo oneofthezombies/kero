@@ -1,6 +1,7 @@
 cc_library(
     name = "KeroCompileParser",
     srcs = [
+        "src/Compile/Parser/Core.c",
         "src/Compile/Parser/Core.h",
         "src/Compile/Parser/NodeKindGenerated.c",
         "src/Compile/Parser/NodeKindGenerated.h",
@@ -39,7 +40,7 @@ cc_library(
 )
 
 cc_test(
-    name = "KeroCompileParserFacadeTest",
+    name = "KeroCompileParserFacade_test",
     srcs = [
         "src/Compile/ParserFacade/ParserFacadeTest.cpp",
     ],

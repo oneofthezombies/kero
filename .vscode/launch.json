@@ -7,8 +7,8 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug Grammar Test",
-      "program": "${workspaceFolder}/bazel-bin/KeroGrammarTest",
+      "name": "Debug Compile CompileParserFacade Test",
+      "program": "${workspaceFolder}/bazel-bin/KeroCompileParserFacade_test",
       "args": [],
       "cwd": "${workspaceFolder}",
       "linux": {
@@ -16,7 +16,7 @@
           "/proc/self/cwd": "${workspaceFolder}"
         }
       },
-      "preLaunchTask": "Build Grammar Test"
+      "preLaunchTask": "Build CompileParserFacade Test"
     }
   ]
 }

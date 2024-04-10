@@ -12,6 +12,8 @@ extern "C" {
 typedef size_t KCNodeId;
 
 typedef struct KCParserAuxilTag {
+  void *UserData;
+
   void (*Error)(const struct KCParserAuxilTag *const Auxil);
   int (*GetChar)(const struct KCParserAuxilTag *const Auxil);
   void *(*Malloc)(const struct KCParserAuxilTag *const Auxil,
@@ -45,6 +47,14 @@ typedef struct KCParserAuxilTag {
                               const size_t Start, const size_t End,
                               const KCNodeKind Kind, const char *const Value);
 } KCParserAuxil;
+
+typedef enum KCParserEventTag {
+  KCParserEvent_Evaluate = 0,
+  KCParserEvent_Match,
+  KCParserEvent_NoMatch,
+} KCParserEvent;
+
+const char *KCParserEventToString(const KCParserEvent Event);
 
 #ifdef __cplusplus
 }

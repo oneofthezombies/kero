@@ -1,6 +1,6 @@
 /**
  * This file is included by generated parser implementation file
- * "parser_generated.c".
+ * "ParserGenerated.c".
  */
 
 #define PCC_ERROR(Auxil) Auxil->Error(Auxil)
