@@ -20,14 +20,14 @@
 Module
     # NOTE: !InputElementDiv fails if there are unused rules when parsing peg 
     # grammar, so !InputElementDiv was added after EndOfInput.
-    <- _ c0:ModuleBody? _ EndOfInput !InputElementDiv { $$ = KGNODE_NONTERMINAL1(KGNodeKind_Module, c0); }
+    <- _ c0:ModuleBody? _ EndOfInput !InputElementDiv { $$ = CREATE_NONTERMINAL1(KCNodeKind_Module, c0); }
 
 ModuleBody
     <- c0:ModuleItemList { $$ = c0; }
 
 ModuleItemList
     <- c0:ModuleItem { $$ = c0; }
-    / c0:ModuleItemList _ c1:ModuleItem { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ModuleItemList, c0, c1); }
+    / c0:ModuleItemList _ c1:ModuleItem { $$ = CREATE_NONTERMINAL2(KCNodeKind_ModuleItemList, c0, c1); }
 
 ModuleItem
     # <- ImportDeclaration
@@ -58,19 +58,19 @@ BlockStatement
     <- c0:Block { $$ = c0; }
 
 Block
-    <- PT_LeftBrace _ c0:StatementList? _ PT_RightBrace { $$ = KGNODE_NONTERMINAL1(KGNodeKind_Block, c0); }
+    <- PT_LeftBrace _ c0:StatementList? _ PT_RightBrace { $$ = CREATE_NONTERMINAL1(KCNodeKind_Block, c0); }
 
 StatementList
     <- c0:StatementListItem { $$ = c0; }
-    / c0:StatementList _ c1:StatementListItem { $$ = KGNODE_NONTERMINAL2(KGNodeKind_StatementList, c0, c1); }
+    / c0:StatementList _ c1:StatementListItem { $$ = CREATE_NONTERMINAL2(KCNodeKind_StatementList, c0, c1); }
 
 StatementListItem
     <- c0:Statement { $$ = c0; }
     # / Declaration
 
 IfStatement
-    <- KW_If _ PT_LeftParenthesis _ c0:Expression _ PT_RightParenthesis _ c1:Statement _ KW_Else _ c2:Statement { $$ = KGNODE_NONTERMINAL3(KGNodeKind_IfStatement_IfElse, c0, c1, c2); }
-    / KW_If _ PT_LeftParenthesis _ c0:Expression _ PT_RightParenthesis _ c1:Statement { $$ = KGNODE_NONTERMINAL2(KGNodeKind_IfStatement_If, c0, c1); }
+    <- KW_If _ PT_LeftParenthesis _ c0:Expression _ PT_RightParenthesis _ c1:Statement _ KW_Else _ c2:Statement { $$ = CREATE_NONTERMINAL3(KCNodeKind_IfStatement_IfElse, c0, c1, c2); }
+    / KW_If _ PT_LeftParenthesis _ c0:Expression _ PT_RightParenthesis _ c1:Statement { $$ = CREATE_NONTERMINAL2(KCNodeKind_IfStatement_If, c0, c1); }
 
 # Expression
 # --------
@@ -102,36 +102,36 @@ Literal
     / c0:StringLiteral { $$ = c0; }
 
 ArrayLiteral
-    <- PT_LeftBracket _ Elision? _ PT_RightBracket { $$ = KGNODE_TERMINAL0(KGNodeKind_ArrayLiteral_Empty); }
+    <- PT_LeftBracket _ Elision? _ PT_RightBracket { $$ = CREATE_TERMINAL0(KCNodeKind_ArrayLiteral_Empty); }
     / PT_LeftBracket _ c0:ElementList _ PT_RightBracket { $$ = c0; }
     / PT_LeftBracket _ c0:ElementList _ PT_Comma _ Elision? _ PT_RightBracket { $$ = c0; }
 
 ElementList
     <- Elision? _ c0:AssignmentExpression { $$ = c0; }
     / Elision? _ c0:SpreadElement { $$ = c0; }
-    / c0:ElementList _ PT_Comma _ Elision? _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ArrayLiteral_List, c0, c1); }
-    / c0:ElementList _ PT_Comma _ Elision? _ c1:SpreadElement { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ArrayLiteral_List, c0, c1); }
+    / c0:ElementList _ PT_Comma _ Elision? _ c1:AssignmentExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_ArrayLiteral_List, c0, c1); }
+    / c0:ElementList _ PT_Comma _ Elision? _ c1:SpreadElement { $$ = CREATE_NONTERMINAL2(KCNodeKind_ArrayLiteral_List, c0, c1); }
 
 Elision
     <- PT_Comma
     / Elision PT_Comma
 
 SpreadElement
-    <- PT_Ellipsis _ c0:AssignmentExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_SpreadElement, c0); }
+    <- PT_Ellipsis _ c0:AssignmentExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_SpreadElement, c0); }
 
 ObjectLiteral
-    <- PT_LeftBrace _ PT_RightBrace { $$ = KGNODE_TERMINAL0(KGNodeKind_ObjectLiteral_Empty); }
-    / PT_LeftBrace _ c0:PropertyDefinitionList _ PT_RightBrace { $$ = KGNODE_NONTERMINAL1(KGNodeKind_ObjectLiteral, c0); }
-    / PT_LeftBrace _ c0:PropertyDefinitionList _ PT_Comma _ PT_RightBrace { $$ = KGNODE_NONTERMINAL1(KGNodeKind_ObjectLiteral, c0); }
+    <- PT_LeftBrace _ PT_RightBrace { $$ = CREATE_TERMINAL0(KCNodeKind_ObjectLiteral_Empty); }
+    / PT_LeftBrace _ c0:PropertyDefinitionList _ PT_RightBrace { $$ = CREATE_NONTERMINAL1(KCNodeKind_ObjectLiteral, c0); }
+    / PT_LeftBrace _ c0:PropertyDefinitionList _ PT_Comma _ PT_RightBrace { $$ = CREATE_NONTERMINAL1(KCNodeKind_ObjectLiteral, c0); }
 
 PropertyDefinitionList
     <- c0:PropertyDefinition { $$ = c0; }
-    / c0:PropertyDefinitionList _ PT_Comma _ c1:PropertyDefinition { $$ = KGNODE_NONTERMINAL2(KGNodeKind_PropertyDefinitionList, c0, c1); }
+    / c0:PropertyDefinitionList _ PT_Comma _ c1:PropertyDefinition { $$ = CREATE_NONTERMINAL2(KCNodeKind_PropertyDefinitionList, c0, c1); }
 
 PropertyDefinition
     <- c0:IdentifierReference { $$ = c0; }
     / c0:CoverInitializedName { $$ = c0; }
-    / c0:PropertyName _ PT_Colon _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_PropertyDefinition, c0, c1); }
+    / c0:PropertyName _ PT_Colon _ c1:AssignmentExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_PropertyDefinition, c0, c1); }
     # / MethodDefinition
 
 PropertyName
@@ -147,14 +147,14 @@ ComputedPropertyName
     <- PT_LeftBracket _ c0:AssignmentExpression _ PT_RightBracket { $$ = c0; }
 
 CoverInitializedName 
-    <- c0:IdentifierReference _ c1:Initializer { $$ = KGNODE_NONTERMINAL2(KGNodeKind_CoverInitializedName, c0, c1); }
+    <- c0:IdentifierReference _ c1:Initializer { $$ = CREATE_NONTERMINAL2(KCNodeKind_CoverInitializedName, c0, c1); }
 
 Initializer
     <- PT_Assign _ c0:AssignmentExpression { $$ = c0; }
 
 MemberExpression
     <- c0:PrimaryExpression { $$ = c0; }
-    / c0:MemberExpression _ PT_LeftBracket _ c1:Expression _ PT_RightBracket { $$ = KGNODE_NONTERMINAL2(KGNodeKind_MemberExpression, c0, c1); }
+    / c0:MemberExpression _ PT_LeftBracket _ c1:Expression _ PT_RightBracket { $$ = CREATE_NONTERMINAL2(KCNodeKind_MemberExpression, c0, c1); }
     # / MemberExpression _ PT_Period _ IdentifierName
     # / MemberExpression _ TemplateLiteral
     # / SuperProperty
@@ -163,25 +163,25 @@ MemberExpression
 
 NewExpression
     <- c0:MemberExpression { $$ = c0; }
-    / KW_New _ c0:NewExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_NewExpression, c0); }
+    / KW_New _ c0:NewExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_NewExpression, c0); }
 
 CallExpression
-    <- c0:MemberExpression _ c1:Arguments { $$ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1); }
+    <- c0:MemberExpression _ c1:Arguments { $$ = CREATE_NONTERMINAL2(KCNodeKind_CallExpression, c0, c1); }
     # / SuperCall
-    / c0:CallExpression _ c1:Arguments { $$ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1); }
-    / c0:CallExpression _ PT_LeftBracket _ c1:Expression _ PT_RightBracket { $$ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1); }
+    / c0:CallExpression _ c1:Arguments { $$ = CREATE_NONTERMINAL2(KCNodeKind_CallExpression, c0, c1); }
+    / c0:CallExpression _ PT_LeftBracket _ c1:Expression _ PT_RightBracket { $$ = CREATE_NONTERMINAL2(KCNodeKind_CallExpression, c0, c1); }
     # / CallExpression _ PT_Period _ IdentifierName
     # / CallExpression _ TemplateLiteral
 
 Arguments
-    <- PT_LeftParenthesis _ PT_RightParenthesis { $$ = KGNODE_TERMINAL0(KGNodeKind_Arguments_Empty); }
+    <- PT_LeftParenthesis _ PT_RightParenthesis { $$ = CREATE_TERMINAL0(KCNodeKind_Arguments_Empty); }
     / PT_LeftParenthesis _ c0:ArgumentList _ PT_RightParenthesis { $$ = c0; }
 
 ArgumentList
     <- c0:AssignmentExpression { $$ = c0; }
-    / PT_Ellipsis _ c0:AssignmentExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_Arguments_Ellipsis, c0); }
-    / c0:ArgumentList _ PT_Comma _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_Arguments_List, c0, c1); }
-    / c0:ArgumentList _ PT_Comma _ PT_Ellipsis _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_Arguments_List_Ellipsis, c0, c1); }
+    / PT_Ellipsis _ c0:AssignmentExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_Arguments_Ellipsis, c0); }
+    / c0:ArgumentList _ PT_Comma _ c1:AssignmentExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_Arguments_List, c0, c1); }
+    / c0:ArgumentList _ PT_Comma _ PT_Ellipsis _ c1:AssignmentExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_Arguments_List_Ellipsis, c0, c1); }
 
 LeftHandSideExpression
     <- c0:NewExpression { $$ = c0; }
@@ -189,81 +189,81 @@ LeftHandSideExpression
 
 PostfixExpression
     <- c0:LeftHandSideExpression { $$ = c0; }
-    / c0:LeftHandSideExpression _NoLineTerminator PT_PlusPlus { $$ = KGNODE_NONTERMINAL1(KGNodeKind_PostfixExpression_PlusPlus, c0); }
-    / c0:LeftHandSideExpression _NoLineTerminator PT_MinusMinus { $$ = KGNODE_NONTERMINAL1(KGNodeKind_PostfixExpression_MinusMinus, c0); }
+    / c0:LeftHandSideExpression _NoLineTerminator PT_PlusPlus { $$ = CREATE_NONTERMINAL1(KCNodeKind_PostfixExpression_PlusPlus, c0); }
+    / c0:LeftHandSideExpression _NoLineTerminator PT_MinusMinus { $$ = CREATE_NONTERMINAL1(KCNodeKind_PostfixExpression_MinusMinus, c0); }
 
 UnaryExpression
     <- c0:PostfixExpression { $$ = c0; }
     # / KW_Delete _ UnaryExpression
     # / KW_Void _ UnaryExpression
     # / KW_Typeof _ UnaryExpression
-    / PT_PlusPlus _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_PlusPlus, c0); }
-    / PT_MinusMinus _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_MinusMinus, c0); }
-    / PT_Plus _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Plus, c0); }
-    / PT_Minus _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Minus, c0); }
-    / PT_Tilde _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Tilde, c0); }
-    / PT_Bang _ c0:UnaryExpression { $$ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Bang, c0); }
+    / PT_PlusPlus _ c0:UnaryExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_PlusPlus, c0); }
+    / PT_MinusMinus _ c0:UnaryExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_MinusMinus, c0); }
+    / PT_Plus _ c0:UnaryExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_Plus, c0); }
+    / PT_Minus _ c0:UnaryExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_Minus, c0); }
+    / PT_Tilde _ c0:UnaryExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_Tilde, c0); }
+    / PT_Bang _ c0:UnaryExpression { $$ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_Bang, c0); }
 
 MultiplicativeExpression
     <- c0:UnaryExpression { $$ = c0; }
-    / c0:MultiplicativeExpression _ c1:MultiplicativeOperator _ c2:UnaryExpression { $$ = KGNODE_NONTERMINAL3(KGNodeKind_MultiplicativeExpression, c0, c1, c2); }
+    / c0:MultiplicativeExpression _ c1:MultiplicativeOperator _ c2:UnaryExpression { $$ = CREATE_NONTERMINAL3(KCNodeKind_MultiplicativeExpression, c0, c1, c2); }
 
 MultiplicativeOperator
-    <- PT_Asterisk { $$ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Asterisk); }
-    / PT_Div { $$ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Div); }
-    / PT_Percent { $$ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Percent); }
+    <- PT_Asterisk { $$ = CREATE_TERMINAL0(KCNodeKind_MultiplicativeOperator_Asterisk); }
+    / PT_Div { $$ = CREATE_TERMINAL0(KCNodeKind_MultiplicativeOperator_Div); }
+    / PT_Percent { $$ = CREATE_TERMINAL0(KCNodeKind_MultiplicativeOperator_Percent); }
 
 AdditiveExpression
     <- c0:MultiplicativeExpression { $$ = c0; }
-    / c0:AdditiveExpression _ PT_Plus _ c1:MultiplicativeExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_AdditiveExpression_Plus, c0, c1); }
-    / c0:AdditiveExpression _ PT_Minus _ c1:MultiplicativeExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_AdditiveExpression_Minus, c0, c1); }
+    / c0:AdditiveExpression _ PT_Plus _ c1:MultiplicativeExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_AdditiveExpression_Plus, c0, c1); }
+    / c0:AdditiveExpression _ PT_Minus _ c1:MultiplicativeExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_AdditiveExpression_Minus, c0, c1); }
 
 ShiftExpression
     <- c0:AdditiveExpression { $$ = c0; }
-    / c0:ShiftExpression _ PT_LeftShift _ c1:AdditiveExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ShiftExpression_LeftShift, c0, c1); }
-    / c0:ShiftExpression _ PT_RightShift _ c1:AdditiveExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_ShiftExpression_RightShift, c0, c1); }
+    / c0:ShiftExpression _ PT_LeftShift _ c1:AdditiveExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_ShiftExpression_LeftShift, c0, c1); }
+    / c0:ShiftExpression _ PT_RightShift _ c1:AdditiveExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_ShiftExpression_RightShift, c0, c1); }
     # / ShiftExpression _ PT_UnsignedRightShift _ AdditiveExpression
 
 RelationalExpression
     <- c0:ShiftExpression { $$ = c0; }
-    / c0:RelationalExpression _ PT_LessThan _ c1:ShiftExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_LessThan, c0, c1); }
-    / c0:RelationalExpression _ PT_GreaterThan _ c1:ShiftExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_GreaterThan, c0, c1); }
-    / c0:RelationalExpression _ PT_LessThanOrEqual _ c1:ShiftExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_LessThanOrEqual, c0, c1); }
-    / c0:RelationalExpression _ PT_GreaterThanOrEqual _ c1:ShiftExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_GreaterThanOrEqual, c0, c1); }
+    / c0:RelationalExpression _ PT_LessThan _ c1:ShiftExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_RelationalExpression_LessThan, c0, c1); }
+    / c0:RelationalExpression _ PT_GreaterThan _ c1:ShiftExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_RelationalExpression_GreaterThan, c0, c1); }
+    / c0:RelationalExpression _ PT_LessThanOrEqual _ c1:ShiftExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_RelationalExpression_LessThanOrEqual, c0, c1); }
+    / c0:RelationalExpression _ PT_GreaterThanOrEqual _ c1:ShiftExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_RelationalExpression_GreaterThanOrEqual, c0, c1); }
     # / RelationalExpression _ KW_Instanceof _ ShiftExpression
     # / RelationalExpression _ KW_In _ ShiftExpression 
     # TODO: [+In] RelationalExpression[In, ?Yield] in ShiftExpression[?Yield]
 
 EqualityExpression
     <- c0:RelationalExpression { $$ = c0; }
-    / c0:EqualityExpression _ PT_Equal _ c1:RelationalExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_EqualityExpression_Equal, c0, c1); }
-    / c0:EqualityExpression _ PT_NotEqual _ c1:RelationalExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_EqualityExpression_NotEqual, c0, c1); }
+    / c0:EqualityExpression _ PT_Equal _ c1:RelationalExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_EqualityExpression_Equal, c0, c1); }
+    / c0:EqualityExpression _ PT_NotEqual _ c1:RelationalExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_EqualityExpression_NotEqual, c0, c1); }
     # / EqualityExpression _ PT_StrictEqual _ RelationalExpression
     # / EqualityExpression _ PT_NotStrictEqual _ RelationalExpression
 
 BitwiseANDExpression
     <- c0:EqualityExpression { $$ = c0; }
-    / c0:BitwiseANDExpression _ PT_BitwiseAND _ c1:EqualityExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseANDExpression, c0, c1); }
+    / c0:BitwiseANDExpression _ PT_BitwiseAND _ c1:EqualityExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_BitwiseANDExpression, c0, c1); }
 
 BitwiseXORExpression
     <- c0:BitwiseANDExpression { $$ = c0; }
-    / c0:BitwiseXORExpression _ PT_BitwiseXOR _ c1:BitwiseANDExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseXORExpression, c0, c1); }
+    / c0:BitwiseXORExpression _ PT_BitwiseXOR _ c1:BitwiseANDExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_BitwiseXORExpression, c0, c1); }
 
 BitwiseORExpression
     <- c0:BitwiseXORExpression { $$ = c0; }
-    / c0:BitwiseORExpression _ PT_BitwiseOR _ c1:BitwiseXORExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseORExpression, c0, c1); }
+    / c0:BitwiseORExpression _ PT_BitwiseOR _ c1:BitwiseXORExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_BitwiseORExpression, c0, c1); }
 
 LogicalANDExpression
     <- c0:BitwiseORExpression { $$ = c0; }
-    / c0:LogicalANDExpression _ PT_LogicalAND _ c1:BitwiseORExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_LogicalANDExpression, c0, c1); }
+    / c0:LogicalANDExpression _ PT_LogicalAND _ c1:BitwiseORExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_LogicalANDExpression, c0, c1); }
 
 LogicalORExpression
     <- c0:LogicalANDExpression { $$ = c0; }
-    / c0:LogicalORExpression _ PT_LogicalOR _ c1:LogicalANDExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_LogicalORExpression, c0, c1); }
+    / c0:LogicalORExpression _ PT_LogicalOR _ c1:LogicalANDExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_LogicalORExpression, c0, c1); }
 
 ConditionalExpression
     <- c0:LogicalORExpression { $$ = c0; }
-    / c0:LogicalORExpression _ PT_Question _ c1:AssignmentExpression _ PT_Colon _  c2:AssignmentExpression { $$ = KGNODE_NONTERMINAL3(KGNodeKind_ConditionalExpression, c0, c1, c2); }
+    / c0:LogicalORExpression _ PT_Question _ c1:AssignmentExpression _ PT_Colon _  c2:AssignmentExpression { $$ = CREATE_NONTERMINAL3(KCNodeKind_ConditionalExpression, c0, c1, c2); }
 
 AssignmentExpression
     <- c0:ConditionalExpression { $$ = c0; }
@@ -274,7 +274,7 @@ AssignmentExpression
 
 Expression
     <- c0:AssignmentExpression { $$ = c0; }
-    / c0:Expression _ PT_Comma _ c1:AssignmentExpression { $$ = KGNODE_NONTERMINAL2(KGNodeKind_Expression, c0, c1); }
+    / c0:Expression _ PT_Comma _ c1:AssignmentExpression { $$ = CREATE_NONTERMINAL2(KCNodeKind_Expression, c0, c1); }
 
 # Lexical Grammar
 # --------
@@ -425,39 +425,39 @@ Keyword
     / KW_With
     / KW_Yield
 
-KW_Break <- 'break' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Break); }
-KW_Case <- 'case' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Case); }
-KW_Catch <- 'catch' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Catch); }
-KW_Class <- 'class' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Class); }
-KW_Const <- 'const' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Const); }
-KW_Continue <- 'continue' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Continue); }
-KW_Debugger <- 'debugger' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Debugger); }
-KW_Default <- 'default' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Default); }
-KW_Delete <- 'delete' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Delete); }
-KW_Do <- 'do' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Do); }
-KW_Else <- 'else' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Else); }
-KW_Export <- 'export' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Export); }
-KW_Extends <- 'extends' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Extends); }
-KW_Finally <- 'finally' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Finally); }
-KW_For <- 'for' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_For); }
-KW_Function <- 'function' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Function); }
-KW_If <- 'if' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_If); }
-KW_Import <- 'import' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Import); }
-KW_In <- 'in' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_In); }
-KW_Instanceof <- 'instanceof' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Instanceof); }
-KW_New <- 'new' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_New); }
-KW_Return <- 'return' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Return); }
-KW_Super <- 'super' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Super); }
-KW_Switch <- 'switch' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Switch); }
-KW_This <- 'this' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_This); }
-KW_Throw <- 'throw' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Throw); }
-KW_Try <- 'try' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Try); }
-KW_Typeof <- 'typeof' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Typeof); }
-KW_Var <- 'var' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Var); }
-KW_Void <- 'void' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Void); }
-KW_While <- 'while' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_While); }
-KW_With <- 'with' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_With); }
-KW_Yield <- 'yield' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Yield); }
+KW_Break <- 'break' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Break); }
+KW_Case <- 'case' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Case); }
+KW_Catch <- 'catch' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Catch); }
+KW_Class <- 'class' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Class); }
+KW_Const <- 'const' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Const); }
+KW_Continue <- 'continue' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Continue); }
+KW_Debugger <- 'debugger' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Debugger); }
+KW_Default <- 'default' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Default); }
+KW_Delete <- 'delete' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Delete); }
+KW_Do <- 'do' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Do); }
+KW_Else <- 'else' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Else); }
+KW_Export <- 'export' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Export); }
+KW_Extends <- 'extends' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Extends); }
+KW_Finally <- 'finally' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Finally); }
+KW_For <- 'for' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_For); }
+KW_Function <- 'function' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Function); }
+KW_If <- 'if' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_If); }
+KW_Import <- 'import' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Import); }
+KW_In <- 'in' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_In); }
+KW_Instanceof <- 'instanceof' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Instanceof); }
+KW_New <- 'new' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_New); }
+KW_Return <- 'return' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Return); }
+KW_Super <- 'super' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Super); }
+KW_Switch <- 'switch' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Switch); }
+KW_This <- 'this' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_This); }
+KW_Throw <- 'throw' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Throw); }
+KW_Try <- 'try' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Try); }
+KW_Typeof <- 'typeof' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Typeof); }
+KW_Var <- 'var' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Var); }
+KW_Void <- 'void' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Void); }
+KW_While <- 'while' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_While); }
+KW_With <- 'with' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_With); }
+KW_Yield <- 'yield' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Yield); }
 
 FutureReservedWord
     <- KW_Enum 
@@ -469,14 +469,14 @@ FutureReservedWord
     / KW_Protected 
     / KW_Public
 
-KW_Enum <- 'enum' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Enum); }
-KW_Await <- 'await' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Await); }
-KW_Implements <- 'implements' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Implements); }
-KW_Interface <- 'interface' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Interface); }
-KW_Package <- 'package' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Package); }
-KW_Private <- 'private' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Private); }
-KW_Protected <- 'protected' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Protected); }
-KW_Public <- 'public' { $$ = KGNODE_TERMINAL0(KGNodeKind_KW_Public); }
+KW_Enum <- 'enum' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Enum); }
+KW_Await <- 'await' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Await); }
+KW_Implements <- 'implements' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Implements); }
+KW_Interface <- 'interface' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Interface); }
+KW_Package <- 'package' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Package); }
+KW_Private <- 'private' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Private); }
+KW_Protected <- 'protected' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Protected); }
+KW_Public <- 'public' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Public); }
 
 # Punctuators
 # --------
@@ -594,11 +594,11 @@ PT_Backslash <- '\\'
 # Literals
 # --------
 
-NullLiteral <- 'null' { $$ = KGNODE_TERMINAL0(KGNodeKind_NullLiteral); }
+NullLiteral <- 'null' { $$ = CREATE_TERMINAL0(KCNodeKind_NullLiteral); }
 
 BooleanLiteral
-    <- 'true' { $$ = KGNODE_TERMINAL0(KGNodeKind_BooleanLiteral_True); }
-    / 'false' { $$ = KGNODE_TERMINAL0(KGNodeKind_BooleanLiteral_False); }
+    <- 'true' { $$ = CREATE_TERMINAL0(KCNodeKind_BooleanLiteral_True); }
+    / 'false' { $$ = CREATE_TERMINAL0(KCNodeKind_BooleanLiteral_False); }
 
 NumericLiteral
     <- DecimalLiteral

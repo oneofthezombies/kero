@@ -1126,7 +1126,7 @@ static void pcc_action_Module_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_Module, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_Module, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1175,7 +1175,7 @@ static void pcc_action_ModuleItemList_1(KCParser_context_t *__pcc_ctx, pcc_thunk
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_ModuleItemList, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_ModuleItemList, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1256,7 +1256,7 @@ static void pcc_action_Block_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_Block, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_Block, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1289,7 +1289,7 @@ static void pcc_action_StatementList_1(KCParser_context_t *__pcc_ctx, pcc_thunk_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_StatementList, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_StatementList, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1324,7 +1324,7 @@ static void pcc_action_IfStatement_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t 
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL3(KGNodeKind_IfStatement_IfElse, c0, c1, c2);
+    __ = CREATE_NONTERMINAL3(KCNodeKind_IfStatement_IfElse, c0, c1, c2);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1343,7 +1343,7 @@ static void pcc_action_IfStatement_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t 
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_IfStatement_If, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_IfStatement_If, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1551,7 +1551,7 @@ static void pcc_action_ArrayLiteral_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_ArrayLiteral_Empty);
+    __ = CREATE_TERMINAL0(KCNodeKind_ArrayLiteral_Empty);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1631,7 +1631,7 @@ static void pcc_action_ElementList_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t 
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_ArrayLiteral_List, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_ArrayLiteral_List, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1649,7 +1649,7 @@ static void pcc_action_ElementList_3(KCParser_context_t *__pcc_ctx, pcc_thunk_t 
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_ArrayLiteral_List, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_ArrayLiteral_List, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1666,7 +1666,7 @@ static void pcc_action_SpreadElement_0(KCParser_context_t *__pcc_ctx, pcc_thunk_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_SpreadElement, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_SpreadElement, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1681,7 +1681,7 @@ static void pcc_action_ObjectLiteral_0(KCParser_context_t *__pcc_ctx, pcc_thunk_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_ObjectLiteral_Empty);
+    __ = CREATE_TERMINAL0(KCNodeKind_ObjectLiteral_Empty);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1696,7 +1696,7 @@ static void pcc_action_ObjectLiteral_1(KCParser_context_t *__pcc_ctx, pcc_thunk_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_ObjectLiteral, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_ObjectLiteral, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1712,7 +1712,7 @@ static void pcc_action_ObjectLiteral_2(KCParser_context_t *__pcc_ctx, pcc_thunk_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_ObjectLiteral, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_ObjectLiteral, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1745,7 +1745,7 @@ static void pcc_action_PropertyDefinitionList_1(KCParser_context_t *__pcc_ctx, p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_PropertyDefinitionList, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_PropertyDefinitionList, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1795,7 +1795,7 @@ static void pcc_action_PropertyDefinition_2(KCParser_context_t *__pcc_ctx, pcc_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_PropertyDefinition, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_PropertyDefinition, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1909,7 +1909,7 @@ static void pcc_action_CoverInitializedName_0(KCParser_context_t *__pcc_ctx, pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_CoverInitializedName, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_CoverInitializedName, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1959,7 +1959,7 @@ static void pcc_action_MemberExpression_1(KCParser_context_t *__pcc_ctx, pcc_thu
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_MemberExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_MemberExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -1992,7 +1992,7 @@ static void pcc_action_NewExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_NewExpression, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_NewExpression, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2009,7 +2009,7 @@ static void pcc_action_CallExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_CallExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2027,7 +2027,7 @@ static void pcc_action_CallExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_CallExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2045,7 +2045,7 @@ static void pcc_action_CallExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_CallExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_CallExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2061,7 +2061,7 @@ static void pcc_action_Arguments_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_Arguments_Empty);
+    __ = CREATE_TERMINAL0(KCNodeKind_Arguments_Empty);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2108,7 +2108,7 @@ static void pcc_action_ArgumentList_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_Arguments_Ellipsis, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_Arguments_Ellipsis, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2125,7 +2125,7 @@ static void pcc_action_ArgumentList_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_Arguments_List, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_Arguments_List, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2143,7 +2143,7 @@ static void pcc_action_ArgumentList_3(KCParser_context_t *__pcc_ctx, pcc_thunk_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_Arguments_List_Ellipsis, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_Arguments_List_Ellipsis, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2208,7 +2208,7 @@ static void pcc_action_PostfixExpression_1(KCParser_context_t *__pcc_ctx, pcc_th
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_PostfixExpression_PlusPlus, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_PostfixExpression_PlusPlus, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2224,7 +2224,7 @@ static void pcc_action_PostfixExpression_2(KCParser_context_t *__pcc_ctx, pcc_th
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_PostfixExpression_MinusMinus, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_PostfixExpression_MinusMinus, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2256,7 +2256,7 @@ static void pcc_action_UnaryExpression_1(KCParser_context_t *__pcc_ctx, pcc_thun
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_PlusPlus, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_PlusPlus, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2272,7 +2272,7 @@ static void pcc_action_UnaryExpression_2(KCParser_context_t *__pcc_ctx, pcc_thun
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_MinusMinus, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_MinusMinus, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2288,7 +2288,7 @@ static void pcc_action_UnaryExpression_3(KCParser_context_t *__pcc_ctx, pcc_thun
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Plus, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_Plus, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2304,7 +2304,7 @@ static void pcc_action_UnaryExpression_4(KCParser_context_t *__pcc_ctx, pcc_thun
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Minus, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_Minus, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2320,7 +2320,7 @@ static void pcc_action_UnaryExpression_5(KCParser_context_t *__pcc_ctx, pcc_thun
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Tilde, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_Tilde, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2336,7 +2336,7 @@ static void pcc_action_UnaryExpression_6(KCParser_context_t *__pcc_ctx, pcc_thun
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL1(KGNodeKind_UnaryExpression_Bang, c0);
+    __ = CREATE_NONTERMINAL1(KCNodeKind_UnaryExpression_Bang, c0);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2370,7 +2370,7 @@ static void pcc_action_MultiplicativeExpression_1(KCParser_context_t *__pcc_ctx,
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL3(KGNodeKind_MultiplicativeExpression, c0, c1, c2);
+    __ = CREATE_NONTERMINAL3(KCNodeKind_MultiplicativeExpression, c0, c1, c2);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2387,7 +2387,7 @@ static void pcc_action_MultiplicativeOperator_0(KCParser_context_t *__pcc_ctx, p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Asterisk);
+    __ = CREATE_TERMINAL0(KCNodeKind_MultiplicativeOperator_Asterisk);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2401,7 +2401,7 @@ static void pcc_action_MultiplicativeOperator_1(KCParser_context_t *__pcc_ctx, p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Div);
+    __ = CREATE_TERMINAL0(KCNodeKind_MultiplicativeOperator_Div);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2415,7 +2415,7 @@ static void pcc_action_MultiplicativeOperator_2(KCParser_context_t *__pcc_ctx, p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_MultiplicativeOperator_Percent);
+    __ = CREATE_TERMINAL0(KCNodeKind_MultiplicativeOperator_Percent);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2447,7 +2447,7 @@ static void pcc_action_AdditiveExpression_1(KCParser_context_t *__pcc_ctx, pcc_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_AdditiveExpression_Plus, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_AdditiveExpression_Plus, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2465,7 +2465,7 @@ static void pcc_action_AdditiveExpression_2(KCParser_context_t *__pcc_ctx, pcc_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_AdditiveExpression_Minus, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_AdditiveExpression_Minus, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2499,7 +2499,7 @@ static void pcc_action_ShiftExpression_1(KCParser_context_t *__pcc_ctx, pcc_thun
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_ShiftExpression_LeftShift, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_ShiftExpression_LeftShift, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2517,7 +2517,7 @@ static void pcc_action_ShiftExpression_2(KCParser_context_t *__pcc_ctx, pcc_thun
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_ShiftExpression_RightShift, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_ShiftExpression_RightShift, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2551,7 +2551,7 @@ static void pcc_action_RelationalExpression_1(KCParser_context_t *__pcc_ctx, pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_LessThan, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_RelationalExpression_LessThan, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2569,7 +2569,7 @@ static void pcc_action_RelationalExpression_2(KCParser_context_t *__pcc_ctx, pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_GreaterThan, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_RelationalExpression_GreaterThan, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2587,7 +2587,7 @@ static void pcc_action_RelationalExpression_3(KCParser_context_t *__pcc_ctx, pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_LessThanOrEqual, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_RelationalExpression_LessThanOrEqual, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2605,7 +2605,7 @@ static void pcc_action_RelationalExpression_4(KCParser_context_t *__pcc_ctx, pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_RelationalExpression_GreaterThanOrEqual, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_RelationalExpression_GreaterThanOrEqual, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2639,7 +2639,7 @@ static void pcc_action_EqualityExpression_1(KCParser_context_t *__pcc_ctx, pcc_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_EqualityExpression_Equal, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_EqualityExpression_Equal, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2657,7 +2657,7 @@ static void pcc_action_EqualityExpression_2(KCParser_context_t *__pcc_ctx, pcc_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_EqualityExpression_NotEqual, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_EqualityExpression_NotEqual, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2691,7 +2691,7 @@ static void pcc_action_BitwiseANDExpression_1(KCParser_context_t *__pcc_ctx, pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseANDExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_BitwiseANDExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2725,7 +2725,7 @@ static void pcc_action_BitwiseXORExpression_1(KCParser_context_t *__pcc_ctx, pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseXORExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_BitwiseXORExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2759,7 +2759,7 @@ static void pcc_action_BitwiseORExpression_1(KCParser_context_t *__pcc_ctx, pcc_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_BitwiseORExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_BitwiseORExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2793,7 +2793,7 @@ static void pcc_action_LogicalANDExpression_1(KCParser_context_t *__pcc_ctx, pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_LogicalANDExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_LogicalANDExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2827,7 +2827,7 @@ static void pcc_action_LogicalORExpression_1(KCParser_context_t *__pcc_ctx, pcc_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_LogicalORExpression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_LogicalORExpression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2862,7 +2862,7 @@ static void pcc_action_ConditionalExpression_1(KCParser_context_t *__pcc_ctx, pc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL3(KGNodeKind_ConditionalExpression, c0, c1, c2);
+    __ = CREATE_NONTERMINAL3(KCNodeKind_ConditionalExpression, c0, c1, c2);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2913,7 +2913,7 @@ static void pcc_action_Expression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_NONTERMINAL2(KGNodeKind_Expression, c0, c1);
+    __ = CREATE_NONTERMINAL2(KCNodeKind_Expression, c0, c1);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2929,7 +2929,7 @@ static void pcc_action_KW_Break_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Break);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Break);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2943,7 +2943,7 @@ static void pcc_action_KW_Case_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Case);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Case);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2957,7 +2957,7 @@ static void pcc_action_KW_Catch_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Catch);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Catch);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2971,7 +2971,7 @@ static void pcc_action_KW_Class_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Class);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Class);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2985,7 +2985,7 @@ static void pcc_action_KW_Const_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Const);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Const);
 #undef _0e
 #undef _0s
 #undef _0
@@ -2999,7 +2999,7 @@ static void pcc_action_KW_Continue_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t 
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Continue);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Continue);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3013,7 +3013,7 @@ static void pcc_action_KW_Debugger_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t 
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Debugger);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Debugger);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3027,7 +3027,7 @@ static void pcc_action_KW_Default_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Default);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Default);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3041,7 +3041,7 @@ static void pcc_action_KW_Delete_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Delete);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Delete);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3055,7 +3055,7 @@ static void pcc_action_KW_Do_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Do);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Do);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3069,7 +3069,7 @@ static void pcc_action_KW_Else_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Else);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Else);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3083,7 +3083,7 @@ static void pcc_action_KW_Export_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Export);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Export);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3097,7 +3097,7 @@ static void pcc_action_KW_Extends_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Extends);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Extends);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3111,7 +3111,7 @@ static void pcc_action_KW_Finally_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Finally);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Finally);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3125,7 +3125,7 @@ static void pcc_action_KW_For_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_For);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_For);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3139,7 +3139,7 @@ static void pcc_action_KW_Function_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t 
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Function);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Function);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3153,7 +3153,7 @@ static void pcc_action_KW_If_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_If);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_If);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3167,7 +3167,7 @@ static void pcc_action_KW_Import_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Import);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Import);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3181,7 +3181,7 @@ static void pcc_action_KW_In_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_In);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_In);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3195,7 +3195,7 @@ static void pcc_action_KW_Instanceof_0(KCParser_context_t *__pcc_ctx, pcc_thunk_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Instanceof);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Instanceof);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3209,7 +3209,7 @@ static void pcc_action_KW_New_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_New);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_New);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3223,7 +3223,7 @@ static void pcc_action_KW_Return_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Return);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Return);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3237,7 +3237,7 @@ static void pcc_action_KW_Super_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Super);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Super);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3251,7 +3251,7 @@ static void pcc_action_KW_Switch_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Switch);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Switch);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3265,7 +3265,7 @@ static void pcc_action_KW_This_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_This);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_This);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3279,7 +3279,7 @@ static void pcc_action_KW_Throw_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Throw);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Throw);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3293,7 +3293,7 @@ static void pcc_action_KW_Try_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Try);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Try);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3307,7 +3307,7 @@ static void pcc_action_KW_Typeof_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Typeof);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Typeof);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3321,7 +3321,7 @@ static void pcc_action_KW_Var_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Var);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Var);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3335,7 +3335,7 @@ static void pcc_action_KW_Void_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Void);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Void);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3349,7 +3349,7 @@ static void pcc_action_KW_While_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_While);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_While);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3363,7 +3363,7 @@ static void pcc_action_KW_With_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_With);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_With);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3377,7 +3377,7 @@ static void pcc_action_KW_Yield_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Yield);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Yield);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3391,7 +3391,7 @@ static void pcc_action_KW_Enum_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Enum);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Enum);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3405,7 +3405,7 @@ static void pcc_action_KW_Await_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Await);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Await);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3419,7 +3419,7 @@ static void pcc_action_KW_Implements_0(KCParser_context_t *__pcc_ctx, pcc_thunk_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Implements);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Implements);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3433,7 +3433,7 @@ static void pcc_action_KW_Interface_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Interface);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Interface);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3447,7 +3447,7 @@ static void pcc_action_KW_Package_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Package);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Package);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3461,7 +3461,7 @@ static void pcc_action_KW_Private_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Private);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Private);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3475,7 +3475,7 @@ static void pcc_action_KW_Protected_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Protected);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Protected);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3489,7 +3489,7 @@ static void pcc_action_KW_Public_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_KW_Public);
+    __ = CREATE_TERMINAL0(KCNodeKind_KW_Public);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3503,7 +3503,7 @@ static void pcc_action_NullLiteral_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t 
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_NullLiteral);
+    __ = CREATE_TERMINAL0(KCNodeKind_NullLiteral);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3517,7 +3517,7 @@ static void pcc_action_BooleanLiteral_0(KCParser_context_t *__pcc_ctx, pcc_thunk
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_BooleanLiteral_True);
+    __ = CREATE_TERMINAL0(KCNodeKind_BooleanLiteral_True);
 #undef _0e
 #undef _0s
 #undef _0
@@ -3531,7 +3531,7 @@ static void pcc_action_BooleanLiteral_1(KCParser_context_t *__pcc_ctx, pcc_thunk
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    __ = KGNODE_TERMINAL0(KGNodeKind_BooleanLiteral_False);
+    __ = CREATE_TERMINAL0(KCNodeKind_BooleanLiteral_False);
 #undef _0e
 #undef _0s
 #undef _0

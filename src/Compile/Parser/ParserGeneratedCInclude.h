@@ -14,15 +14,15 @@
 // TODO: Change this to DEBUG when debugging
 // #undef PCC_DEBUG
 
-#define KGNODE_NONTERMINAL0(Kind)                                              \
-  Auxil->CreateNonTerminal0(auxil, _0s, _0e, Kind)
-#define KGNODE_NONTERMINAL1(Kind, Child0)                                      \
-  Auxil->CreateNonTerminal1(auxil, _0s, _0e, Kind, Child0)
-#define KGNODE_NONTERMINAL2(Kind, Child0, Child1)                              \
-  Auxil->CreateNonTerminal2(auxil, _0s, _0e, Kind, Child0, Child1)
-#define KGNODE_NONTERMINAL3(Kind, Child0, Child1, Child2)                      \
-  Auxil->CreateNonTerminal3(auxil, _0s, _0e, Kind, Child0, Child1, Child2)
+#define CREATE_NONTERMINAL0(Kind)                                              \
+  auxil->CreateNonTerminal0(auxil, _0s, _0e, Kind)
+#define CREATE_NONTERMINAL1(Kind, Child0)                                      \
+  auxil->CreateNonTerminal1(auxil, _0s, _0e, Kind, Child0)
+#define CREATE_NONTERMINAL2(Kind, Child0, Child1)                              \
+  auxil->CreateNonTerminal2(auxil, _0s, _0e, Kind, Child0, Child1)
+#define CREATE_NONTERMINAL3(Kind, Child0, Child1, Child2)                      \
+  auxil->CreateNonTerminal3(auxil, _0s, _0e, Kind, Child0, Child1, Child2)
 
-#define KGNODE_TERMINAL0(Kind) Auxil->CreateTerminal0(auxil, _0s, _0e, Kind)
-#define KGNODE_TERMINAL1(Kind, Value)                                          \
-  Auxil->CreateTerminal1(auxil, _0s, _0e, Kind, Value)
+#define CREATE_TERMINAL0(Kind) auxil->CreateTerminal0(auxil, _0s, _0e, Kind)
+#define CREATE_TERMINAL1(Kind, Value)                                          \
+  auxil->CreateTerminal1(auxil, _0s, _0e, Kind, Value)
