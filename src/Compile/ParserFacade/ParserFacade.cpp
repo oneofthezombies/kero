@@ -32,7 +32,11 @@ kero::compile::Node::Node(Span &&Location, const NodeKind Kind,
 
 auto kero::compile::operator<<(std::ostream &Out, const Node &N)
     -> std::ostream & {
-  Out << "Node{";
+  if (N.IsTerminal) {
+    Out << "Terminal{";
+  } else {
+    Out << "NonTerminal{";
+  }
   Out << "Kind: " << KCNodeKindToString(N.Kind);
   Out << ", ";
   if (N.IsTerminal) {
