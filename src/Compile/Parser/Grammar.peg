@@ -279,7 +279,7 @@ Expression
 # Lexical Grammar
 # --------
 
-SourceCharacter <- . # any Unicode code point
+SourceCharacter <- .
 
 InputElementDiv
     <- WhiteSpace
