@@ -1,13 +1,13 @@
 # Kero grammar
 # This file is written in the "PackCC 1.8.0" grammar.
 
-%prefix "KGParser"
+%prefix "KCParser"
 
-%value "KGNodeId"
-%auxil "KGParserAuxil *"
+%value "KCNodeId"
+%auxil "KCParserAuxil *"
 
 %header {
-#include "ParserAuxil.h"
+#include "Core.h"
 }
 
 %source {

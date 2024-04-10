@@ -68,11 +68,11 @@ typedef struct pcc_range_tag {
     size_t end;
 } pcc_range_t;
 
-typedef KGNodeId pcc_value_t;
+typedef KCNodeId pcc_value_t;
 
-typedef KGParserAuxil *pcc_auxil_t;
+typedef KCParserAuxil *pcc_auxil_t;
 
-typedef KGParser_context_t pcc_context_t;
+typedef KCParser_context_t pcc_context_t;
 
 typedef struct pcc_value_table_tag {
     pcc_value_t *buf;
@@ -242,7 +242,7 @@ typedef struct pcc_memory_recycler_tag {
     size_t element_size;
 } pcc_memory_recycler_t;
 
-struct KGParser_context_tag {
+struct KCParser_context_tag {
     size_t pos; /* the position in the input of the first character currently buffered */
     size_t cur; /* the current parsing position in the character buffer */
     size_t level;
@@ -1119,7 +1119,7 @@ static void pcc_do_action(pcc_context_t *ctx, const pcc_thunk_array_t *thunks, p
     }
 }
 
-static void pcc_action_Module_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Module_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1135,7 +1135,7 @@ static void pcc_action_Module_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #undef auxil
 }
 
-static void pcc_action_ModuleBody_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ModuleBody_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1151,7 +1151,7 @@ static void pcc_action_ModuleBody_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_ModuleItemList_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ModuleItemList_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1167,7 +1167,7 @@ static void pcc_action_ModuleItemList_0(KGParser_context_t *__pcc_ctx, pcc_thunk
 #undef auxil
 }
 
-static void pcc_action_ModuleItemList_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ModuleItemList_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1185,7 +1185,7 @@ static void pcc_action_ModuleItemList_1(KGParser_context_t *__pcc_ctx, pcc_thunk
 #undef auxil
 }
 
-static void pcc_action_ModuleItem_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ModuleItem_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1201,7 +1201,7 @@ static void pcc_action_ModuleItem_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_Statement_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Statement_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1217,7 +1217,7 @@ static void pcc_action_Statement_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_Statement_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Statement_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1233,7 +1233,7 @@ static void pcc_action_Statement_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_BlockStatement_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BlockStatement_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1249,7 +1249,7 @@ static void pcc_action_BlockStatement_0(KGParser_context_t *__pcc_ctx, pcc_thunk
 #undef auxil
 }
 
-static void pcc_action_Block_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Block_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1265,7 +1265,7 @@ static void pcc_action_Block_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc
 #undef auxil
 }
 
-static void pcc_action_StatementList_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_StatementList_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1281,7 +1281,7 @@ static void pcc_action_StatementList_0(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_StatementList_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_StatementList_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1299,7 +1299,7 @@ static void pcc_action_StatementList_1(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_StatementListItem_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_StatementListItem_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1315,7 +1315,7 @@ static void pcc_action_StatementListItem_0(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_IfStatement_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_IfStatement_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1335,7 +1335,7 @@ static void pcc_action_IfStatement_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_IfStatement_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_IfStatement_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1353,7 +1353,7 @@ static void pcc_action_IfStatement_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_IdentifierReference_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_IdentifierReference_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1369,7 +1369,7 @@ static void pcc_action_IdentifierReference_0(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_IdentifierReference_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_IdentifierReference_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1385,7 +1385,7 @@ static void pcc_action_IdentifierReference_1(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_Identifier_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Identifier_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1401,7 +1401,7 @@ static void pcc_action_Identifier_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_PrimaryExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PrimaryExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1417,7 +1417,7 @@ static void pcc_action_PrimaryExpression_0(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_PrimaryExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PrimaryExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1433,7 +1433,7 @@ static void pcc_action_PrimaryExpression_1(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_PrimaryExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PrimaryExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1449,7 +1449,7 @@ static void pcc_action_PrimaryExpression_2(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_PrimaryExpression_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PrimaryExpression_3(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1465,7 +1465,7 @@ static void pcc_action_PrimaryExpression_3(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_PrimaryExpression_4(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PrimaryExpression_4(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1481,7 +1481,7 @@ static void pcc_action_PrimaryExpression_4(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_Literal_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Literal_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1497,7 +1497,7 @@ static void pcc_action_Literal_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_Literal_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Literal_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1513,7 +1513,7 @@ static void pcc_action_Literal_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_Literal_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Literal_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1529,7 +1529,7 @@ static void pcc_action_Literal_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_Literal_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Literal_3(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1545,7 +1545,7 @@ static void pcc_action_Literal_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_ArrayLiteral_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ArrayLiteral_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -1559,7 +1559,7 @@ static void pcc_action_ArrayLiteral_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_ArrayLiteral_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ArrayLiteral_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1575,7 +1575,7 @@ static void pcc_action_ArrayLiteral_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_ArrayLiteral_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ArrayLiteral_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1591,7 +1591,7 @@ static void pcc_action_ArrayLiteral_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_ElementList_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ElementList_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1607,7 +1607,7 @@ static void pcc_action_ElementList_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_ElementList_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ElementList_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1623,7 +1623,7 @@ static void pcc_action_ElementList_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_ElementList_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ElementList_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1641,7 +1641,7 @@ static void pcc_action_ElementList_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_ElementList_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ElementList_3(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1659,7 +1659,7 @@ static void pcc_action_ElementList_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_SpreadElement_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_SpreadElement_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1675,7 +1675,7 @@ static void pcc_action_SpreadElement_0(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_ObjectLiteral_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ObjectLiteral_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -1689,7 +1689,7 @@ static void pcc_action_ObjectLiteral_0(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_ObjectLiteral_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ObjectLiteral_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1705,7 +1705,7 @@ static void pcc_action_ObjectLiteral_1(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_ObjectLiteral_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ObjectLiteral_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1721,7 +1721,7 @@ static void pcc_action_ObjectLiteral_2(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_PropertyDefinitionList_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PropertyDefinitionList_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1737,7 +1737,7 @@ static void pcc_action_PropertyDefinitionList_0(KGParser_context_t *__pcc_ctx, p
 #undef auxil
 }
 
-static void pcc_action_PropertyDefinitionList_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PropertyDefinitionList_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1755,7 +1755,7 @@ static void pcc_action_PropertyDefinitionList_1(KGParser_context_t *__pcc_ctx, p
 #undef auxil
 }
 
-static void pcc_action_PropertyDefinition_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PropertyDefinition_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1771,7 +1771,7 @@ static void pcc_action_PropertyDefinition_0(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_PropertyDefinition_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PropertyDefinition_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1787,7 +1787,7 @@ static void pcc_action_PropertyDefinition_1(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_PropertyDefinition_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PropertyDefinition_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1805,7 +1805,7 @@ static void pcc_action_PropertyDefinition_2(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_PropertyName_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PropertyName_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1821,7 +1821,7 @@ static void pcc_action_PropertyName_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_PropertyName_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PropertyName_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1837,7 +1837,7 @@ static void pcc_action_PropertyName_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_LiteralPropertyName_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LiteralPropertyName_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1853,7 +1853,7 @@ static void pcc_action_LiteralPropertyName_0(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_LiteralPropertyName_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LiteralPropertyName_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1869,7 +1869,7 @@ static void pcc_action_LiteralPropertyName_1(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_LiteralPropertyName_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LiteralPropertyName_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1885,7 +1885,7 @@ static void pcc_action_LiteralPropertyName_2(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_ComputedPropertyName_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ComputedPropertyName_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1901,7 +1901,7 @@ static void pcc_action_ComputedPropertyName_0(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_CoverInitializedName_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_CoverInitializedName_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1919,7 +1919,7 @@ static void pcc_action_CoverInitializedName_0(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_Initializer_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Initializer_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1935,7 +1935,7 @@ static void pcc_action_Initializer_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_MemberExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_MemberExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1951,7 +1951,7 @@ static void pcc_action_MemberExpression_0(KGParser_context_t *__pcc_ctx, pcc_thu
 #undef auxil
 }
 
-static void pcc_action_MemberExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_MemberExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1969,7 +1969,7 @@ static void pcc_action_MemberExpression_1(KGParser_context_t *__pcc_ctx, pcc_thu
 #undef auxil
 }
 
-static void pcc_action_NewExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_NewExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -1985,7 +1985,7 @@ static void pcc_action_NewExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_NewExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_NewExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2001,7 +2001,7 @@ static void pcc_action_NewExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_CallExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_CallExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2019,7 +2019,7 @@ static void pcc_action_CallExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk
 #undef auxil
 }
 
-static void pcc_action_CallExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_CallExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2037,7 +2037,7 @@ static void pcc_action_CallExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk
 #undef auxil
 }
 
-static void pcc_action_CallExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_CallExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2055,7 +2055,7 @@ static void pcc_action_CallExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk
 #undef auxil
 }
 
-static void pcc_action_Arguments_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Arguments_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2069,7 +2069,7 @@ static void pcc_action_Arguments_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_Arguments_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Arguments_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2085,7 +2085,7 @@ static void pcc_action_Arguments_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_ArgumentList_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ArgumentList_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2101,7 +2101,7 @@ static void pcc_action_ArgumentList_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_ArgumentList_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ArgumentList_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2117,7 +2117,7 @@ static void pcc_action_ArgumentList_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_ArgumentList_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ArgumentList_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2135,7 +2135,7 @@ static void pcc_action_ArgumentList_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_ArgumentList_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ArgumentList_3(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2153,7 +2153,7 @@ static void pcc_action_ArgumentList_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_LeftHandSideExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LeftHandSideExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2169,7 +2169,7 @@ static void pcc_action_LeftHandSideExpression_0(KGParser_context_t *__pcc_ctx, p
 #undef auxil
 }
 
-static void pcc_action_LeftHandSideExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LeftHandSideExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2185,7 +2185,7 @@ static void pcc_action_LeftHandSideExpression_1(KGParser_context_t *__pcc_ctx, p
 #undef auxil
 }
 
-static void pcc_action_PostfixExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PostfixExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2201,7 +2201,7 @@ static void pcc_action_PostfixExpression_0(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_PostfixExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PostfixExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2217,7 +2217,7 @@ static void pcc_action_PostfixExpression_1(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_PostfixExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_PostfixExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2233,7 +2233,7 @@ static void pcc_action_PostfixExpression_2(KGParser_context_t *__pcc_ctx, pcc_th
 #undef auxil
 }
 
-static void pcc_action_UnaryExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_UnaryExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2249,7 +2249,7 @@ static void pcc_action_UnaryExpression_0(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_UnaryExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_UnaryExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2265,7 +2265,7 @@ static void pcc_action_UnaryExpression_1(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_UnaryExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_UnaryExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2281,7 +2281,7 @@ static void pcc_action_UnaryExpression_2(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_UnaryExpression_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_UnaryExpression_3(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2297,7 +2297,7 @@ static void pcc_action_UnaryExpression_3(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_UnaryExpression_4(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_UnaryExpression_4(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2313,7 +2313,7 @@ static void pcc_action_UnaryExpression_4(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_UnaryExpression_5(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_UnaryExpression_5(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2329,7 +2329,7 @@ static void pcc_action_UnaryExpression_5(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_UnaryExpression_6(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_UnaryExpression_6(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2345,7 +2345,7 @@ static void pcc_action_UnaryExpression_6(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_MultiplicativeExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_MultiplicativeExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2361,7 +2361,7 @@ static void pcc_action_MultiplicativeExpression_0(KGParser_context_t *__pcc_ctx,
 #undef auxil
 }
 
-static void pcc_action_MultiplicativeExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_MultiplicativeExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2381,7 +2381,7 @@ static void pcc_action_MultiplicativeExpression_1(KGParser_context_t *__pcc_ctx,
 #undef auxil
 }
 
-static void pcc_action_MultiplicativeOperator_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_MultiplicativeOperator_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2395,7 +2395,7 @@ static void pcc_action_MultiplicativeOperator_0(KGParser_context_t *__pcc_ctx, p
 #undef auxil
 }
 
-static void pcc_action_MultiplicativeOperator_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_MultiplicativeOperator_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2409,7 +2409,7 @@ static void pcc_action_MultiplicativeOperator_1(KGParser_context_t *__pcc_ctx, p
 #undef auxil
 }
 
-static void pcc_action_MultiplicativeOperator_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_MultiplicativeOperator_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2423,7 +2423,7 @@ static void pcc_action_MultiplicativeOperator_2(KGParser_context_t *__pcc_ctx, p
 #undef auxil
 }
 
-static void pcc_action_AdditiveExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_AdditiveExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2439,7 +2439,7 @@ static void pcc_action_AdditiveExpression_0(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_AdditiveExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_AdditiveExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2457,7 +2457,7 @@ static void pcc_action_AdditiveExpression_1(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_AdditiveExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_AdditiveExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2475,7 +2475,7 @@ static void pcc_action_AdditiveExpression_2(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_ShiftExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ShiftExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2491,7 +2491,7 @@ static void pcc_action_ShiftExpression_0(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_ShiftExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ShiftExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2509,7 +2509,7 @@ static void pcc_action_ShiftExpression_1(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_ShiftExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ShiftExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2527,7 +2527,7 @@ static void pcc_action_ShiftExpression_2(KGParser_context_t *__pcc_ctx, pcc_thun
 #undef auxil
 }
 
-static void pcc_action_RelationalExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_RelationalExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2543,7 +2543,7 @@ static void pcc_action_RelationalExpression_0(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_RelationalExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_RelationalExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2561,7 +2561,7 @@ static void pcc_action_RelationalExpression_1(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_RelationalExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_RelationalExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2579,7 +2579,7 @@ static void pcc_action_RelationalExpression_2(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_RelationalExpression_3(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_RelationalExpression_3(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2597,7 +2597,7 @@ static void pcc_action_RelationalExpression_3(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_RelationalExpression_4(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_RelationalExpression_4(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2615,7 +2615,7 @@ static void pcc_action_RelationalExpression_4(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_EqualityExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_EqualityExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2631,7 +2631,7 @@ static void pcc_action_EqualityExpression_0(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_EqualityExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_EqualityExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2649,7 +2649,7 @@ static void pcc_action_EqualityExpression_1(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_EqualityExpression_2(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_EqualityExpression_2(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2667,7 +2667,7 @@ static void pcc_action_EqualityExpression_2(KGParser_context_t *__pcc_ctx, pcc_t
 #undef auxil
 }
 
-static void pcc_action_BitwiseANDExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BitwiseANDExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2683,7 +2683,7 @@ static void pcc_action_BitwiseANDExpression_0(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_BitwiseANDExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BitwiseANDExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2701,7 +2701,7 @@ static void pcc_action_BitwiseANDExpression_1(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_BitwiseXORExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BitwiseXORExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2717,7 +2717,7 @@ static void pcc_action_BitwiseXORExpression_0(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_BitwiseXORExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BitwiseXORExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2735,7 +2735,7 @@ static void pcc_action_BitwiseXORExpression_1(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_BitwiseORExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BitwiseORExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2751,7 +2751,7 @@ static void pcc_action_BitwiseORExpression_0(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_BitwiseORExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BitwiseORExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2769,7 +2769,7 @@ static void pcc_action_BitwiseORExpression_1(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_LogicalANDExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LogicalANDExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2785,7 +2785,7 @@ static void pcc_action_LogicalANDExpression_0(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_LogicalANDExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LogicalANDExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2803,7 +2803,7 @@ static void pcc_action_LogicalANDExpression_1(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_LogicalORExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LogicalORExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2819,7 +2819,7 @@ static void pcc_action_LogicalORExpression_0(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_LogicalORExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_LogicalORExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2837,7 +2837,7 @@ static void pcc_action_LogicalORExpression_1(KGParser_context_t *__pcc_ctx, pcc_
 #undef auxil
 }
 
-static void pcc_action_ConditionalExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ConditionalExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2853,7 +2853,7 @@ static void pcc_action_ConditionalExpression_0(KGParser_context_t *__pcc_ctx, pc
 #undef auxil
 }
 
-static void pcc_action_ConditionalExpression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_ConditionalExpression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2873,7 +2873,7 @@ static void pcc_action_ConditionalExpression_1(KGParser_context_t *__pcc_ctx, pc
 #undef auxil
 }
 
-static void pcc_action_AssignmentExpression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_AssignmentExpression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2889,7 +2889,7 @@ static void pcc_action_AssignmentExpression_0(KGParser_context_t *__pcc_ctx, pcc
 #undef auxil
 }
 
-static void pcc_action_Expression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Expression_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2905,7 +2905,7 @@ static void pcc_action_Expression_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_Expression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_Expression_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define c0 (*__pcc_in->data.leaf.values.buf[0])
@@ -2923,7 +2923,7 @@ static void pcc_action_Expression_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_KW_Break_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Break_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2937,7 +2937,7 @@ static void pcc_action_KW_Break_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_Case_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Case_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2951,7 +2951,7 @@ static void pcc_action_KW_Case_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_KW_Catch_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Catch_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2965,7 +2965,7 @@ static void pcc_action_KW_Catch_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_Class_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Class_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2979,7 +2979,7 @@ static void pcc_action_KW_Class_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_Const_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Const_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -2993,7 +2993,7 @@ static void pcc_action_KW_Const_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_Continue_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Continue_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3007,7 +3007,7 @@ static void pcc_action_KW_Continue_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_KW_Debugger_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Debugger_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3021,7 +3021,7 @@ static void pcc_action_KW_Debugger_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_KW_Default_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Default_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3035,7 +3035,7 @@ static void pcc_action_KW_Default_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_KW_Delete_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Delete_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3049,7 +3049,7 @@ static void pcc_action_KW_Delete_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_KW_Do_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Do_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3063,7 +3063,7 @@ static void pcc_action_KW_Do_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc
 #undef auxil
 }
 
-static void pcc_action_KW_Else_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Else_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3077,7 +3077,7 @@ static void pcc_action_KW_Else_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_KW_Export_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Export_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3091,7 +3091,7 @@ static void pcc_action_KW_Export_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_KW_Extends_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Extends_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3105,7 +3105,7 @@ static void pcc_action_KW_Extends_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_KW_Finally_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Finally_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3119,7 +3119,7 @@ static void pcc_action_KW_Finally_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_KW_For_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_For_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3133,7 +3133,7 @@ static void pcc_action_KW_For_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #undef auxil
 }
 
-static void pcc_action_KW_Function_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Function_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3147,7 +3147,7 @@ static void pcc_action_KW_Function_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_KW_If_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_If_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3161,7 +3161,7 @@ static void pcc_action_KW_If_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc
 #undef auxil
 }
 
-static void pcc_action_KW_Import_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Import_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3175,7 +3175,7 @@ static void pcc_action_KW_Import_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_KW_In_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_In_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3189,7 +3189,7 @@ static void pcc_action_KW_In_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc
 #undef auxil
 }
 
-static void pcc_action_KW_Instanceof_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Instanceof_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3203,7 +3203,7 @@ static void pcc_action_KW_Instanceof_0(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_KW_New_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_New_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3217,7 +3217,7 @@ static void pcc_action_KW_New_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #undef auxil
 }
 
-static void pcc_action_KW_Return_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Return_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3231,7 +3231,7 @@ static void pcc_action_KW_Return_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_KW_Super_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Super_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3245,7 +3245,7 @@ static void pcc_action_KW_Super_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_Switch_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Switch_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3259,7 +3259,7 @@ static void pcc_action_KW_Switch_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_KW_This_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_This_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3273,7 +3273,7 @@ static void pcc_action_KW_This_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_KW_Throw_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Throw_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3287,7 +3287,7 @@ static void pcc_action_KW_Throw_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_Try_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Try_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3301,7 +3301,7 @@ static void pcc_action_KW_Try_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #undef auxil
 }
 
-static void pcc_action_KW_Typeof_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Typeof_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3315,7 +3315,7 @@ static void pcc_action_KW_Typeof_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_KW_Var_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Var_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3329,7 +3329,7 @@ static void pcc_action_KW_Var_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pc
 #undef auxil
 }
 
-static void pcc_action_KW_Void_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Void_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3343,7 +3343,7 @@ static void pcc_action_KW_Void_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_KW_While_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_While_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3357,7 +3357,7 @@ static void pcc_action_KW_While_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_With_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_With_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3371,7 +3371,7 @@ static void pcc_action_KW_With_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_KW_Yield_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Yield_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3385,7 +3385,7 @@ static void pcc_action_KW_Yield_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_Enum_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Enum_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3399,7 +3399,7 @@ static void pcc_action_KW_Enum_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__p
 #undef auxil
 }
 
-static void pcc_action_KW_Await_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Await_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3413,7 +3413,7 @@ static void pcc_action_KW_Await_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__
 #undef auxil
 }
 
-static void pcc_action_KW_Implements_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Implements_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3427,7 +3427,7 @@ static void pcc_action_KW_Implements_0(KGParser_context_t *__pcc_ctx, pcc_thunk_
 #undef auxil
 }
 
-static void pcc_action_KW_Interface_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Interface_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3441,7 +3441,7 @@ static void pcc_action_KW_Interface_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_KW_Package_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Package_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3455,7 +3455,7 @@ static void pcc_action_KW_Package_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_KW_Private_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Private_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3469,7 +3469,7 @@ static void pcc_action_KW_Private_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *
 #undef auxil
 }
 
-static void pcc_action_KW_Protected_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Protected_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3483,7 +3483,7 @@ static void pcc_action_KW_Protected_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t
 #undef auxil
 }
 
-static void pcc_action_KW_Public_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_KW_Public_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3497,7 +3497,7 @@ static void pcc_action_KW_Public_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *_
 #undef auxil
 }
 
-static void pcc_action_NullLiteral_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_NullLiteral_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3511,7 +3511,7 @@ static void pcc_action_NullLiteral_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t 
 #undef auxil
 }
 
-static void pcc_action_BooleanLiteral_0(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BooleanLiteral_0(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -3525,7 +3525,7 @@ static void pcc_action_BooleanLiteral_0(KGParser_context_t *__pcc_ctx, pcc_thunk
 #undef auxil
 }
 
-static void pcc_action_BooleanLiteral_1(KGParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
+static void pcc_action_BooleanLiteral_1(KCParser_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, pcc_value_t *__pcc_out) {
 #define auxil (__pcc_ctx->auxil)
 #define __ (*__pcc_out)
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
@@ -11463,11 +11463,11 @@ L0000:;
     return NULL;
 }
 
-KGParser_context_t *KGParser_create(KGParserAuxil *auxil) {
+KCParser_context_t *KCParser_create(KCParserAuxil *auxil) {
     return pcc_context__create(auxil);
 }
 
-int KGParser_parse(KGParser_context_t *ctx, KGNodeId *ret) {
+int KCParser_parse(KCParser_context_t *ctx, KCNodeId *ret) {
     if (pcc_apply_rule(ctx, pcc_evaluate_rule_Module, &ctx->thunks, ret))
         pcc_do_action(ctx, &ctx->thunks, ret);
     else
@@ -11477,6 +11477,6 @@ int KGParser_parse(KGParser_context_t *ctx, KGNodeId *ret) {
     return pcc_refill_buffer(ctx, 1) >= 1;
 }
 
-void KGParser_destroy(KGParser_context_t *ctx) {
+void KCParser_destroy(KCParser_context_t *ctx) {
     pcc_context__destroy(ctx);
 }

@@ -14,5 +14,11 @@
   },
   "[bazel]": {
     "editor.formatOnSave": true
+  },
+  "files.associations": {
+    "src/Compile/Parser/**/*.c": "c",
+    "src/Compile/Parser/**/*.h": "c",
+    "src/Compile/ParserFacade/**/*.cpp": "cpp",
+    "src/Compile/ParserFacade/**/*.h": "cpp"
   }
 }

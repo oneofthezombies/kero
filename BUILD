@@ -1,17 +1,15 @@
 cc_library(
-    name = "KeroGrammarParser",
+    name = "KeroCompileParser",
     srcs = [
-        "src/Grammar/NodeKindGenerated.h",
-        "src/Grammar/NodeKindUtilGenerated.cpp",
-        "src/Grammar/NodeKindUtilGenerated.h",
-        "src/Grammar/Parser.cpp",
-        "src/Grammar/ParserAuxil.h",
-        "src/Grammar/ParserGenerated.c",
-        "src/Grammar/ParserGenerated.h",
-        "src/Grammar/ParserGeneratedCInclude.h",
+        "src/Compile/Parser/Core.h",
+        "src/Compile/Parser/NodeKindGenerated.c",
+        "src/Compile/Parser/NodeKindGenerated.h",
+        "src/Compile/Parser/ParserGenerated.c",
+        "src/Compile/Parser/ParserGenerated.h",
+        "src/Compile/Parser/ParserGeneratedCInclude.h",
     ],
     hdrs = [
-        "src/Grammar/Parser.h",
+        "src/Compile/Parser/Core.h",
     ],
     copts = [
         "-std=c17",
@@ -21,13 +19,32 @@ cc_library(
     ],
 )
 
-cc_test(
-    name = "KeroGrammarTest",
+cc_library(
+    name = "KeroCompileParserFacade",
     srcs = [
-        "src/Grammar/ParserTest.cpp",
+        "src/Compile/ParserFacade/ParserFacade.cpp",
+    ],
+    hdrs = [
+        "src/Compile/ParserFacade/ParserFacade.h",
+    ],
+    copts = [
+        "-std=c++20",
+    ],
+    includes = [
+        "src",
     ],
     deps = [
-        ":KeroGrammarParser",
+        ":KeroCompileParser",
+    ],
+)
+
+cc_test(
+    name = "KeroCompileParserFacadeTest",
+    srcs = [
+        "src/Compile/ParserFacade/ParserFacadeTest.cpp",
+    ],
+    deps = [
+        ":KeroCompileParserFacade",
         "@googletest//:gtest_main",
     ],
 )
