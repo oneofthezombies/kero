@@ -20,7 +20,7 @@
 # NOTE: !InputElementDiv fails if there are unused rules when parsing peg 
 # grammar, so !InputElementDiv was added after EndOfInput.
 Module
-    <- _ c0:ModuleBody? _ EndOfInput !InputElementDiv { $$ = CREATE_NONTERMINAL1(KCNodeKind_Module, c0); }
+    <- _ c0:ModuleBody? _ EndOfInput !(InputElementDiv / LetOrConst) { $$ = CREATE_NONTERMINAL1(KCNodeKind_Module, c0); }
 
 ModuleBody
     <- c0:ModuleItemList { $$ = c0; }
@@ -42,7 +42,7 @@ Statement
     <- c0:BlockStatement { $$ = c0; }
     # / VariableStatement
     # / EmptyStatement
-    # / ExpressionStatement
+    / c0:ExpressionStatement { $$ = c0; }
     / c0:IfStatement { $$ = c0; }
     # / BreakableStatement
     # / ContinueStatement
@@ -67,6 +67,15 @@ StatementList
 StatementListItem
     <- c0:Statement { $$ = c0; }
     # / Declaration
+
+LetOrConst 
+    <- c0:KW_Let { $$ = c0; }
+    / c0:KW_Const { $$ = c0; }
+
+KW_Let <- 'let' { $$ = CREATE_TERMINAL0(KCNodeKind_KW_Let); }
+
+ExpressionStatement
+    <- !(PT_LeftBrace / KW_Function / KW_Class / (KW_Let _ PT_LeftBracket)) c0:Expression _ PT_Semicolon { $$ = c0; }
 
 IfStatement
     <- KW_If _ PT_LeftParenthesis _ c0:Expression _ PT_RightParenthesis _ c1:Statement _ KW_Else _ c2:Statement { $$ = CREATE_NONTERMINAL3(KCNodeKind_IfStatement_IfElse, c0, c1, c2); }

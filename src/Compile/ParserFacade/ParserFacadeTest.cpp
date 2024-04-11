@@ -85,3 +85,7 @@ TEST(ParserTest, IfStatement) {
       kero::compile::ParserFacade{"if (true) {} else if (true)//\n{}"}.parse());
   EXPECT_TRUE(kero::compile::ParserFacade{"if (true) {} else//\n{}"}.parse());
 }
+
+TEST(ParserTest, DecimalLiteral) {
+  EXPECT_TRUE(kero::compile::ParserFacade{"0"}.parse());
+}

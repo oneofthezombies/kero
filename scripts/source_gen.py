@@ -58,6 +58,7 @@ node_kinds = [
   "KW_In",
   "KW_Instanceof",
   "KW_Interface",
+  "KW_Let",
   "KW_New",
   "KW_Package",
   "KW_Private",

@@ -116,6 +116,8 @@ const char *KCNodeKindToString(KCNodeKind Kind) {
     return "KW_Instanceof";
   case KCNodeKind_KW_Interface:
     return "KW_Interface";
+  case KCNodeKind_KW_Let:
+    return "KW_Let";
   case KCNodeKind_KW_New:
     return "KW_New";
   case KCNodeKind_KW_Package:

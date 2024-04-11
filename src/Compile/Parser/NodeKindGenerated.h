@@ -63,6 +63,7 @@ typedef enum KCNodeKindTag {
   KCNodeKind_KW_In,
   KCNodeKind_KW_Instanceof,
   KCNodeKind_KW_Interface,
+  KCNodeKind_KW_Let,
   KCNodeKind_KW_New,
   KCNodeKind_KW_Package,
   KCNodeKind_KW_Private,
