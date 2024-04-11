@@ -17,9 +17,9 @@
 # Scripts and Modules
 # --------
 
+# NOTE: !InputElementDiv fails if there are unused rules when parsing peg 
+# grammar, so !InputElementDiv was added after EndOfInput.
 Module
-    # NOTE: !InputElementDiv fails if there are unused rules when parsing peg 
-    # grammar, so !InputElementDiv was added after EndOfInput.
     <- _ c0:ModuleBody? _ EndOfInput !InputElementDiv { $$ = CREATE_NONTERMINAL1(KCNodeKind_Module, c0); }
 
 ModuleBody
@@ -326,39 +326,41 @@ SingleLineCommentChar
     <- !LineTerminator SourceCharacter
 
 CommonToken
-    <- IdentifierName
-    / Punctuator
-    / NumericLiteral
-    / StringLiteral
+    <- c0:IdentifierName { $$ = c0; }
+    / c0:Punctuator { $$ = c0; }
+    / c0:NumericLiteral { $$ = c0; }
+    / c0:StringLiteral { $$ = c0; }
     # / Template
 
 IdentifierName
-    <- IdentifierStart
-    / IdentifierName IdentifierPart
+    <- c0:IdentifierStart { $$ = c0; }
+    / c0:IdentifierName c1:IdentifierPart { $$ = CREATE_NONTERMINAL2(KCNodeKind_IdentifierName, c0, c1); }
 
 IdentifierStart
-    <- UnicodeIDStart
-    / PT_Dollar
-    / PT_Underscore
+    <- c0:UnicodeIDStart { $$ = c0; }
+    / c0:PT_Dollar { $$ = c0; }
+    / c0:PT_Underscore { $$ = c0; }
     # / PT_Backslash UnicodeEscapeSequence
 
 IdentifierPart
-    <- UnicodeIDContinue
-    / PT_Dollar
-    / PT_Underscore
+    <- c0:UnicodeIDContinue { $$ = c0; }
+    / c0:PT_Dollar { $$ = c0; }
+    / c0:PT_Underscore { $$ = c0; }
     # / PT_Backslash UnicodeEscapeSequence
-    / '\u200C' # ZERO WIDTH NON-JOINER
-    / '\u200D' # ZERO WIDTH JOINER
+    # ZERO WIDTH NON-JOINER
+    / '\u200C' { $$ = CREATE_TERMINAL0(KCNodeKind_IdentifierPart); }
+    # ZERO WIDTH JOINER
+    / '\u200D' { $$ = CREATE_TERMINAL0(KCNodeKind_IdentifierPart); }
 
+# TODO: any Unicode code point with the Unicode property “ID_Start” or 
+# “Other_ID_Start”
 UnicodeIDStart
-    # TODO: any Unicode code point with the Unicode property “ID_Start” or 
-    # “Other_ID_Start”
-    <- [a-zA-Z]
+    <- [A-Za-z_] { $$ = CREATE_TERMINAL0(KCNodeKind_UnicodeIDStart); }
 
+# TODO: any Unicode code point with the Unicode property “ID_Continue”, 
+# “Other_ID_Continue”, or “Other_ID_Start”
 UnicodeIDContinue 
-    # TODO: any Unicode code point with the Unicode property “ID_Continue”, 
-    # “Other_ID_Continue”, or “Other_ID_Start”
-    <- [a-zA-Z0-9] 
+    <- [A-Za-z0-9_] { $$ = CREATE_TERMINAL0(KCNodeKind_UnicodeIDContinue); }
 
 ReservedWord
     <- s0:Keyword { $$ = s0; }
@@ -577,37 +579,37 @@ BooleanLiteral
     / 'false' { $$ = CREATE_TERMINAL0(KCNodeKind_BooleanLiteral_False); }
 
 NumericLiteral
-    <- DecimalLiteral
+    <- c0:DecimalLiteral { $$ = c0; }
     # / BinaryIntegerLiteral
     # / OctalIntegerLiteral
     # / HexIntegerLiteral
     # / LegacyOctalIntegerLiteral
 
 DecimalLiteral 
-    <- DecimalIntegerLiteral PT_Period DecimalDigits? ExponentPart? 
-    / PT_Period DecimalDigits ExponentPart?
-    / DecimalIntegerLiteral ExponentPart?
+    <- c0:DecimalIntegerLiteral PT_Period c1:DecimalDigits? c2:ExponentPart? { $$ = CREATE_NONTERMINAL3(KCNodeKind_DecimalLiteral_Integer_Period, c0, c1, c2); }
+    / PT_Period c0:DecimalDigits c1:ExponentPart? { $$ = CREATE_NONTERMINAL2(KCNodeKind_DecimalLiteral_Period, c0, c1); }
+    / c0:DecimalIntegerLiteral c1:ExponentPart? { $$ = CREATE_NONTERMINAL2(KCNodeKind_DecimalLiteral_Integer, c0, c1); }
 
 DecimalIntegerLiteral
-    <- '0'
-    / NonZeroDigit DecimalDigits?
+    <- '0' { $$ = CREATE_TERMINAL0(KCNodeKind_DecimalIntegerLiteral_Zero); }
+    / c0:NonZeroDigit c1:DecimalDigits? { $$ = CREATE_NONTERMINAL2(KCNodeKind_DecimalIntegerLiteral, c0, c1); }
 
 DecimalDigits
-    <- DecimalDigit
-    / DecimalDigits DecimalDigit
+    <- c0:DecimalDigit { $$ = c0; }
+    / c0:DecimalDigits c1:DecimalDigit { $$ = CREATE_NONTERMINAL2(KCNodeKind_DecimalDigits, c0, c1); }
 
-DecimalDigit <- [0-9]
+DecimalDigit <- [0-9] { $$ = CREATE_TERMINAL0(KCNodeKind_DecimalDigit); }
 
-NonZeroDigit <- [1-9]
+NonZeroDigit <- [1-9] { $$ = CREATE_TERMINAL0(KCNodeKind_NonZeroDigit); }
 
-ExponentPart <- ExponentIndicator SignedInteger
+ExponentPart <- c0:ExponentIndicator c1:SignedInteger { $$ = CREATE_NONTERMINAL2(KCNodeKind_ExponentPart, c0, c1); }
 
-ExponentIndicator <- [eE]
+ExponentIndicator <- [eE] { $$ = CREATE_TERMINAL0(KCNodeKind_ExponentIndicator); }
 
 SignedInteger
-    <- DecimalDigits
-    / PT_Plus DecimalDigits
-    / PT_Minus DecimalDigits
+    <- c0:DecimalDigits { $$ = CREATE_NONTERMINAL1(KCNodeKind_SignedInteger_Plus, c0); }
+    / PT_Plus c0:DecimalDigits { $$ = CREATE_NONTERMINAL1(KCNodeKind_SignedInteger_Plus, c0); }
+    / PT_Minus c0:DecimalDigits { $$ = CREATE_NONTERMINAL1(KCNodeKind_SignedInteger_Minus, c0); }
 
 StringLiteral
     <- '"' DoubleStringCharacters? '"'
