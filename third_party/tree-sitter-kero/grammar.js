@@ -3,10 +3,31 @@
 
 module.exports = grammar({
   name: "kero",
-
   rules: {
-    // TODO: add the actual grammar rules
-    source_file: ($) => "hello",
-    source_file2: ($) => "world",
+    source_file: ($) => repeat($._expression),
+
+    identifier: ($) => /[a-zA-Z_]\w*/,
+
+    _expression: ($) =>
+      choice(
+        $.identifier,
+        $.unary_expression,
+        $.binary_expression
+        // ...
+      ),
+
+    unary_expression: ($) =>
+      choice(
+        seq("-", $._expression),
+        seq("!", $._expression)
+        // ...
+      ),
+
+    binary_expression: ($) =>
+      choice(
+        seq($._expression, "*", $._expression),
+        seq($._expression, "+", $._expression)
+        // ...
+      ),
   },
 });

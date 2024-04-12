@@ -7,9 +7,9 @@
 #define LANGUAGE_VERSION 14
 #define STATE_COUNT 4
 #define LARGE_STATE_COUNT 2
-#define SYMBOL_COUNT 4
+#define SYMBOL_COUNT 8
 #define ALIAS_COUNT 0
-#define TOKEN_COUNT 3
+#define TOKEN_COUNT 7
 #define EXTERNAL_TOKEN_COUNT 0
 #define FIELD_COUNT 0
 #define MAX_ALIAS_SEQUENCE_LENGTH 1
@@ -17,21 +17,33 @@
 
 enum ts_symbol_identifiers {
   anon_sym_hello = 1,
-  sym_source_file2 = 2,
-  sym_source_file = 3,
+  sym_identifier = 2,
+  anon_sym_DASH = 3,
+  anon_sym_BANG = 4,
+  anon_sym_STAR = 5,
+  anon_sym_PLUS = 6,
+  sym_source_file = 7,
 };
 
 static const char * const ts_symbol_names[] = {
   [ts_builtin_sym_end] = "end",
   [anon_sym_hello] = "hello",
-  [sym_source_file2] = "source_file2",
+  [sym_identifier] = "identifier",
+  [anon_sym_DASH] = "-",
+  [anon_sym_BANG] = "!",
+  [anon_sym_STAR] = "*",
+  [anon_sym_PLUS] = "+",
   [sym_source_file] = "source_file",
 };
 
 static const TSSymbol ts_symbol_map[] = {
   [ts_builtin_sym_end] = ts_builtin_sym_end,
   [anon_sym_hello] = anon_sym_hello,
-  [sym_source_file2] = sym_source_file2,
+  [sym_identifier] = sym_identifier,
+  [anon_sym_DASH] = anon_sym_DASH,
+  [anon_sym_BANG] = anon_sym_BANG,
+  [anon_sym_STAR] = anon_sym_STAR,
+  [anon_sym_PLUS] = anon_sym_PLUS,
   [sym_source_file] = sym_source_file,
 };
 
@@ -44,9 +56,25 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = true,
     .named = false,
   },
-  [sym_source_file2] = {
+  [sym_identifier] = {
     .visible = true,
     .named = true,
+  },
+  [anon_sym_DASH] = {
+    .visible = true,
+    .named = false,
+  },
+  [anon_sym_BANG] = {
+    .visible = true,
+    .named = false,
+  },
+  [anon_sym_STAR] = {
+    .visible = true,
+    .named = false,
+  },
+  [anon_sym_PLUS] = {
+    .visible = true,
+    .named = false,
   },
   [sym_source_file] = {
     .visible = true,
@@ -74,44 +102,98 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
   eof = lexer->eof(lexer);
   switch (state) {
     case 0:
-      if (eof) ADVANCE(9);
-      if (lookahead == 'h') ADVANCE(2);
-      if (lookahead == 'w') ADVANCE(6);
+      if (eof) ADVANCE(6);
+      if (lookahead == '!') ADVANCE(15);
+      if (lookahead == '*') ADVANCE(16);
+      if (lookahead == '+') ADVANCE(17);
+      if (lookahead == '-') ADVANCE(14);
+      if (lookahead == 'h') ADVANCE(9);
       if (('\t' <= lookahead && lookahead <= '\r') ||
           lookahead == ' ') SKIP(0)
+      if (('A' <= lookahead && lookahead <= 'Z') ||
+          lookahead == '_' ||
+          ('a' <= lookahead && lookahead <= 'z')) ADVANCE(13);
       END_STATE();
     case 1:
-      if (lookahead == 'd') ADVANCE(11);
+      if (lookahead == 'e') ADVANCE(4);
       END_STATE();
     case 2:
-      if (lookahead == 'e') ADVANCE(5);
+      if (lookahead == 'h') ADVANCE(1);
+      if (('\t' <= lookahead && lookahead <= '\r') ||
+          lookahead == ' ') SKIP(2)
       END_STATE();
     case 3:
-      if (lookahead == 'l') ADVANCE(1);
+      if (lookahead == 'l') ADVANCE(5);
       END_STATE();
     case 4:
-      if (lookahead == 'l') ADVANCE(7);
+      if (lookahead == 'l') ADVANCE(3);
       END_STATE();
     case 5:
-      if (lookahead == 'l') ADVANCE(4);
+      if (lookahead == 'o') ADVANCE(7);
       END_STATE();
     case 6:
-      if (lookahead == 'o') ADVANCE(8);
-      END_STATE();
-    case 7:
-      if (lookahead == 'o') ADVANCE(10);
-      END_STATE();
-    case 8:
-      if (lookahead == 'r') ADVANCE(3);
-      END_STATE();
-    case 9:
       ACCEPT_TOKEN(ts_builtin_sym_end);
       END_STATE();
-    case 10:
+    case 7:
       ACCEPT_TOKEN(anon_sym_hello);
       END_STATE();
+    case 8:
+      ACCEPT_TOKEN(anon_sym_hello);
+      if (('0' <= lookahead && lookahead <= '9') ||
+          ('A' <= lookahead && lookahead <= 'Z') ||
+          lookahead == '_' ||
+          ('a' <= lookahead && lookahead <= 'z')) ADVANCE(13);
+      END_STATE();
+    case 9:
+      ACCEPT_TOKEN(sym_identifier);
+      if (lookahead == 'e') ADVANCE(11);
+      if (('0' <= lookahead && lookahead <= '9') ||
+          ('A' <= lookahead && lookahead <= 'Z') ||
+          lookahead == '_' ||
+          ('a' <= lookahead && lookahead <= 'z')) ADVANCE(13);
+      END_STATE();
+    case 10:
+      ACCEPT_TOKEN(sym_identifier);
+      if (lookahead == 'l') ADVANCE(12);
+      if (('0' <= lookahead && lookahead <= '9') ||
+          ('A' <= lookahead && lookahead <= 'Z') ||
+          lookahead == '_' ||
+          ('a' <= lookahead && lookahead <= 'z')) ADVANCE(13);
+      END_STATE();
     case 11:
-      ACCEPT_TOKEN(sym_source_file2);
+      ACCEPT_TOKEN(sym_identifier);
+      if (lookahead == 'l') ADVANCE(10);
+      if (('0' <= lookahead && lookahead <= '9') ||
+          ('A' <= lookahead && lookahead <= 'Z') ||
+          lookahead == '_' ||
+          ('a' <= lookahead && lookahead <= 'z')) ADVANCE(13);
+      END_STATE();
+    case 12:
+      ACCEPT_TOKEN(sym_identifier);
+      if (lookahead == 'o') ADVANCE(8);
+      if (('0' <= lookahead && lookahead <= '9') ||
+          ('A' <= lookahead && lookahead <= 'Z') ||
+          lookahead == '_' ||
+          ('a' <= lookahead && lookahead <= 'z')) ADVANCE(13);
+      END_STATE();
+    case 13:
+      ACCEPT_TOKEN(sym_identifier);
+      if (('0' <= lookahead && lookahead <= '9') ||
+          ('A' <= lookahead && lookahead <= 'Z') ||
+          lookahead == '_' ||
+          ('a' <= lookahead && lookahead <= 'z')) ADVANCE(13);
+      END_STATE();
+    case 14:
+      ACCEPT_TOKEN(anon_sym_DASH);
+      END_STATE();
+    case 15:
+      ACCEPT_TOKEN(anon_sym_BANG);
+      END_STATE();
+    case 16:
+      ACCEPT_TOKEN(anon_sym_STAR);
+      END_STATE();
+    case 17:
+      ACCEPT_TOKEN(anon_sym_PLUS);
       END_STATE();
     default:
       return false;
@@ -120,7 +202,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
 
 static const TSLexMode ts_lex_modes[STATE_COUNT] = {
   [0] = {.lex_state = 0},
-  [1] = {.lex_state = 0},
+  [1] = {.lex_state = 2},
   [2] = {.lex_state = 0},
   [3] = {.lex_state = 0},
 };
@@ -129,7 +211,11 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
   [0] = {
     [ts_builtin_sym_end] = ACTIONS(1),
     [anon_sym_hello] = ACTIONS(1),
-    [sym_source_file2] = ACTIONS(1),
+    [sym_identifier] = ACTIONS(1),
+    [anon_sym_DASH] = ACTIONS(1),
+    [anon_sym_BANG] = ACTIONS(1),
+    [anon_sym_STAR] = ACTIONS(1),
+    [anon_sym_PLUS] = ACTIONS(1),
   },
   [1] = {
     [sym_source_file] = STATE(3),

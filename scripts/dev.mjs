@@ -44,11 +44,24 @@ function generate() {
   generateTreeSitterKero();
 }
 
+function parse() {
+  const result = spawnSync("tree-sitter", ["parse"], {
+    stdio: "inherit",
+    cwd: "third_party/tree-sitter-kero",
+  });
+
+  if (result.error) {
+    console.error(result.error);
+    process.exit(1);
+  }
+}
+
 function help() {
   console.log("Usage: dev.mjs [command]");
   console.log("Commands:");
   console.log("  install: Install dependencies");
   console.log("  generate: Generate parser");
+  console.log("  parse: Parse source file");
 }
 
 function main() {
@@ -58,6 +71,8 @@ function main() {
     install();
   } else if (command === "generate") {
     generate();
+  } else if (command === "parse") {
+    parse();
   } else {
     help();
   }
