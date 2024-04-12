@@ -17,7 +17,9 @@
         }
       },
       "osx": {
-        "sourceMap": { ".": "${workspaceFolder}" }
+        "sourceMap": {
+          ".": "${workspaceFolder}"
+        }
       },
       "preLaunchTask": "Build Compiler Test"
     }
