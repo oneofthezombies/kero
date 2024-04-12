@@ -1,7 +1,5 @@
 #include "compiler/parser.h"
 
-#include <string>
-
 #include "tree-sitter-kero.h"
 
 using namespace kero::compiler;
@@ -15,34 +13,21 @@ void kero::compiler::TSTreeDeleter::operator()(TSTree *tree) const noexcept {
   ts_tree_delete(tree);
 }
 
-kero::compiler::String::String(char *data) noexcept : data_{data} {}
-
-kero::compiler::String::String(String &&other) noexcept
-    : data_{std::exchange(other.data_, nullptr)} {}
-
-kero::compiler::String::~String() noexcept {
-  if (data_) {
-    free(data_);
-    data_ = nullptr;
-  }
+void kero::compiler::CStringDeleter::operator()(char *str) const noexcept {
+  free(str);
 }
 
-auto kero::compiler::String::operator=(String &&other) noexcept -> String & {
-  if (this != &other) {
-    data_ = std::exchange(other.data_, nullptr);
-  }
-
-  return *this;
-}
+kero::compiler::String::String(CStringPtr &&c_str) noexcept
+    : c_str_{std::move(c_str)} {}
 
 auto kero::compiler::String::string_view() const noexcept -> std::string_view {
-  return std::string_view{data_};
+  return std::string_view{c_str_.get()};
 }
 
 kero::compiler::Node::Node(TSNode &&node) noexcept : node_{std::move(node)} {}
 
 auto kero::compiler::Node::string() const noexcept -> String {
-  return String{ts_node_string(node_)};
+  return String{CStringPtr{ts_node_string(node_)}};
 }
 
 kero::compiler::Tree::Tree(TSTreePtr &&tree) noexcept

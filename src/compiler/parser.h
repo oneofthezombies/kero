@@ -23,20 +23,27 @@ public:
 
 using TSTreePtr = std::unique_ptr<TSTree, TSTreeDeleter>;
 
+class CStringDeleter {
+public:
+  void operator()(char *str) const noexcept;
+};
+
+using CStringPtr = std::unique_ptr<char, CStringDeleter>;
+
 class String {
 public:
-  explicit String(char *data) noexcept;
+  explicit String(CStringPtr &&c_str) noexcept;
   String(const String &) = delete;
-  String(String &&) noexcept;
-  ~String() noexcept;
+  String(String &&) noexcept = default;
+  ~String() noexcept = default;
 
   auto operator=(const String &) -> String & = delete;
-  auto operator=(String &&) noexcept -> String &;
+  auto operator=(String &&) noexcept -> String & = default;
 
   auto string_view() const noexcept -> std::string_view;
 
 private:
-  char *data_;
+  CStringPtr c_str_;
 };
 
 class Node {
