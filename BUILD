@@ -41,6 +41,26 @@ cc_library(
 )
 
 cc_library(
+    name = "kero_compiler",
+    srcs = [
+        "src/compiler/parser.cc",
+        "src/compiler/parser.h",
+    ],
+    hdrs = [
+    ],
+    copts = [
+        "-std=c++20",
+        "-fno-rtti",
+    ],
+    includes = [
+        "src",
+    ],
+    deps = [
+        ":tree_sitter_kero",
+    ],
+)
+
+cc_library(
     name = "KeroCompileParserFacade",
     srcs = [
         "src/Compile/ParserFacade/ParserFacade.cpp",
