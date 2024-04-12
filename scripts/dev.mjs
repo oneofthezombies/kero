@@ -1,26 +1,24 @@
 import { spawnSync } from "child_process";
 
-function installTreeSitterCli() {
-  const result = spawnSync("cargo", ["install", "tree-sitter-cli"], {
-    stdio: "inherit",
-  });
-
+function run(command, args, options) {
+  const result = spawnSync(command, args, options);
   if (result.error) {
     console.error(result.error);
     process.exit(1);
   }
 }
 
+function installTreeSitterCli() {
+  run("cargo", ["install", "tree-sitter-cli"], {
+    stdio: "inherit",
+  });
+}
+
 function installTreeSitterKero() {
-  const result = spawnSync("npm", ["install", "--ignore-scripts"], {
+  run("npm", ["install", "--ignore-scripts"], {
     stdio: "inherit",
     cwd: "third_party/tree-sitter-kero",
   });
-
-  if (result.error) {
-    console.error(result.error);
-    process.exit(1);
-  }
 }
 
 function install() {
@@ -29,31 +27,21 @@ function install() {
 }
 
 function generateTreeSitterKero() {
-  const result = spawnSync("tree-sitter", ["generate", "--no-bindings"], {
+  run("tree-sitter", ["generate", "--no-bindings"], {
     stdio: "inherit",
     cwd: "third_party/tree-sitter-kero",
   });
+}
 
-  if (result.error) {
-    console.error(result.error);
-    process.exit(1);
-  }
+function generateCompileCommands() {
+  run("bazel", ["build", "@hedron_compile_commands//:all"], {
+    stdio: "inherit",
+  });
 }
 
 function generate() {
   generateTreeSitterKero();
-}
-
-function parse() {
-  const result = spawnSync("tree-sitter", ["parse"], {
-    stdio: "inherit",
-    cwd: "third_party/tree-sitter-kero",
-  });
-
-  if (result.error) {
-    console.error(result.error);
-    process.exit(1);
-  }
+  generateCompileCommands();
 }
 
 function help() {
@@ -61,7 +49,7 @@ function help() {
   console.log("Commands:");
   console.log("  install: Install dependencies");
   console.log("  generate: Generate parser");
-  console.log("  parse: Parse source file");
+  process.exit(1);
 }
 
 function main() {
@@ -71,8 +59,6 @@ function main() {
     install();
   } else if (command === "generate") {
     generate();
-  } else if (command === "parse") {
-    parse();
   } else {
     help();
   }

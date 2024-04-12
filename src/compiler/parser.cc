@@ -1,6 +1,7 @@
 #include "compiler/parser.h"
 
 #include "tree-sitter-kero.h"
+#include "tree_sitter/api.h"
 
 using namespace kero::compiler;
 

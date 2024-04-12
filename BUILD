@@ -21,16 +21,34 @@ cc_library(
 )
 
 cc_library(
-    name = "tree_sitter_kero",
+    name = "tree_sitter",
     srcs = [
-        "third_party/tree-sitter-kero/src/parser.c",
-        "third_party/tree-sitter-kero/src/tree_sitter/alloc.h",
-        "third_party/tree-sitter-kero/src/tree_sitter/array.h",
-        "third_party/tree-sitter-kero/src/tree_sitter/parser.h",
+        "third_party/tree-sitter-0.22.2/lib/src/lib.c",
     ],
     hdrs = [
-        "third_party/tree-sitter-kero/bindings/c/tree-sitter-kero.h",
+        "third_party/tree-sitter-0.22.2/lib/include/tree_sitter/api.h",
+    ] + glob(
+        [
+            "third_party/tree-sitter-0.22.2/lib/src/**/*.c",
+            "third_party/tree-sitter-0.22.2/lib/src/**/*.h",
+        ],
+        ["third_party/tree-sitter-0.22.2/lib/src/lib.c"],
+    ),
+    copts = [
+        "-std=c17",
     ],
+    includes = [
+        "third_party/tree-sitter-0.22.2/lib/include",
+        "third_party/tree-sitter-0.22.2/lib/src",
+    ],
+)
+
+cc_library(
+    name = "tree_sitter_kero",
+    srcs = ["third_party/tree-sitter-kero/src/parser.c"],
+    hdrs = [
+        "third_party/tree-sitter-kero/bindings/c/tree-sitter-kero.h",
+    ] + glob(["third_party/tree-sitter-kero/src/tree_sitter/*.h"]),
     copts = [
         "-std=c17",
     ],
@@ -56,6 +74,7 @@ cc_library(
         "src",
     ],
     deps = [
+        ":tree_sitter",
         ":tree_sitter_kero",
     ],
 )
