@@ -21,6 +21,26 @@ cc_library(
 )
 
 cc_library(
+    name = "tree_sitter_kero",
+    srcs = [
+        "third_party/tree-sitter-kero/src/parser.c",
+        "third_party/tree-sitter-kero/src/tree_sitter/alloc.h",
+        "third_party/tree-sitter-kero/src/tree_sitter/array.h",
+        "third_party/tree-sitter-kero/src/tree_sitter/parser.h",
+    ],
+    hdrs = [
+        "third_party/tree-sitter-kero/bindings/c/tree-sitter-kero.h",
+    ],
+    copts = [
+        "-std=c17",
+    ],
+    includes = [
+        "third_party/tree-sitter-kero/bindings/c",
+        "third_party/tree-sitter-kero/src",
+    ],
+)
+
+cc_library(
     name = "KeroCompileParserFacade",
     srcs = [
         "src/Compile/ParserFacade/ParserFacade.cpp",
@@ -51,6 +71,21 @@ cc_test(
     ],
     deps = [
         ":KeroCompileParserFacade",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "tree_sitter_kero_test",
+    srcs = [
+        "src/Compile/Parser2/tree_sitter_kero_test.cc",
+    ],
+    copts = [
+        "-std=c++20",
+        "-fno-rtti",
+    ],
+    deps = [
+        ":tree_sitter_kero",
         "@googletest//:gtest_main",
     ],
 )

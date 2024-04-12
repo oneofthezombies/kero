@@ -17,16 +17,19 @@ module.exports = grammar({
       ),
 
     unary_expression: ($) =>
-      choice(
-        seq("-", $._expression),
-        seq("!", $._expression)
-        // ...
+      prec(
+        3,
+        choice(
+          seq("-", $._expression),
+          seq("!", $._expression)
+          // ...
+        )
       ),
 
     binary_expression: ($) =>
       choice(
-        seq($._expression, "*", $._expression),
-        seq($._expression, "+", $._expression)
+        prec.left(2, seq($._expression, "*", $._expression)),
+        prec.left(1, seq($._expression, "+", $._expression))
         // ...
       ),
   },
