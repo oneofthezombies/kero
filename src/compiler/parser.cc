@@ -26,8 +26,162 @@ auto kero::compiler::String::string_view() const noexcept -> std::string_view {
 
 kero::compiler::Node::Node(TSNode &&node) noexcept : node_{std::move(node)} {}
 
+auto kero::compiler::Node::start_byte() const noexcept -> uint32_t {
+  return ts_node_start_byte(node_);
+}
+
+auto kero::compiler::Node::start_point() const noexcept -> TSPoint {
+  return ts_node_start_point(node_);
+}
+
+auto kero::compiler::Node::end_byte() const noexcept -> uint32_t {
+  return ts_node_end_byte(node_);
+}
+
+auto kero::compiler::Node::end_point() const noexcept -> TSPoint {
+  return ts_node_end_point(node_);
+}
+
+auto kero::compiler::Node::symbol() const noexcept -> TSSymbol {
+  return ts_node_symbol(node_);
+}
+
+auto kero::compiler::Node::type() const noexcept -> std::string_view {
+  return std::string_view{ts_node_type(node_)};
+}
+
+auto kero::compiler::Node::grammar_symbol() const noexcept -> TSSymbol {
+  return ts_node_grammar_symbol(node_);
+}
+
+auto kero::compiler::Node::grammar_type() const noexcept -> std::string_view {
+  return std::string_view{ts_node_grammar_type(node_)};
+}
+
 auto kero::compiler::Node::string() const noexcept -> String {
   return String{CStringPtr{ts_node_string(node_)}};
+}
+
+auto kero::compiler::Node::eq(const Node &other) const noexcept -> bool {
+  return ts_node_eq(node_, other.node_);
+}
+
+auto kero::compiler::Node::is_null() const noexcept -> bool {
+  return ts_node_is_null(node_);
+}
+
+auto kero::compiler::Node::is_extra() const noexcept -> bool {
+  return ts_node_is_extra(node_);
+}
+
+auto kero::compiler::Node::is_named() const noexcept -> bool {
+  return ts_node_is_named(node_);
+}
+
+auto kero::compiler::Node::is_missing() const noexcept -> bool {
+  return ts_node_is_missing(node_);
+}
+
+auto kero::compiler::Node::has_changes() const noexcept -> bool {
+  return ts_node_has_changes(node_);
+}
+
+auto kero::compiler::Node::has_error() const noexcept -> bool {
+  return ts_node_has_error(node_);
+}
+
+auto kero::compiler::Node::is_error() const noexcept -> bool {
+  return ts_node_is_error(node_);
+}
+
+auto kero::compiler::Node::descendant_count() const noexcept -> uint32_t {
+  return ts_node_descendant_count(node_);
+}
+
+auto kero::compiler::Node::parse_state() const noexcept -> TSStateId {
+  return ts_node_parse_state(node_);
+}
+
+auto kero::compiler::Node::next_parse_state() const noexcept -> TSStateId {
+  return ts_node_next_parse_state(node_);
+}
+
+auto kero::compiler::Node::parent() const noexcept -> Node {
+  return Node{ts_node_parent(node_)};
+}
+
+auto kero::compiler::Node::child(const uint32_t index) const noexcept -> Node {
+  return Node{ts_node_child(node_, index)};
+}
+
+auto kero::compiler::Node::named_child(const uint32_t index) const noexcept
+    -> Node {
+  return Node{ts_node_named_child(node_, index)};
+}
+
+auto kero::compiler::Node::child_by_field_id(
+    const TSFieldId field_id) const noexcept -> Node {
+  return Node{ts_node_child_by_field_id(node_, field_id)};
+}
+
+auto kero::compiler::Node::child_by_field_name(
+    const std::string_view field_name) const noexcept -> Node {
+  return Node{
+      ts_node_child_by_field_name(node_, field_name.data(), field_name.size())};
+}
+
+auto kero::compiler::Node::child_count() const noexcept -> uint32_t {
+  return ts_node_child_count(node_);
+}
+
+auto kero::compiler::Node::named_child_count() const noexcept -> uint32_t {
+  return ts_node_named_child_count(node_);
+}
+
+auto kero::compiler::Node::next_sibling() const noexcept -> Node {
+  return Node{ts_node_next_sibling(node_)};
+}
+
+auto kero::compiler::Node::next_named_sibling() const noexcept -> Node {
+  return Node{ts_node_next_named_sibling(node_)};
+}
+
+auto kero::compiler::Node::prev_sibling() const noexcept -> Node {
+  return Node{ts_node_prev_sibling(node_)};
+}
+
+auto kero::compiler::Node::prev_named_sibling() const noexcept -> Node {
+  return Node{ts_node_prev_named_sibling(node_)};
+}
+
+auto kero::compiler::Node::first_child_for_byte(
+    const uint32_t byte) const noexcept -> Node {
+  return Node{ts_node_first_child_for_byte(node_, byte)};
+}
+
+auto kero::compiler::Node::first_named_child_for_byte(
+    const uint32_t byte) const noexcept -> Node {
+  return Node{ts_node_first_named_child_for_byte(node_, byte)};
+}
+
+auto kero::compiler::Node::descendant_for_byte_range(
+    const uint32_t start, const uint32_t end) const noexcept -> Node {
+  return Node{ts_node_descendant_for_byte_range(node_, start, end)};
+}
+
+auto kero::compiler::Node::named_descendant_for_byte_range(
+    const uint32_t start, const uint32_t end) const noexcept -> Node {
+  return Node{ts_node_named_descendant_for_byte_range(node_, start, end)};
+}
+
+auto kero::compiler::Node::descendant_for_point_range(
+    const TSPoint start, const TSPoint end) const noexcept -> Node {
+  return Node{ts_node_descendant_for_point_range(node_, start, end)};
+}
+
+auto kero::compiler::Node::named_descendant_for_point_range(
+    const TSPoint start, const TSPoint end) const noexcept -> Node {
+  return Node{ts_node_named_descendant_for_point_range(node_, start, end)};
 }
 
 kero::compiler::Tree::Tree(TSTreePtr &&tree) noexcept

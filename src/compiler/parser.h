@@ -56,7 +56,47 @@ public:
   auto operator=(const Node &) -> Node & = delete;
   auto operator=(Node &&) noexcept -> Node & = default;
 
+  auto start_byte() const noexcept -> uint32_t;
+  auto start_point() const noexcept -> TSPoint;
+  auto end_byte() const noexcept -> uint32_t;
+  auto end_point() const noexcept -> TSPoint;
+  auto symbol() const noexcept -> TSSymbol;
+  auto type() const noexcept -> std::string_view;
+  auto grammar_symbol() const noexcept -> TSSymbol;
+  auto grammar_type() const noexcept -> std::string_view;
   auto string() const noexcept -> String;
+  auto eq(const Node &other) const noexcept -> bool;
+  auto is_null() const noexcept -> bool;
+  auto is_extra() const noexcept -> bool;
+  auto is_named() const noexcept -> bool;
+  auto is_missing() const noexcept -> bool;
+  auto has_changes() const noexcept -> bool;
+  auto has_error() const noexcept -> bool;
+  auto is_error() const noexcept -> bool;
+  auto descendant_count() const noexcept -> uint32_t;
+  auto parse_state() const noexcept -> TSStateId;
+  auto next_parse_state() const noexcept -> TSStateId;
+  auto parent() const noexcept -> Node;
+  auto child(uint32_t index) const noexcept -> Node;
+  auto named_child(uint32_t index) const noexcept -> Node;
+  auto child_by_field_id(TSFieldId field_id) const noexcept -> Node;
+  auto child_by_field_name(std::string_view field_name) const noexcept -> Node;
+  auto child_count() const noexcept -> uint32_t;
+  auto named_child_count() const noexcept -> uint32_t;
+  auto next_sibling() const noexcept -> Node;
+  auto next_named_sibling() const noexcept -> Node;
+  auto prev_sibling() const noexcept -> Node;
+  auto prev_named_sibling() const noexcept -> Node;
+  auto first_child_for_byte(uint32_t byte) const noexcept -> Node;
+  auto first_named_child_for_byte(uint32_t byte) const noexcept -> Node;
+  auto descendant_for_byte_range(uint32_t start, uint32_t end) const noexcept
+      -> Node;
+  auto named_descendant_for_byte_range(uint32_t start,
+                                       uint32_t end) const noexcept -> Node;
+  auto descendant_for_point_range(TSPoint start, TSPoint end) const noexcept
+      -> Node;
+  auto named_descendant_for_point_range(TSPoint start,
+                                        TSPoint end) const noexcept -> Node;
 
 private:
   TSNode node_;
