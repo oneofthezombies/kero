@@ -7,8 +7,8 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug Compile CompileParserFacade Test",
-      "program": "${workspaceFolder}/bazel-bin/KeroCompileParserFacade_test",
+      "name": "Debug Compiler Test",
+      "program": "${workspaceFolder}/bazel-bin/kero_compiler_test",
       "args": [],
       "cwd": "${workspaceFolder}",
       "linux": {
@@ -19,7 +19,7 @@
       "osx": {
         "sourceMap": { ".": "${workspaceFolder}" }
       },
-      "preLaunchTask": "Build CompileParserFacade Test"
+      "preLaunchTask": "Build Compiler Test"
     }
   ]
 }

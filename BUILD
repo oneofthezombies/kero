@@ -79,6 +79,24 @@ cc_library(
     ],
 )
 
+cc_test(
+    name = "kero_compiler_test",
+    srcs = [
+        "src/compiler/parser_test.cc",
+    ],
+    copts = [
+        "-std=c++20",
+        "-fno-rtti",
+    ],
+    includes = [
+        "src",
+    ],
+    deps = [
+        ":kero_compiler",
+        "@googletest//:gtest_main",
+    ],
+)
+
 cc_library(
     name = "KeroCompileParserFacade",
     srcs = [

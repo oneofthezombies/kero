@@ -34,7 +34,7 @@ function generateTreeSitterKero() {
 }
 
 function generateCompileCommands() {
-  run("bazel", ["build", "@hedron_compile_commands//:all"], {
+  run("bazel", ["run", "@hedron_compile_commands//:refresh_all"], {
     stdio: "inherit",
   });
 }
