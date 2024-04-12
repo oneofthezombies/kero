@@ -33,6 +33,3 @@
 
 # Bazel
 /bazel-*
-
-# npm
-node_modules/

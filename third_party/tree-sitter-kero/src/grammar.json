@@ -4,6 +4,10 @@
     "source_file": {
       "type": "STRING",
       "value": "hello"
+    },
+    "source_file2": {
+      "type": "STRING",
+      "value": "world"
     }
   },
   "extras": [

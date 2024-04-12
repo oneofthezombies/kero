@@ -29,7 +29,7 @@ function install() {
 }
 
 function generateTreeSitterKero() {
-  const result = spawnSync("tree-sitter", ["generate"], {
+  const result = spawnSync("tree-sitter", ["generate", "--no-bindings"], {
     stdio: "inherit",
     cwd: "third_party/tree-sitter-kero",
   });
