@@ -53,7 +53,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "parenthesized_expression"
+          "name": "_parenthesized_expression"
         },
         {
           "type": "SYMBOL",
@@ -84,7 +84,7 @@
             "members": [
               {
                 "type": "FIELD",
-                "name": "left",
+                "name": "lhs",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -92,15 +92,15 @@
               },
               {
                 "type": "FIELD",
-                "name": "operator",
+                "name": "op",
                 "content": {
-                  "type": "STRING",
-                  "value": "=="
+                  "type": "SYMBOL",
+                  "name": "equal"
                 }
               },
               {
                 "type": "FIELD",
-                "name": "right",
+                "name": "rhs",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -117,7 +117,7 @@
             "members": [
               {
                 "type": "FIELD",
-                "name": "left",
+                "name": "lhs",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -125,15 +125,81 @@
               },
               {
                 "type": "FIELD",
-                "name": "operator",
+                "name": "op",
                 "content": {
-                  "type": "STRING",
-                  "value": "!="
+                  "type": "SYMBOL",
+                  "name": "not_equal"
                 }
               },
               {
                 "type": "FIELD",
-                "name": "right",
+                "name": "rhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
+          "value": "logical_and",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "lhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "op",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "logical_and"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "rhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
+          "value": "logical_or",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "lhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "op",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "logical_or"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "rhs",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -144,7 +210,7 @@
         }
       ]
     },
-    "parenthesized_expression": {
+    "_parenthesized_expression": {
       "type": "SEQ",
       "members": [
         {
@@ -181,6 +247,22 @@
     "false": {
       "type": "STRING",
       "value": "false"
+    },
+    "equal": {
+      "type": "STRING",
+      "value": "=="
+    },
+    "not_equal": {
+      "type": "STRING",
+      "value": "!="
+    },
+    "logical_and": {
+      "type": "STRING",
+      "value": "&&"
+    },
+    "logical_or": {
+      "type": "STRING",
+      "value": "||"
     }
   },
   "extras": [
@@ -195,6 +277,14 @@
       {
         "type": "STRING",
         "value": "binary_equality"
+      },
+      {
+        "type": "STRING",
+        "value": "logical_and"
+      },
+      {
+        "type": "STRING",
+        "value": "logical_or"
       }
     ]
   ],

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <optional>
+#include <ostream>
 #include <string_view>
 
 #include "tree_sitter/api.h"
@@ -46,6 +47,18 @@ private:
   CStringPtr c_str_;
 };
 
+struct Point : public TSPoint {
+  Point(const TSPoint &ts_point) noexcept;
+  Point(const Point &) noexcept = default;
+  Point(Point &&) noexcept = default;
+  ~Point() noexcept = default;
+
+  auto operator=(const Point &) noexcept -> Point & = default;
+  auto operator=(Point &&) noexcept -> Point & = default;
+};
+
+auto operator<<(std::ostream &os, const Point &point) -> std::ostream &;
+
 class Node {
 public:
   explicit Node(TSNode &&node) noexcept;
@@ -57,9 +70,9 @@ public:
   auto operator=(Node &&) noexcept -> Node & = default;
 
   auto start_byte() const noexcept -> uint32_t;
-  auto start_point() const noexcept -> TSPoint;
+  auto start_point() const noexcept -> Point;
   auto end_byte() const noexcept -> uint32_t;
-  auto end_point() const noexcept -> TSPoint;
+  auto end_point() const noexcept -> Point;
   auto symbol() const noexcept -> TSSymbol;
   auto type() const noexcept -> std::string_view;
   auto grammar_symbol() const noexcept -> TSSymbol;
@@ -80,6 +93,7 @@ public:
   auto child(uint32_t index) const noexcept -> Node;
   auto named_child(uint32_t index) const noexcept -> Node;
   auto child_by_field_id(TSFieldId field_id) const noexcept -> Node;
+  auto field_name_for_child(uint32_t index) const noexcept -> std::string_view;
   auto child_by_field_name(std::string_view field_name) const noexcept -> Node;
   auto child_count() const noexcept -> uint32_t;
   auto named_child_count() const noexcept -> uint32_t;
@@ -93,14 +107,16 @@ public:
       -> Node;
   auto named_descendant_for_byte_range(uint32_t start,
                                        uint32_t end) const noexcept -> Node;
-  auto descendant_for_point_range(TSPoint start, TSPoint end) const noexcept
+  auto descendant_for_point_range(Point start, Point end) const noexcept
       -> Node;
-  auto named_descendant_for_point_range(TSPoint start,
-                                        TSPoint end) const noexcept -> Node;
+  auto named_descendant_for_point_range(Point start, Point end) const noexcept
+      -> Node;
 
 private:
   TSNode node_;
 };
+
+auto operator<<(std::ostream &os, const Node &node) -> std::ostream &;
 
 class Tree {
 public:
@@ -122,6 +138,8 @@ public:
 private:
   TSTreePtr tree_;
 };
+
+auto operator<<(std::ostream &os, const Tree &tree) -> std::ostream &;
 
 class Parser {
 public:

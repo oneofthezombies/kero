@@ -27,13 +27,68 @@ auto kero::compiler::String::string_view() const noexcept -> std::string_view {
   return std::string_view{c_str_.get()};
 }
 
+kero::compiler::Point::Point(const TSPoint &ts_point) noexcept
+    : TSPoint{ts_point.row, ts_point.column} {}
+
+auto kero::compiler::operator<<(std::ostream &os, const Point &point)
+    -> std::ostream & {
+  os << "Point{";
+  os << "row=" << point.row;
+  os << ", ";
+  os << "column=" << point.column;
+  os << "}";
+  return os;
+}
+
 kero::compiler::Node::Node(TSNode &&node) noexcept : node_{std::move(node)} {}
+
+auto kero::compiler::operator<<(std::ostream &os, const Node &node)
+    -> std::ostream & {
+  os << "Node{";
+  os << "start_byte=" << node.start_byte();
+  os << ", ";
+  os << "start_point=" << node.start_point();
+  os << ", ";
+  os << "end_byte=" << node.end_byte();
+  os << ", ";
+  os << "end_point=" << node.end_point();
+  os << ", ";
+  os << "symbol=" << node.symbol();
+  os << ", ";
+  os << "type=" << node.type();
+  os << ", ";
+  os << "grammar_symbol=" << node.grammar_symbol();
+  os << ", ";
+  os << "grammar_type=" << node.grammar_type();
+  os << ", ";
+  os << "is_null=" << node.is_null();
+  os << ", ";
+  os << "is_extra=" << node.is_extra();
+  os << ", ";
+  os << "is_named=" << node.is_named();
+  os << ", ";
+  os << "is_missing=" << node.is_missing();
+  os << ", ";
+  os << "has_changes=" << node.has_changes();
+  os << ", ";
+  os << "has_error=" << node.has_error();
+  os << ", ";
+  os << "is_error=" << node.is_error();
+  os << ", ";
+  os << "descendant_count=" << node.descendant_count();
+  os << ", ";
+  os << "parse_state=" << node.parse_state();
+  os << ", ";
+  os << "next_parse_state=" << node.next_parse_state();
+  os << "}";
+  return os;
+}
 
 auto kero::compiler::Node::start_byte() const noexcept -> uint32_t {
   return ts_node_start_byte(node_);
 }
 
-auto kero::compiler::Node::start_point() const noexcept -> TSPoint {
+auto kero::compiler::Node::start_point() const noexcept -> Point {
   return ts_node_start_point(node_);
 }
 
@@ -41,7 +96,7 @@ auto kero::compiler::Node::end_byte() const noexcept -> uint32_t {
   return ts_node_end_byte(node_);
 }
 
-auto kero::compiler::Node::end_point() const noexcept -> TSPoint {
+auto kero::compiler::Node::end_point() const noexcept -> Point {
   return ts_node_end_point(node_);
 }
 
@@ -127,6 +182,12 @@ auto kero::compiler::Node::child_by_field_id(
   return Node{ts_node_child_by_field_id(node_, field_id)};
 }
 
+auto kero::compiler::Node::field_name_for_child(
+    const uint32_t index) const noexcept -> std::string_view {
+  const auto field_name = ts_node_field_name_for_child(node_, index);
+  return std::string_view{field_name != nullptr ? field_name : ""};
+}
+
 auto kero::compiler::Node::child_by_field_name(
     const std::string_view field_name) const noexcept -> Node {
   return Node{
@@ -178,12 +239,12 @@ auto kero::compiler::Node::named_descendant_for_byte_range(
 }
 
 auto kero::compiler::Node::descendant_for_point_range(
-    const TSPoint start, const TSPoint end) const noexcept -> Node {
+    const Point start, const Point end) const noexcept -> Node {
   return Node{ts_node_descendant_for_point_range(node_, start, end)};
 }
 
 auto kero::compiler::Node::named_descendant_for_point_range(
-    const TSPoint start, const TSPoint end) const noexcept -> Node {
+    const Point start, const Point end) const noexcept -> Node {
   return Node{ts_node_named_descendant_for_point_range(node_, start, end)};
 }
 
@@ -201,6 +262,55 @@ auto kero::compiler::Tree::root_node() const noexcept -> std::optional<Node> {
     return std::nullopt;
   }
   return Node{ts_tree_root_node(tree_.get())};
+}
+
+auto printRec(std::ostream &os, const Node &parent,
+              const uint32_t current_index, const uint32_t depth) -> void {
+  for (uint32_t i = 0; i < depth; ++i) {
+    os << "  ";
+  }
+  const auto field_name = parent.field_name_for_child(current_index);
+  os << "Child{";
+  os << "index=";
+  os << current_index;
+  os << ", ";
+  if (!field_name.empty()) {
+    os << "field_name=";
+    os << field_name;
+    os << ", ";
+  }
+  os << "node=";
+  const auto current_node = parent.child(current_index);
+  os << current_node << "}\n";
+  const auto child_count = current_node.child_count();
+  for (uint32_t i = 0; i < child_count; ++i) {
+    printRec(os, current_node, i, depth + 1);
+  }
+};
+
+auto kero::compiler::operator<<(std::ostream &os, const Tree &tree)
+    -> std::ostream & {
+  os << "Tree{";
+  if (tree.empty()) {
+    os << "null";
+    os << "}";
+    return os;
+  }
+
+  os << "root_node=";
+  const auto root_node = *tree.root_node();
+  os << root_node << "}";
+  const auto child_count = root_node.child_count();
+  if (child_count == 0) {
+    return os;
+  }
+
+  os << '\n';
+  for (uint32_t i = 0; i < child_count; ++i) {
+    printRec(os, root_node, i, 1);
+  }
+
+  return os;
 }
 
 auto kero::compiler::Tree::null() noexcept -> Tree {
