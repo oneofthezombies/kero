@@ -82,3 +82,41 @@ TEST(ParserTest, MultipleBinaryExpressions) {
                "lhs: (binary_expression lhs: (true) op: (equal) rhs: (true)) "
                "op: (equal) rhs: (true))))");
 }
+
+TEST(ParserTest, LogicalAnd) {
+  match_string("true && true", "(module (binary_expression lhs: (true) op: "
+                               "(logical_and) rhs: (true)))");
+  match_string("true && false", "(module (binary_expression lhs: (true) op: "
+                                "(logical_and) rhs: (false)))");
+  match_string("false && true", "(module (binary_expression lhs: (false) op: "
+                                "(logical_and) rhs: (true)))");
+}
+
+TEST(ParserTest, LogicalOr) {
+  match_string("true || true", "(module (binary_expression lhs: (true) op: "
+                               "(logical_or) rhs: (true)))");
+  match_string("true || false", "(module (binary_expression lhs: (true) op: "
+                                "(logical_or) rhs: (false)))");
+  match_string("false || true", "(module (binary_expression lhs: (false) op: "
+                                "(logical_or) rhs: (true)))");
+}
+
+TEST(ParserTest, LogicalAndWithLogicalOr) {
+  match_string("true && true || true",
+               "(module (binary_expression lhs: (binary_expression lhs: (true) "
+               "op: (logical_and) rhs: (true)) op: (logical_or) rhs: (true)))");
+  match_string(
+      "true || true && true",
+      "(module (binary_expression lhs: (true) op: (logical_or) rhs: "
+      "(binary_expression lhs: (true) op: (logical_and) rhs: (true))))");
+}
+
+TEST(ParserTest, ParenthesizedExpressionLogicalAndWithLogicalOr) {
+  match_string("(true || true) && true",
+               "(module (binary_expression lhs: (binary_expression lhs: (true) "
+               "op: (logical_or) rhs: (true)) op: (logical_and) rhs: (true)))");
+  match_string(
+      "true && (true || true)",
+      "(module (binary_expression lhs: (true) op: (logical_and) rhs: "
+      "(binary_expression lhs: (true) op: (logical_or) rhs: (true))))");
+}
