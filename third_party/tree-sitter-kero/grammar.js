@@ -3,34 +3,44 @@
 
 module.exports = grammar({
   name: "kero",
+
+  word: ($) => $.identifier,
+
+  precedences: ($) => [["binary_equality"]],
+
   rules: {
-    source_file: ($) => repeat($._expression),
+    module: ($) => sep($._statement, ";"),
 
-    identifier: ($) => /[a-zA-Z_]\w*/,
-
-    _expression: ($) =>
-      choice(
-        $.identifier,
-        $.unary_expression,
-        $.binary_expression
-        // ...
-      ),
-
-    unary_expression: ($) =>
-      prec(
-        3,
-        choice(
-          seq("-", $._expression),
-          seq("!", $._expression)
-          // ...
-        )
-      ),
+    _statement: ($) => choice($._expression_statement),
+    _expression_statement: ($) => $._expression,
+    _expression: ($) => choice($.parenthesized_expression, $.binary_expression),
 
     binary_expression: ($) =>
       choice(
-        prec.left(2, seq($._expression, "*", $._expression)),
-        prec.left(1, seq($._expression, "+", $._expression))
-        // ...
+        prec.left(
+          "binary_equality",
+          seq(
+            field("left", $._expression),
+            field("operator", choice("==", "!=")),
+            field("right", $._expression)
+          )
+        )
       ),
+
+    parenthesized_expression: ($) => seq("(", $._expression, ")"),
+
+    type: ($) => choice("bool"),
+
+    identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    true: ($) => "true",
+    false: ($) => "false",
   },
 });
+
+function sep1(rule, sep) {
+  return seq(rule, repeat(seq(sep, rule)));
+}
+
+function sep(rule, sep) {
+  return optional(sep1(rule, sep));
+}

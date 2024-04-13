@@ -136,12 +136,13 @@ public:
     auto operator=(Builder &&) -> Builder & = delete;
 
     // 0 means no timeout.
-    auto set_timeout_micros(const size_t timeout_micros) noexcept -> Builder &;
+    auto set_timeout_micros(const uint64_t timeout_micros) noexcept
+        -> Builder &;
 
     std::optional<Parser> build() const noexcept;
 
   private:
-    size_t timeout_micros_{0};
+    uint64_t timeout_micros_{0};
   };
 
   Parser(const Parser &) = delete;

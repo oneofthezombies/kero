@@ -14,6 +14,9 @@ void kero::compiler::TSTreeDeleter::operator()(TSTree *tree) const noexcept {
 }
 
 void kero::compiler::CStringDeleter::operator()(char *str) const noexcept {
+  if (str == nullptr) {
+    return;
+  }
   free(str);
 }
 
@@ -197,7 +200,6 @@ auto kero::compiler::Tree::root_node() const noexcept -> std::optional<Node> {
   if (empty()) {
     return std::nullopt;
   }
-
   return Node{ts_tree_root_node(tree_.get())};
 }
 
@@ -206,7 +208,7 @@ auto kero::compiler::Tree::null() noexcept -> Tree {
 }
 
 auto kero::compiler::Parser::Builder::set_timeout_micros(
-    const size_t timeout_micros) noexcept -> Builder & {
+    const uint64_t timeout_micros) noexcept -> Builder & {
   timeout_micros_ = timeout_micros;
   return *this;
 }

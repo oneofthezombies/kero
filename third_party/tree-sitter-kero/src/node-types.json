@@ -2,28 +2,53 @@
   {
     "type": "binary_expression",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "binary_expression",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        }
-      ]
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          }
+        ]
+      },
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "!=",
+            "named": false
+          },
+          {
+            "type": "==",
+            "named": false
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
-    "type": "source_file",
+    "type": "module",
     "named": true,
     "fields": {},
     "children": {
@@ -35,18 +60,14 @@
           "named": true
         },
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
+          "type": "parenthesized_expression",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "unary_expression",
+    "type": "parenthesized_expression",
     "named": true,
     "fields": {},
     "children": {
@@ -58,34 +79,34 @@
           "named": true
         },
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
+          "type": "parenthesized_expression",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "!",
+    "type": "!=",
     "named": false
   },
   {
-    "type": "*",
+    "type": "(",
     "named": false
   },
   {
-    "type": "+",
+    "type": ")",
     "named": false
   },
   {
-    "type": "-",
+    "type": ";",
     "named": false
   },
   {
-    "type": "identifier",
-    "named": true
+    "type": "==",
+    "named": false
+  },
+  {
+    "type": "bool",
+    "named": false
   }
 ]

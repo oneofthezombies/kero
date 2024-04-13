@@ -39,9 +39,19 @@ function generateCompileCommands() {
   });
 }
 
-function generate() {
+function generateAll() {
   generateTreeSitterKero();
   generateCompileCommands();
+}
+
+function generate(subcommand) {
+  if (subcommand === "tree-sitter-kero") {
+    generateTreeSitterKero();
+  } else if (subcommand === "compile-commands") {
+    generateCompileCommands();
+  } else {
+    generateAll();
+  }
 }
 
 function help() {
@@ -55,10 +65,11 @@ function help() {
 function main() {
   const args = process.argv.slice(2);
   const command = args[0] || "help";
+  const subcommand = args[1] || "";
   if (command === "install") {
     install();
   } else if (command === "generate") {
-    generate();
+    generate(subcommand);
   } else {
     help();
   }
