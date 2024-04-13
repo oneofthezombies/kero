@@ -12,7 +12,19 @@
             "named": true
           },
           {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
             "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "true",
             "named": true
           }
         ]
@@ -40,7 +52,19 @@
             "named": true
           },
           {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
             "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "true",
             "named": true
           }
         ]
@@ -60,7 +84,19 @@
           "named": true
         },
         {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "true",
           "named": true
         }
       ]
@@ -79,7 +115,19 @@
           "named": true
         },
         {
+          "type": "false",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "true",
           "named": true
         }
       ]
@@ -108,5 +156,17 @@
   {
     "type": "bool",
     "named": false
+  },
+  {
+    "type": "false",
+    "named": true
+  },
+  {
+    "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "true",
+    "named": true
   }
 ]

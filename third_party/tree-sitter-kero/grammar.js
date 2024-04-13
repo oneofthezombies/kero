@@ -13,7 +13,14 @@ module.exports = grammar({
 
     _statement: ($) => choice($._expression_statement),
     _expression_statement: ($) => $._expression,
-    _expression: ($) => choice($.parenthesized_expression, $.binary_expression),
+    _expression: ($) =>
+      choice(
+        $.parenthesized_expression,
+        $.binary_expression,
+        $.identifier,
+        $.true,
+        $.false
+      ),
 
     binary_expression: ($) =>
       choice(
@@ -21,7 +28,15 @@ module.exports = grammar({
           "binary_equality",
           seq(
             field("left", $._expression),
-            field("operator", choice("==", "!=")),
+            field("operator", "=="),
+            field("right", $._expression)
+          )
+        ),
+        prec.left(
+          "binary_equality",
+          seq(
+            field("left", $._expression),
+            field("operator", "!="),
             field("right", $._expression)
           )
         )
