@@ -9,9 +9,13 @@ function run(command, args, options) {
 }
 
 function installTreeSitterCli() {
-  run("cargo", ["install", "tree-sitter-cli"], {
-    stdio: "inherit",
-  });
+  run(
+    "cargo",
+    ["install", "tree-sitter-cli", "--version", "0.22.4", "--force"],
+    {
+      stdio: "inherit",
+    }
+  );
 }
 
 function installTreeSitterKero() {
@@ -58,7 +62,10 @@ function help() {
   console.log("Usage: dev.mjs [command]");
   console.log("Commands:");
   console.log("  install: Install dependencies");
-  console.log("  generate: Generate parser");
+  console.log("  generate: Generate files");
+  // prettier-ignore
+  console.log("  generate tree-sitter-kero: Generate Tree-sitter parser for Kero");
+  console.log("  generate compile-commands: Generate compile_commands.json");
   process.exit(1);
 }
 
