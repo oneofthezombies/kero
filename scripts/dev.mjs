@@ -9,19 +9,15 @@ function run(command, args, options) {
 }
 
 function installTreeSitterCli() {
-  run(
-    "cargo",
-    ["install", "tree-sitter-cli", "--version", "0.22.4", "--force"],
-    {
-      stdio: "inherit",
-    }
-  );
+  run("cargo", ["install", "tree-sitter-cli", "--version", "0.22.4"], {
+    stdio: "inherit",
+  });
 }
 
 function installTreeSitterKero() {
   run("npm", ["install", "--ignore-scripts"], {
     stdio: "inherit",
-    cwd: "third_party/tree-sitter-kero",
+    cwd: "src/tree-sitter-kero",
   });
 }
 
@@ -33,7 +29,7 @@ function install() {
 function generateTreeSitterKero() {
   run("tree-sitter", ["generate", "--no-bindings"], {
     stdio: "inherit",
-    cwd: "third_party/tree-sitter-kero",
+    cwd: "src/tree-sitter-kero",
   });
 }
 
