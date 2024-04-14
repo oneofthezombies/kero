@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 6,
-  "moduleFileHash": "10db0e6716767f66d75521d799406aafeafffb729b648cf3960ced56816fc20c",
+  "moduleFileHash": "d75c1f1dbb4f4e11a7c1450d476ed40ad1fd02b195d437c03a9d32d1a0ba2ac0",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -27,6 +27,7 @@
       "deps": {
         "googletest": "googletest@1.14.0",
         "hedron_compile_commands": "hedron_compile_commands@_",
+        "cpp_tree_sitter": "cpp_tree_sitter@_",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       }
@@ -131,6 +132,19 @@
           "hasNonDevUseExtension": true
         }
       ],
+      "deps": {
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
+      }
+    },
+    "cpp_tree_sitter@_": {
+      "name": "cpp_tree_sitter",
+      "version": "0.1.2",
+      "key": "cpp_tree_sitter@_",
+      "repoName": "cpp_tree_sitter",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
       "deps": {
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
