@@ -41,12 +41,12 @@ public:
   auto operator=(Parser &&) noexcept -> Parser & = default;
 
   auto parse(const std::string_view source) const noexcept
-      -> std::optional<kero::ts::Tree>;
+      -> std::optional<ts::Tree>;
 
 private:
-  Parser(kero::ts::Parser &&ts_parser) noexcept;
+  Parser(ts::Parser &&ts_parser) noexcept;
 
-  kero::ts::Parser ts_parser_;
+  ts::Parser ts_parser_;
 };
 
 } // namespace kero::compiler
