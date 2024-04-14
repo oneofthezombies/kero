@@ -9,10 +9,13 @@ module.exports = grammar({
   precedences: ($) => [["binary_equality", "logical_and", "logical_or"]],
 
   rules: {
-    module: ($) => sep($._statement, ";"),
+    module: ($) => optional(sep1($._statement, ";")),
 
-    _statement: ($) => choice($._expression_statement, $.if_statement),
+    _statement: ($) =>
+      choice($._expression_statement, $.if_statement, $._definition_statement),
+
     _expression_statement: ($) => $._expression,
+
     _expression: ($) =>
       choice(
         $._parenthesized_expression,
@@ -49,17 +52,43 @@ module.exports = grammar({
         "if",
         field("if_condition", $._expression),
         "{",
-        field("if_body", sep($._statement, ";")),
+        field("if_body", optional(sep1($._statement, ";"))),
         "}",
         optional(
           seq(
             "else",
             choice(
-              seq("{", field("else_body", sep($._statement, ";")), "}"),
+              seq(
+                "{",
+                field("else_body", optional(sep1($._statement, ";"))),
+                "}"
+              ),
               field("else_if_statement", $.if_statement)
             )
           )
         )
+      ),
+
+    _definition_statement: ($) => choice($.function_definition),
+
+    function_definition: ($) =>
+      seq(
+        "fn",
+        field("function_name", $.identifier),
+        "(",
+        field("function_parameters", sep($._parameter, ",")),
+        ")",
+        optional(seq("->", field("return_type", $.type))),
+        "{",
+        field("function_body", optional(sep1($._statement, ";"))),
+        "}"
+      ),
+
+    _parameter: ($) =>
+      seq(
+        field("parameter_name", $.identifier),
+        ":",
+        field("parameter_type", $.type)
       ),
 
     type: ($) => choice("bool"),
