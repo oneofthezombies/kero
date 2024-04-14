@@ -2,7 +2,6 @@
 #define KERO_CPP_TREE_SITTER_API_H
 
 #include <memory>
-#include <optional>
 #include <ostream>
 #include <string_view>
 
