@@ -8,21 +8,38 @@ using namespace kero::compiler;
 // Parser::Builder
 // --------
 
+auto Parser::Builder::set_console_logger() noexcept -> Builder & {
+  set_console_logger_ = true;
+  return *this;
+}
+
+auto Parser::Builder::set_print_dot_graphs_to_stdout() noexcept -> Builder & {
+  set_print_dot_graphs_to_stdout_ = true;
+  return *this;
+}
+
 auto Parser::Builder::build() const noexcept -> std::optional<Parser> {
-  auto parser = kero::ts::Parser{};
-  if (!parser.set_language(tree_sitter_kero())) {
+  auto ts_parser = kero::ts::Parser{};
+  if (!ts_parser.set_language(tree_sitter_kero())) {
     return std::nullopt;
   }
-  return Parser{std::move(parser)};
+  if (set_console_logger_) {
+    ts_parser.set_logger(std::make_unique<kero::ts::ConsoleLogger>());
+  }
+  if (set_print_dot_graphs_to_stdout_) {
+    auto stdout_fd = dup(1);
+    ts_parser.print_dot_graphs(stdout_fd);
+  }
+  return Parser{std::move(ts_parser)};
 }
 
 // Parser
 // --------
 
-Parser::Parser(kero::ts::Parser &&parser) noexcept
-    : parser_{std::move(parser)} {}
+Parser::Parser(kero::ts::Parser &&ts_parser) noexcept
+    : ts_parser_{std::move(ts_parser)} {}
 
 auto Parser::parse(const std::string_view source) const noexcept
     -> std::optional<kero::ts::Tree> {
-  return parser_.parse_string(kero::ts::Tree::null(), source);
+  return ts_parser_.parse_string(kero::ts::Tree::null(), source);
 }

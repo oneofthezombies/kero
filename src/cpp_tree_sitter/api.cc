@@ -1,22 +1,9 @@
 #include "api.h"
 
 #include <cassert>
+#include <iostream>
 
 using namespace kero::ts;
-
-// TSParserDeleter
-// --------
-
-void kero::ts::TSParserDeleter::operator()(TSParser *parser) const noexcept {
-  ts_parser_delete(parser);
-}
-
-// TSTreeDeleter
-// --------
-
-void kero::ts::TSTreeDeleter::operator()(TSTree *tree) const noexcept {
-  ts_tree_delete(tree);
-}
 
 // CStringDeleter
 // --------
@@ -230,7 +217,7 @@ auto kero::ts::Node::named_descendant_for_point_range(
   return Node{ts_node_named_descendant_for_point_range(node_, start, end)};
 }
 
-auto kero::ts::Node::as_raw() noexcept -> TSNode { return std::move(node_); }
+auto kero::ts::Node::as_raw() const noexcept -> TSNode { return node_; }
 
 auto kero::ts::operator<<(std::ostream &os, const Node &node)
     -> std::ostream & {
@@ -274,6 +261,13 @@ auto kero::ts::operator<<(std::ostream &os, const Node &node)
   return os;
 }
 
+// TSTreeDeleter
+// --------
+
+void kero::ts::TSTreeDeleter::operator()(TSTree *tree) const noexcept {
+  ts_tree_delete(tree);
+}
+
 // Tree
 // --------
 
@@ -290,6 +284,12 @@ auto kero::ts::Tree::into_raw() noexcept -> TSTreePtr {
 auto kero::ts::Tree::root_node() const noexcept -> Node {
   assert(!is_null() && "Tree::root_node: tree is null");
   return Node{ts_tree_root_node(tree_.get())};
+}
+
+auto kero::ts::Tree::print_dot_graph(const int file_descriptor) const noexcept
+    -> void {
+  assert(!is_null() && "Tree::print_dot_graphs: tree is null");
+  ts_tree_print_dot_graph(tree_.get(), file_descriptor);
 }
 
 auto printRec(std::ostream &os, const Node &parent,
@@ -345,27 +345,69 @@ auto kero::ts::Tree::null() noexcept -> Tree {
   return Tree{TSTreePtr{nullptr}};
 }
 
+// Logger
+// --------
+
+auto logger_log(void *logger, TSLogType log_type, const char *buffer) noexcept
+    -> void {
+  assert(logger != nullptr && "logger_log: logger is null");
+  static_cast<Logger *>(logger)->log(log_type, buffer != nullptr ? buffer : "");
+}
+
+kero::ts::Logger::Logger() noexcept : ts_logger_{this, logger_log} {}
+
+auto kero::ts::Logger::as_raw() const noexcept -> const TSLogger {
+  return ts_logger_;
+}
+
+auto kero::ts::Logger::null_ts_logger() noexcept -> TSLogger {
+  return TSLogger{nullptr, nullptr};
+}
+
+// ConsoleLogger
+// --------
+
+auto kero::ts::ConsoleLogger::log(const TSLogType log_type,
+                                  const std::string_view buffer) const noexcept
+    -> void {
+  std::cout << "Log{";
+  std::cout << "log_type=";
+  switch (log_type) {
+  case TSLogTypeParse:
+    std::cout << "Parse";
+    break;
+  case TSLogTypeLex:
+    std::cout << "Lex";
+    break;
+  }
+  std::cout << ", ";
+  std::cout << "buffer=\"";
+  std::cout << buffer;
+  std::cout << "\"}\n";
+}
+
+// TSParserDeleter
+// --------
+
+void kero::ts::TSParserDeleter::operator()(TSParser *parser) const noexcept {
+  ts_parser_print_dot_graphs(parser, Parser::close_file_descriptor);
+  ts_parser_delete(parser);
+}
+
 // Parser
 // --------
 
 kero::ts::Parser::Parser() noexcept : parser_{ts_parser_new()} {}
 
+auto kero::ts::Parser::language() const noexcept -> const TSLanguage * {
+  assert(!is_null() && "Parser::language: parser is null");
+  return ts_parser_language(parser_.get());
+}
+
 auto kero::ts::Parser::set_language(const TSLanguage *language) const noexcept
     -> bool {
   assert(!is_null() && "Parser::set_language: parser is null");
   return ts_parser_set_language(parser_.get(), language);
-}
-
-auto kero::ts::Parser::set_timeout_micros(
-    const uint64_t timeout_micros) const noexcept -> void {
-  assert(!is_null() && "Parser::set_timeout_micros: parser is null");
-  ts_parser_set_timeout_micros(parser_.get(), timeout_micros);
-}
-
-auto kero::ts::Parser::set_cancellation_flag(
-    const std::unique_ptr<size_t> &cancellation_flag) const noexcept -> void {
-  assert(!is_null() && "Parser::set_cancellation_flag: parser is null");
-  ts_parser_set_cancellation_flag(parser_.get(), cancellation_flag.get());
 }
 
 auto kero::ts::Parser::parse_string(
@@ -375,6 +417,81 @@ auto kero::ts::Parser::parse_string(
   const auto new_tree = ts_parser_parse_string(
       parser_.get(), old_tree_raw.get(), string.data(), string.size());
   return Tree{TSTreePtr{new_tree}};
+}
+
+auto kero::ts::Parser::set_timeout_micros(
+    const uint64_t timeout_micros) const noexcept -> void {
+  assert(!is_null() && "Parser::set_timeout_micros: parser is null");
+  ts_parser_set_timeout_micros(parser_.get(), timeout_micros);
+}
+
+auto kero::ts::Parser::timeout_micros() const noexcept -> uint64_t {
+  assert(!is_null() && "Parser::timeout_micros: parser is null");
+  return ts_parser_timeout_micros(parser_.get());
+}
+
+auto kero::ts::Parser::enable_cancellation() noexcept -> void {
+  assert(!is_null() && "Parser::enable_cancellation: parser is null");
+  if (cancellation_flag_.get() != nullptr) {
+    return;
+  }
+  cancellation_flag_ = std::make_unique<size_t>(0);
+  ts_parser_set_cancellation_flag(parser_.get(), cancellation_flag_.get());
+}
+
+auto kero::ts::Parser::cancel() noexcept -> void {
+  assert(!is_null() && "Parser::cancel: parser is null");
+  assert(cancellation_flag_.get() != nullptr &&
+         "Parser::cancel: cancellation_flag is null. Please enable "
+         "cancellation before canceling.");
+  *cancellation_flag_ = 1;
+}
+
+auto kero::ts::Parser::disable_cancellation() noexcept -> void {
+  assert(!is_null() && "Parser::disable_cancellation: parser is null");
+  if (cancellation_flag_.get() == nullptr) {
+    return;
+  }
+  ts_parser_set_cancellation_flag(parser_.get(), nullptr);
+  cancellation_flag_.reset();
+}
+
+auto kero::ts::Parser::set_logger(LoggerPtr &&logger) noexcept -> void {
+  assert(!is_null() && "Parser::set_logger: parser is null");
+  assert(logger.get() != nullptr && "Parser::set_logger: logger is null");
+  logger_ = std::move(logger);
+  ts_parser_set_logger(parser_.get(), logger_->as_raw());
+}
+
+auto kero::ts::Parser::access_logger() const noexcept -> const LoggerPtr & {
+  assert(!is_null() && "Parser::access_logger: parser is null");
+  assert(logger_.get() != nullptr && "Parser::access_logger: logger is null");
+  return logger_;
+}
+
+auto kero::ts::Parser::take_logger() noexcept -> LoggerPtr {
+  assert(!is_null() && "Parser::take_logger: parser is null");
+  assert(logger_.get() != nullptr && "Parser::take_logger: logger is null");
+  ts_parser_set_logger(parser_.get(), Logger::null_ts_logger());
+  return std::move(logger_);
+}
+
+auto kero::ts::Parser::print_dot_graphs(
+    const int file_descriptor) const noexcept -> void {
+  assert(!is_null() && "Parser::print_dot_graphs: parser is null");
+  assert(file_descriptor != 0 &&
+         "Parser::print_dot_graphs: You cannot use the stdin file descriptor "
+         "directly. Close file descriptor when parser is deleted. Please use "
+         "it after replication.");
+  assert(file_descriptor != 1 &&
+         "Parser::print_dot_graphs: You cannot use the stdout file descriptor "
+         "directly. Close file descriptor when parser is deleted. Please use "
+         "it after replication.");
+  assert(file_descriptor != 2 &&
+         "Parser::print_dot_graphs: You cannot use the stderr file descriptor "
+         "directly. Close file descriptor when parser is deleted. Please use "
+         "it after replication.");
+  ts_parser_print_dot_graphs(parser_.get(), file_descriptor);
 }
 
 auto kero::ts::Parser::is_null() const noexcept -> bool {

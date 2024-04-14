@@ -110,7 +110,7 @@ public:
   auto named_descendant_for_point_range(Point start, Point end) const noexcept
       -> Node;
 
-  auto as_raw() noexcept -> TSNode;
+  auto as_raw() const noexcept -> TSNode;
 
 private:
   TSNode node_;
@@ -142,6 +142,7 @@ public:
   auto operator=(Tree &&) noexcept -> Tree & = default;
 
   auto root_node() const noexcept -> Node;
+  auto print_dot_graph(const int file_descriptor) const noexcept -> void;
 
   auto is_null() const noexcept -> bool;
 
@@ -156,15 +157,62 @@ private:
 
 auto operator<<(std::ostream &os, const Tree &tree) -> std::ostream &;
 
+// Logger
+// --------
+
+class Logger {
+public:
+  Logger() noexcept;
+  Logger(const Logger &) = delete;
+  Logger(Logger &&) noexcept = default;
+  virtual ~Logger() noexcept = default;
+
+  auto operator=(const Logger &) -> Logger & = delete;
+  auto operator=(Logger &&) noexcept -> Logger & = default;
+
+  virtual auto log(const TSLogType log_type,
+                   const std::string_view buffer) const noexcept -> void = 0;
+
+  auto as_raw() const noexcept -> const TSLogger;
+
+  static auto null_ts_logger() noexcept -> TSLogger;
+
+private:
+  TSLogger ts_logger_;
+};
+
+using LoggerPtr = std::unique_ptr<Logger>;
+
+// ConsoleLogger
+// --------
+
+class ConsoleLogger : public Logger {
+public:
+  ConsoleLogger() noexcept = default;
+  ConsoleLogger(const ConsoleLogger &) = delete;
+  ConsoleLogger(ConsoleLogger &&) noexcept = default;
+  virtual ~ConsoleLogger() noexcept override = default;
+
+  auto operator=(const ConsoleLogger &) -> ConsoleLogger & = delete;
+  auto operator=(ConsoleLogger &&) noexcept -> ConsoleLogger & = default;
+
+  virtual auto log(const TSLogType log_type,
+                   const std::string_view buffer) const noexcept
+      -> void override;
+};
+
 // TSParserDeleter
 // --------
 
 class TSParserDeleter {
 public:
+  // Close the file descriptor before deleting the parser.
   void operator()(TSParser *parser) const noexcept;
 };
 
 using TSParserPtr = std::unique_ptr<TSParser, TSParserDeleter>;
+
+using CancellationFlagPtr = std::unique_ptr<size_t>;
 
 // Parser
 // --------
@@ -179,20 +227,36 @@ public:
   auto operator=(const Parser &) -> Parser & = delete;
   auto operator=(Parser &&) noexcept -> Parser & = default;
 
+  auto language() const noexcept -> const TSLanguage *;
   auto set_language(const TSLanguage *language) const noexcept -> bool;
-
-  // if `timeout_micros` is 0, there is no timeout.
-  auto set_timeout_micros(const uint64_t timeout_micros) const noexcept -> void;
-
-  auto set_cancellation_flag(
-      const std::unique_ptr<size_t> &cancellation_flag) const noexcept -> void;
   auto parse_string(Tree &&old_tree,
                     const std::string_view string) const noexcept -> Tree;
+
+  static constexpr uint64_t no_timeout = 0;
+  // If the `timeout_micros` is set to `no_timeout`, the timeout will be
+  // disabled.
+  auto set_timeout_micros(const uint64_t timeout_micros) const noexcept -> void;
+  auto timeout_micros() const noexcept -> uint64_t;
+
+  auto enable_cancellation() noexcept -> void;
+  auto cancel() noexcept -> void;
+  auto disable_cancellation() noexcept -> void;
+
+  auto set_logger(LoggerPtr &&logger) noexcept -> void;
+  auto access_logger() const noexcept -> const LoggerPtr &;
+  auto take_logger() noexcept -> LoggerPtr;
+
+  static constexpr int close_file_descriptor = -1;
+  // If the `file_descriptor` is set to `close_file_descriptor`, the file
+  // descriptor will be closed.
+  auto print_dot_graphs(const int file_descriptor) const noexcept -> void;
 
   auto is_null() const noexcept -> bool;
 
 private:
   TSParserPtr parser_;
+  CancellationFlagPtr cancellation_flag_;
+  LoggerPtr logger_;
 };
 
 } // namespace kero::ts

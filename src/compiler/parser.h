@@ -23,7 +23,14 @@ public:
     auto operator=(const Builder &) -> Builder & = delete;
     auto operator=(Builder &&) noexcept -> Builder & = delete;
 
+    auto set_console_logger() noexcept -> Builder &;
+    auto set_print_dot_graphs_to_stdout() noexcept -> Builder &;
+
     auto build() const noexcept -> std::optional<Parser>;
+
+  private:
+    bool set_console_logger_{false};
+    bool set_print_dot_graphs_to_stdout_{false};
   };
 
   Parser(const Parser &) = delete;
@@ -37,9 +44,9 @@ public:
       -> std::optional<kero::ts::Tree>;
 
 private:
-  Parser(kero::ts::Parser &&parser) noexcept;
+  Parser(kero::ts::Parser &&ts_parser) noexcept;
 
-  kero::ts::Parser parser_;
+  kero::ts::Parser ts_parser_;
 };
 
 } // namespace kero::compiler
