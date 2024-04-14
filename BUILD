@@ -1,15 +1,15 @@
 cc_library(
     name = "tree_sitter_kero",
-    srcs = ["third_party/tree-sitter-kero/src/parser.c"],
+    srcs = ["src/tree-sitter-kero/src/parser.c"],
     hdrs = [
-        "third_party/tree-sitter-kero/bindings/c/tree-sitter-kero.h",
-    ] + glob(["third_party/tree-sitter-kero/src/tree_sitter/*.h"]),
+        "src/tree-sitter-kero/bindings/c/tree-sitter-kero.h",
+    ] + glob(["src/tree-sitter-kero/src/tree_sitter/*.h"]),
     copts = [
         "-std=c17",
     ],
     includes = [
-        "third_party/tree-sitter-kero/bindings/c",
-        "third_party/tree-sitter-kero/src",
+        "src/tree-sitter-kero/bindings/c",
+        "src/tree-sitter-kero/src",
     ],
 )
 
