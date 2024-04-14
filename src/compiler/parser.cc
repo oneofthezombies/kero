@@ -10,11 +10,9 @@ using namespace kero::compiler;
 
 auto Parser::Builder::build() const noexcept -> std::optional<Parser> {
   auto parser = kero::ts::Parser{};
-  if (auto result = parser.set_language(tree_sitter_kero());
-      !result.has_value() || !result.value()) {
+  if (!parser.set_language(tree_sitter_kero())) {
     return std::nullopt;
   }
-
   return Parser{std::move(parser)};
 }
 

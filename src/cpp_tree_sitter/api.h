@@ -10,26 +10,6 @@
 
 namespace kero::ts {
 
-// TSParserDeleter
-// --------
-
-class TSParserDeleter {
-public:
-  void operator()(TSParser *parser) const noexcept;
-};
-
-using TSParserPtr = std::unique_ptr<TSParser, TSParserDeleter>;
-
-// TSTreeDeleter
-// --------
-
-class TSTreeDeleter {
-public:
-  void operator()(TSTree *tree) const noexcept;
-};
-
-using TSTreePtr = std::unique_ptr<TSTree, TSTreeDeleter>;
-
 // CStringDeleter
 // --------
 
@@ -53,6 +33,7 @@ public:
   auto operator=(const String &) -> String & = delete;
   auto operator=(String &&) noexcept -> String & = default;
 
+  auto is_null() const noexcept -> bool;
   auto string_view() const noexcept -> std::string_view;
 
 private:
@@ -130,11 +111,23 @@ public:
   auto named_descendant_for_point_range(Point start, Point end) const noexcept
       -> Node;
 
+  auto as_raw() noexcept -> TSNode;
+
 private:
   TSNode node_;
 };
 
 auto operator<<(std::ostream &os, const Node &node) -> std::ostream &;
+
+// TSTreeDeleter
+// --------
+
+class TSTreeDeleter {
+public:
+  void operator()(TSTree *tree) const noexcept;
+};
+
+using TSTreePtr = std::unique_ptr<TSTree, TSTreeDeleter>;
 
 // Tree
 // --------
@@ -149,9 +142,9 @@ public:
   auto operator=(const Tree &) -> Tree & = delete;
   auto operator=(Tree &&) noexcept -> Tree & = default;
 
-  auto root_node() const noexcept -> std::optional<Node>;
+  auto root_node() const noexcept -> Node;
 
-  auto empty() const noexcept -> bool;
+  auto is_null() const noexcept -> bool;
 
   // Consumes the `TSTreePtr` and returns a unique pointer to it.
   auto into_raw() noexcept -> TSTreePtr;
@@ -163,6 +156,16 @@ private:
 };
 
 auto operator<<(std::ostream &os, const Tree &tree) -> std::ostream &;
+
+// TSParserDeleter
+// --------
+
+class TSParserDeleter {
+public:
+  void operator()(TSParser *parser) const noexcept;
+};
+
+using TSParserPtr = std::unique_ptr<TSParser, TSParserDeleter>;
 
 // Parser
 // --------
@@ -177,19 +180,17 @@ public:
   auto operator=(const Parser &) -> Parser & = delete;
   auto operator=(Parser &&) noexcept -> Parser & = default;
 
-  auto set_language(const TSLanguage *language) const noexcept
-      -> std::optional<bool>;
+  auto set_language(const TSLanguage *language) const noexcept -> bool;
 
   // if `timeout_micros` is 0, there is no timeout.
-  auto set_timeout_micros(const uint64_t timeout_micros) const noexcept -> bool;
+  auto set_timeout_micros(const uint64_t timeout_micros) const noexcept -> void;
 
   auto set_cancellation_flag(
-      const std::unique_ptr<size_t> &cancellation_flag) const noexcept -> bool;
+      const std::unique_ptr<size_t> &cancellation_flag) const noexcept -> void;
   auto parse_string(Tree &&old_tree,
-                    const std::string_view string) const noexcept
-      -> std::optional<Tree>;
+                    const std::string_view string) const noexcept -> Tree;
 
-  auto empty() const noexcept -> bool;
+  auto is_null() const noexcept -> bool;
 
 private:
   TSParserPtr parser_;

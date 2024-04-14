@@ -9,8 +9,7 @@ auto match_string(const std::string_view source, const std::string_view s_expr)
   auto tree = parser->parse(source);
   EXPECT_TRUE(tree.has_value());
   auto root_node = tree->root_node();
-  EXPECT_TRUE(root_node.has_value());
-  auto string = root_node->string();
+  auto string = root_node.string();
   EXPECT_EQ(string.string_view(), s_expr);
 }
 
