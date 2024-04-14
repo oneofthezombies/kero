@@ -21,21 +21,27 @@ TEST(ParserTest, Bool) {
 }
 
 TEST(ParserTest, BinaryExpressionEqual) {
-  match_string("true == true", "(module (binary_expression lhs: (true) op: "
-                               "(equal) rhs: (true)))");
-  match_string("true == false", "(module (binary_expression lhs: (true) op: "
-                                "(equal) rhs: (false)))");
-  match_string("false == true", "(module (binary_expression lhs: (false) op: "
-                                "(equal) rhs: (true)))");
+  match_string("true == true",
+               "(module (binary_expression left: (true) operator: "
+               "(equal) right: (true)))");
+  match_string("true == false",
+               "(module (binary_expression left: (true) operator: "
+               "(equal) right: (false)))");
+  match_string("false == true",
+               "(module (binary_expression left: (false) operator: "
+               "(equal) right: (true)))");
 }
 
 TEST(ParserTest, BinaryExpressionNotEqual) {
-  match_string("true != true", "(module (binary_expression lhs: (true) op: "
-                               "(not_equal) rhs: (true)))");
-  match_string("true != false", "(module (binary_expression lhs: (true) op: "
-                                "(not_equal) rhs: (false)))");
-  match_string("false != true", "(module (binary_expression lhs: (false) op: "
-                                "(not_equal) rhs: (true)))");
+  match_string("true != true",
+               "(module (binary_expression left: (true) operator: "
+               "(not_equal) right: (true)))");
+  match_string("true != false",
+               "(module (binary_expression left: (true) operator: "
+               "(not_equal) right: (false)))");
+  match_string("false != true",
+               "(module (binary_expression left: (false) operator: "
+               "(not_equal) right: (true)))");
 }
 
 TEST(ParserTest, ParenthesizedExpression) {
@@ -46,75 +52,98 @@ TEST(ParserTest, ParenthesizedExpression) {
 }
 
 TEST(ParserTest, ParenthesizedExpressionBinaryExpression) {
-  match_string("(true == true)", "(module (binary_expression lhs: (true) op: "
-                                 "(equal) rhs: (true)))");
-  match_string("((true == true))", "(module (binary_expression lhs: (true) op: "
-                                   "(equal) rhs: (true)))");
+  match_string("(true == true)",
+               "(module (binary_expression left: (true) operator: "
+               "(equal) right: (true)))");
+  match_string("((true == true))",
+               "(module (binary_expression left: (true) operator: "
+               "(equal) right: (true)))");
   match_string("((true) == (true))",
-               "(module (binary_expression lhs: (true) op: "
-               "(equal) rhs: (true)))");
-  match_string("((true) == true)", "(module (binary_expression lhs: (true) op: "
-                                   "(equal) rhs: (true)))");
-  match_string("(true == (true))", "(module (binary_expression lhs: (true) op: "
-                                   "(equal) rhs: (true)))");
+               "(module (binary_expression left: (true) operator: "
+               "(equal) right: (true)))");
+  match_string("((true) == true)",
+               "(module (binary_expression left: (true) operator: "
+               "(equal) right: (true)))");
+  match_string("(true == (true))",
+               "(module (binary_expression left: (true) operator: "
+               "(equal) right: (true)))");
 }
 
 TEST(ParserTest, MultipleBinaryExpressions) {
-  match_string("true == true == true",
-               "(module (binary_expression lhs: (binary_expression lhs: (true) "
-               "op: (equal) rhs: (true)) op: (equal) rhs: (true)))");
-  match_string("(true == true) == true",
-               "(module (binary_expression lhs: (binary_expression lhs: (true) "
-               "op: (equal) rhs: (true)) op: (equal) rhs: (true)))");
-  match_string("true == (true == true)",
-               "(module (binary_expression lhs: (true) op: (equal) rhs: "
-               "(binary_expression lhs: (true) op: (equal) rhs: (true))))");
-  match_string("(true == true) == (true == true)",
-               "(module (binary_expression lhs: (binary_expression lhs: (true) "
-               "op: (equal) rhs: (true)) op: (equal) rhs: (binary_expression "
-               "lhs: (true) "
-               "op: (equal) rhs: (true))))");
-  match_string("(true == true) == ((true == true) == true)",
-               "(module (binary_expression lhs: (binary_expression lhs: (true) "
-               "op: (equal) rhs: (true)) op: (equal) rhs: (binary_expression "
-               "lhs: (binary_expression lhs: (true) op: (equal) rhs: (true)) "
-               "op: (equal) rhs: (true))))");
+  match_string(
+      "true == true == true",
+      "(module (binary_expression left: (binary_expression left: (true) "
+      "operator: (equal) right: (true)) operator: (equal) right: (true)))");
+  match_string(
+      "(true == true) == true",
+      "(module (binary_expression left: (binary_expression left: (true) "
+      "operator: (equal) right: (true)) operator: (equal) right: (true)))");
+  match_string(
+      "true == (true == true)",
+      "(module (binary_expression left: (true) operator: (equal) right: "
+      "(binary_expression left: (true) operator: (equal) right: (true))))");
+  match_string(
+      "(true == true) == (true == true)",
+      "(module (binary_expression left: (binary_expression left: (true) "
+      "operator: (equal) right: (true)) operator: (equal) right: "
+      "(binary_expression "
+      "left: (true) "
+      "operator: (equal) right: (true))))");
+  match_string(
+      "(true == true) == ((true == true) == true)",
+      "(module (binary_expression left: (binary_expression left: (true) "
+      "operator: (equal) right: (true)) operator: (equal) right: "
+      "(binary_expression "
+      "left: (binary_expression left: (true) operator: (equal) right: (true)) "
+      "operator: (equal) right: (true))))");
 }
 
 TEST(ParserTest, LogicalAnd) {
-  match_string("true && true", "(module (binary_expression lhs: (true) op: "
-                               "(logical_and) rhs: (true)))");
-  match_string("true && false", "(module (binary_expression lhs: (true) op: "
-                                "(logical_and) rhs: (false)))");
-  match_string("false && true", "(module (binary_expression lhs: (false) op: "
-                                "(logical_and) rhs: (true)))");
+  match_string("true && true",
+               "(module (binary_expression left: (true) operator: "
+               "(logical_and) right: (true)))");
+  match_string("true && false",
+               "(module (binary_expression left: (true) operator: "
+               "(logical_and) right: (false)))");
+  match_string("false && true",
+               "(module (binary_expression left: (false) operator: "
+               "(logical_and) right: (true)))");
 }
 
 TEST(ParserTest, LogicalOr) {
-  match_string("true || true", "(module (binary_expression lhs: (true) op: "
-                               "(logical_or) rhs: (true)))");
-  match_string("true || false", "(module (binary_expression lhs: (true) op: "
-                                "(logical_or) rhs: (false)))");
-  match_string("false || true", "(module (binary_expression lhs: (false) op: "
-                                "(logical_or) rhs: (true)))");
+  match_string("true || true",
+               "(module (binary_expression left: (true) operator: "
+               "(logical_or) right: (true)))");
+  match_string("true || false",
+               "(module (binary_expression left: (true) operator: "
+               "(logical_or) right: (false)))");
+  match_string("false || true",
+               "(module (binary_expression left: (false) operator: "
+               "(logical_or) right: (true)))");
 }
 
 TEST(ParserTest, LogicalAndWithLogicalOr) {
-  match_string("true && true || true",
-               "(module (binary_expression lhs: (binary_expression lhs: (true) "
-               "op: (logical_and) rhs: (true)) op: (logical_or) rhs: (true)))");
+  match_string(
+      "true && true || true",
+      "(module (binary_expression left: (binary_expression left: (true) "
+      "operator: (logical_and) right: (true)) operator: (logical_or) right: "
+      "(true)))");
   match_string(
       "true || true && true",
-      "(module (binary_expression lhs: (true) op: (logical_or) rhs: "
-      "(binary_expression lhs: (true) op: (logical_and) rhs: (true))))");
+      "(module (binary_expression left: (true) operator: (logical_or) right: "
+      "(binary_expression left: (true) operator: (logical_and) right: "
+      "(true))))");
 }
 
 TEST(ParserTest, ParenthesizedExpressionLogicalAndWithLogicalOr) {
-  match_string("(true || true) && true",
-               "(module (binary_expression lhs: (binary_expression lhs: (true) "
-               "op: (logical_or) rhs: (true)) op: (logical_and) rhs: (true)))");
+  match_string(
+      "(true || true) && true",
+      "(module (binary_expression left: (binary_expression left: (true) "
+      "operator: (logical_or) right: (true)) operator: (logical_and) right: "
+      "(true)))");
   match_string(
       "true && (true || true)",
-      "(module (binary_expression lhs: (true) op: (logical_and) rhs: "
-      "(binary_expression lhs: (true) op: (logical_or) rhs: (true))))");
+      "(module (binary_expression left: (true) operator: (logical_and) right: "
+      "(binary_expression left: (true) operator: (logical_or) right: "
+      "(true))))");
 }

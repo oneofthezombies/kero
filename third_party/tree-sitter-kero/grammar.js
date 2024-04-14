@@ -23,19 +23,19 @@ module.exports = grammar({
       ),
 
     binary_expression: ($) => {
-      const prece_ops = [
-        { prece: "binary_equality", op: $.equal },
-        { prece: "binary_equality", op: $.not_equal },
-        { prece: "logical_and", op: $.logical_and },
-        { prece: "logical_or", op: $.logical_or },
+      const precedence_operators = [
+        { precedence: "binary_equality", operator: $.equal },
+        { precedence: "binary_equality", operator: $.not_equal },
+        { precedence: "logical_and", operator: $.logical_and },
+        { precedence: "logical_or", operator: $.logical_or },
       ];
-      const rules = prece_ops.map(({ prece, op }) =>
+      const rules = precedence_operators.map(({ precedence, operator }) =>
         prec.left(
-          prece,
+          precedence,
           seq(
-            field("lhs", $._expression),
-            field("op", op),
-            field("rhs", $._expression)
+            field("left", $._expression),
+            field("operator", operator),
+            field("right", $._expression)
           )
         )
       );

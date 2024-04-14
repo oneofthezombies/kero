@@ -84,7 +84,7 @@
             "members": [
               {
                 "type": "FIELD",
-                "name": "lhs",
+                "name": "left",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -92,7 +92,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "op",
+                "name": "operator",
                 "content": {
                   "type": "SYMBOL",
                   "name": "equal"
@@ -100,7 +100,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "rhs",
+                "name": "right",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -117,7 +117,7 @@
             "members": [
               {
                 "type": "FIELD",
-                "name": "lhs",
+                "name": "left",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -125,7 +125,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "op",
+                "name": "operator",
                 "content": {
                   "type": "SYMBOL",
                   "name": "not_equal"
@@ -133,7 +133,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "rhs",
+                "name": "right",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -150,7 +150,7 @@
             "members": [
               {
                 "type": "FIELD",
-                "name": "lhs",
+                "name": "left",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -158,7 +158,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "op",
+                "name": "operator",
                 "content": {
                   "type": "SYMBOL",
                   "name": "logical_and"
@@ -166,7 +166,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "rhs",
+                "name": "right",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -183,7 +183,7 @@
             "members": [
               {
                 "type": "FIELD",
-                "name": "lhs",
+                "name": "left",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"
@@ -191,7 +191,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "op",
+                "name": "operator",
                 "content": {
                   "type": "SYMBOL",
                   "name": "logical_or"
@@ -199,7 +199,7 @@
               },
               {
                 "type": "FIELD",
-                "name": "rhs",
+                "name": "right",
                 "content": {
                   "type": "SYMBOL",
                   "name": "_expression"

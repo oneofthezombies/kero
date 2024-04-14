@@ -160,16 +160,16 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
 };
 
 enum ts_field_identifiers {
-  field_lhs = 1,
-  field_op = 2,
-  field_rhs = 3,
+  field_left = 1,
+  field_operator = 2,
+  field_right = 3,
 };
 
 static const char * const ts_field_names[] = {
   [0] = NULL,
-  [field_lhs] = "lhs",
-  [field_op] = "op",
-  [field_rhs] = "rhs",
+  [field_left] = "left",
+  [field_operator] = "operator",
+  [field_right] = "right",
 };
 
 static const TSFieldMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
@@ -178,9 +178,9 @@ static const TSFieldMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
 
 static const TSFieldMapEntry ts_field_map_entries[] = {
   [0] =
-    {field_lhs, 0},
-    {field_op, 1},
-    {field_rhs, 2},
+    {field_left, 0},
+    {field_operator, 1},
+    {field_right, 2},
 };
 
 static const TSSymbol ts_alias_sequences[PRODUCTION_ID_COUNT][MAX_ALIAS_SEQUENCE_LENGTH] = {

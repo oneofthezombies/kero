@@ -3,7 +3,7 @@
     "type": "binary_expression",
     "named": true,
     "fields": {
-      "lhs": {
+      "left": {
         "multiple": true,
         "required": true,
         "types": [
@@ -33,7 +33,7 @@
           }
         ]
       },
-      "op": {
+      "operator": {
         "multiple": false,
         "required": true,
         "types": [
@@ -55,7 +55,7 @@
           }
         ]
       },
-      "rhs": {
+      "right": {
         "multiple": true,
         "required": true,
         "types": [
