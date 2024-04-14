@@ -11,7 +11,7 @@ module.exports = grammar({
   rules: {
     module: ($) => sep($._statement, ";"),
 
-    _statement: ($) => choice($._expression_statement),
+    _statement: ($) => choice($._expression_statement, $.if_statement),
     _expression_statement: ($) => $._expression,
     _expression: ($) =>
       choice(
@@ -43,6 +43,24 @@ module.exports = grammar({
     },
 
     _parenthesized_expression: ($) => seq("(", $._expression, ")"),
+
+    if_statement: ($) =>
+      seq(
+        "if",
+        field("if_condition", $._expression),
+        "{",
+        field("if_body", sep($._statement, ";")),
+        "}",
+        optional(
+          seq(
+            "else",
+            choice(
+              seq("{", field("else_body", sep($._statement, ";")), "}"),
+              field("else_if_statement", $.if_statement)
+            )
+          )
+        )
+      ),
 
     type: ($) => choice("bool"),
 

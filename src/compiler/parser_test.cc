@@ -147,3 +147,32 @@ TEST(ParserTest, ParenthesizedExpressionLogicalAndWithLogicalOr) {
       "(binary_expression left: (true) operator: (logical_or) right: "
       "(true))))");
 }
+
+TEST(ParserTest, IfStatement) {
+  match_string("if true {}", "(module (if_statement if_condition: (true)))");
+  match_string("if true { true }",
+               "(module (if_statement if_condition: (true) if_body: (true)))");
+  match_string("if true == (true != true) {}",
+               "(module (if_statement if_condition: (binary_expression left: "
+               "(true) operator: (equal) right: (binary_expression left: "
+               "(true) operator: (not_equal) right: (true)))))");
+  match_string("if true { true } else {}",
+               "(module (if_statement if_condition: (true) if_body: (true)))");
+  match_string("if true { true } else { false }",
+               "(module (if_statement if_condition: (true) if_body: (true) "
+               "else_body: (false)))");
+  match_string("if true { true } else if true { false }",
+               "(module (if_statement if_condition: (true) if_body: (true) "
+               "else_if_statement: (if_statement if_condition: (true) if_body: "
+               "(false))))");
+  match_string("if true { true } else if true { false } else {}",
+               "(module (if_statement if_condition: (true) if_body: (true) "
+               "else_if_statement: (if_statement if_condition: (true) if_body: "
+               "(false))))");
+  match_string("if true == true { true } else if true != true { false }",
+               "(module (if_statement if_condition: (binary_expression left: "
+               "(true) operator: (equal) right: (true)) if_body: (true) "
+               "else_if_statement: (if_statement if_condition: "
+               "(binary_expression left: (true) operator: (not_equal) right: "
+               "(true)) if_body: (false))))");
+}
