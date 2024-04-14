@@ -5,13 +5,12 @@
 auto match_string(const std::string_view source, const std::string_view s_expr)
     -> void {
   auto parser = kero::compiler::Parser::Builder{}.build();
-  EXPECT_TRUE(!!parser);
+  EXPECT_TRUE(parser.has_value());
   auto tree = parser->parse(source);
-  EXPECT_TRUE(!!tree);
-  auto root_node_opt = tree->root_node();
-  EXPECT_TRUE(!!root_node_opt);
-  auto &root_node = *root_node_opt;
-  auto string = root_node.string();
+  EXPECT_TRUE(tree.has_value());
+  auto root_node = tree->root_node();
+  EXPECT_TRUE(root_node.has_value());
+  auto string = root_node->string();
   EXPECT_EQ(string.string_view(), s_expr);
 }
 

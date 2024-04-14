@@ -1,26 +1,4 @@
 cc_library(
-    name = "KeroCompileParser",
-    srcs = [
-        "src/Compile/Parser/Core.c",
-        "src/Compile/Parser/Core.h",
-        "src/Compile/Parser/NodeKindGenerated.c",
-        "src/Compile/Parser/NodeKindGenerated.h",
-        "src/Compile/Parser/ParserGenerated.c",
-        "src/Compile/Parser/ParserGenerated.h",
-        "src/Compile/Parser/ParserGeneratedCInclude.h",
-    ],
-    hdrs = [
-        "src/Compile/Parser/Core.h",
-    ],
-    copts = [
-        "-std=c17",
-    ],
-    includes = [
-        "src",
-    ],
-)
-
-cc_library(
     name = "tree_sitter",
     srcs = [
         "third_party/tree-sitter-0.22.2/lib/src/lib.c",
@@ -59,6 +37,24 @@ cc_library(
 )
 
 cc_library(
+    name = "kero_cpp_tree_sitter",
+    srcs = ["src/cpp_tree_sitter/api.cc"],
+    hdrs = [
+        "src/cpp_tree_sitter/api.h",
+    ],
+    copts = [
+        "-std=c++20",
+        "-fno-rtti",
+    ],
+    includes = [
+        "src",
+    ],
+    deps = [
+        ":tree_sitter",
+    ],
+)
+
+cc_library(
     name = "kero_compiler",
     srcs = [
         "src/compiler/parser.cc",
@@ -74,7 +70,7 @@ cc_library(
         "src",
     ],
     deps = [
-        ":tree_sitter",
+        ":kero_cpp_tree_sitter",
         ":tree_sitter_kero",
     ],
 )
@@ -93,56 +89,6 @@ cc_test(
     ],
     deps = [
         ":kero_compiler",
-        "@googletest//:gtest_main",
-    ],
-)
-
-cc_library(
-    name = "KeroCompileParserFacade",
-    srcs = [
-        "src/Compile/ParserFacade/ParserFacade.cpp",
-    ],
-    hdrs = [
-        "src/Compile/ParserFacade/ParserFacade.h",
-    ],
-    copts = [
-        "-std=c++20",
-        "-fno-rtti",
-    ],
-    includes = [
-        "src",
-    ],
-    deps = [
-        ":KeroCompileParser",
-    ],
-)
-
-cc_test(
-    name = "KeroCompileParserFacade_test",
-    srcs = [
-        "src/Compile/ParserFacade/ParserFacadeTest.cpp",
-    ],
-    copts = [
-        "-std=c++20",
-        "-fno-rtti",
-    ],
-    deps = [
-        ":KeroCompileParserFacade",
-        "@googletest//:gtest_main",
-    ],
-)
-
-cc_test(
-    name = "tree_sitter_kero_test",
-    srcs = [
-        "src/Compile/Parser2/tree_sitter_kero_test.cc",
-    ],
-    copts = [
-        "-std=c++20",
-        "-fno-rtti",
-    ],
-    deps = [
-        ":tree_sitter_kero",
         "@googletest//:gtest_main",
     ],
 )

@@ -14,13 +14,13 @@
   },
   "[bazel]": {
     "editor.formatOnSave": true
-  },
-  "files.associations": {
-    "src/compiler/**/*.cc": "cpp",
-    "src/compiler/**/*.h": "cpp",
-    "src/Compile/ParserFacade/**/*.cpp": "cpp",
-    "src/Compile/ParserFacade/**/*.h": "cpp",
-    "src/Compile/Parser/**/*.c": "c",
-    "src/Compile/Parser/**/*.h": "c"
   }
+  // "files.associations": {
+  //   "src/compiler/**/*.cc": "cpp",
+  //   "src/compiler/**/*.h": "cpp",
+  //   "src/Compile/ParserFacade/**/*.cpp": "cpp",
+  //   "src/Compile/ParserFacade/**/*.h": "cpp",
+  //   "src/Compile/Parser/**/*.c": "c",
+  //   "src/Compile/Parser/**/*.h": "c"
+  // }
 }
