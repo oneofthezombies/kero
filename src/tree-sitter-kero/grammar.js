@@ -75,20 +75,11 @@ module.exports = grammar({
       seq(
         "fn",
         field("function_name", $.identifier),
-        "(",
-        field("function_parameters", sep($._parameter, ",")),
-        ")",
+        seq("(", optional(sep1(seq($.identifier, ":", $.type), ",")), ")"),
         optional(seq("->", field("return_type", $.type))),
         "{",
         field("function_body", optional(sep1($._statement, ";"))),
         "}"
-      ),
-
-    _parameter: ($) =>
-      seq(
-        field("parameter_name", $.identifier),
-        ":",
-        field("parameter_type", $.type)
       ),
 
     type: ($) => choice("bool"),
@@ -111,8 +102,4 @@ module.exports = grammar({
 
 function sep1(rule, sep) {
   return seq(rule, repeat(seq(sep, rule)));
-}
-
-function sep(rule, sep) {
-  return optional(sep1(rule, sep));
 }
