@@ -57,7 +57,7 @@ function cmakeLlvm() {
     "cmake",
     [
       "-S",
-      "third_party/llvm-project-18.1.3.src/llvm",
+      "third_party/llvm-project-llvmorg-18.1.3/llvm",
       "-B",
       "build/llvm",
       "-G",
