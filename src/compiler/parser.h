@@ -23,10 +23,10 @@ public:
     auto operator=(const Builder &) -> Builder & = delete;
     auto operator=(Builder &&) noexcept -> Builder & = delete;
 
-    auto set_console_logger() noexcept -> Builder &;
-    auto set_print_dot_graphs_to_stdout() noexcept -> Builder &;
+    auto SetConsoleLogger(const bool set = true) noexcept -> Builder &;
+    auto SetPrintDotGraphsToStdout(const bool set = true) noexcept -> Builder &;
 
-    auto build() const noexcept -> std::optional<Parser>;
+    auto Build() const noexcept -> std::optional<Parser>;
 
   private:
     bool set_console_logger_{false};
@@ -40,7 +40,7 @@ public:
   auto operator=(const Parser &) -> Parser & = delete;
   auto operator=(Parser &&) noexcept -> Parser & = default;
 
-  auto parse(const std::string_view source) const noexcept
+  auto Parse(const std::string_view source) const noexcept
       -> std::optional<ts::Tree>;
 
 private:
