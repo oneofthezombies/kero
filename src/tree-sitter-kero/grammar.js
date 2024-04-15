@@ -22,7 +22,8 @@ module.exports = grammar({
         $.binary_expression,
         $.identifier,
         $.true,
-        $.false
+        $.false,
+        $.call_expression
       ),
 
     binary_expression: ($) => {
@@ -61,6 +62,10 @@ module.exports = grammar({
     parameter: ($) => seq($.identifier, ":", $.type),
 
     return_clause: ($) => seq("->", $.type),
+
+    call_expression: ($) => seq($.identifier, $.argument_clause),
+
+    argument_clause: ($) => seq("(", optional(sep1($._expression, ",")), ")"),
 
     block: ($) => seq("{", optional(sep1($._statement, ";")), "}"),
 

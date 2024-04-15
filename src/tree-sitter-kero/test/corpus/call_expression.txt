@@ -1,0 +1,49 @@
+===
+Call expression - no parameters
+===
+
+a()
+
+---
+
+(module
+  (call_expression
+    (identifier)
+    (argument_clause)
+  )
+)
+
+===
+Call expression - one parameter
+===
+
+a(true)
+
+---
+
+(module
+  (call_expression
+    (identifier)
+    (argument_clause
+        (true)
+    )
+  )
+)
+
+===
+Call expression - two parameter
+===
+
+a(true, true)
+
+---
+
+(module
+  (call_expression
+    (identifier)
+    (argument_clause
+        (true)
+        (true)
+    )
+  )
+)
