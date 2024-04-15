@@ -63,7 +63,7 @@ function cmakeLlvm() {
       "-G",
       "Ninja",
       "-DCMAKE_BUILD_TYPE=Debug",
-      '-DLLVM_ENABLE_PROJECTS=""',
+      "-DLLVM_ENABLE_PROJECTS=",
       "-DLLVM_ENABLE_ASSERTIONS=ON",
       "-DLLVM_USE_LINKER=lld",
     ],
