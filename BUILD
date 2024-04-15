@@ -14,12 +14,17 @@ cc_library(
 )
 
 cc_library(
+    name = "llvm",
+    deps = ["@llvm//:cmake_external_llvm"],
+)
+
+cc_library(
     name = "kero_compiler",
     srcs = [
         "src/compiler/parser.cc",
-        "src/compiler/parser.h",
     ],
     hdrs = [
+        "src/compiler/parser.h",
     ],
     copts = [
         "-std=c++20",
@@ -29,6 +34,7 @@ cc_library(
         "src",
     ],
     deps = [
+        ":llvm",
         ":tree_sitter_kero",
         "@cpp_tree_sitter",
     ],

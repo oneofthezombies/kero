@@ -22,3 +22,5 @@ archive_override(
     urls = ["https://github.com/oneofthezombies/cpp-tree-sitter/archive/refs/tags/v" + CPP_TREE_SITTER_VERSION + ".zip"],
     strip_prefix = "cpp-tree-sitter-" + CPP_TREE_SITTER_VERSION,
 )
+
+bazel_dep(name = "rules_foreign_cc", version = "0.10.1")
