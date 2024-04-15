@@ -1,10 +1,20 @@
 import { spawnSync } from "child_process";
 
 function run(command, args, options) {
+  console.log(
+    `Running ${command} ${args.join(" ")} on ${options.cwd || process.cwd()}`
+  );
   const result = spawnSync(command, args, options);
   if (result.status !== 0) {
     process.exit(result.status);
   }
+  console.log(`Done running ${command} ${args.join(" ")}`);
+}
+
+function checkCommand(command) {
+  console.log(`Checking ${command}...`);
+  run("which", [command], { stdio: "inherit" });
+  console.log(`Found ${command}`);
 }
 
 function installTreeSitterCli() {
@@ -58,7 +68,9 @@ function main() {
   const subcommand = args[1] || "";
   if (command === "kero") {
     if (subcommand === "init") {
+      checkCommand("cargo");
       installTreeSitterCli();
+      checkCommand("npm");
       installTreeSitterKero();
     } else if (subcommand === "gen") {
       generateTreeSitterKero();
