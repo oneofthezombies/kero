@@ -20,7 +20,7 @@ auto Parser::Builder::set_print_dot_graphs_to_stdout() noexcept -> Builder & {
 
 auto Parser::Builder::build() const noexcept -> std::optional<Parser> {
   auto ts_parser = ts::Parser{};
-  if (!ts_parser.SetLanguage(ts::Language{tree_sitter_kero()})) {
+  if (!ts_parser.SetLanguage(ts::Language::FromRaw(tree_sitter_kero()))) {
     return std::nullopt;
   }
   if (set_console_logger_) {
