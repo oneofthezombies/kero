@@ -1,0 +1,103 @@
+===
+Binary expression - equal
+===
+
+true == true
+
+---
+
+(module
+  (binary_expression
+    (true)
+    (equal)
+    (true)
+  )
+)
+
+===
+Binary expression - not equal
+===
+
+true != true
+
+---
+
+(module
+  (binary_expression
+    (true)
+    (not_equal)
+    (true)
+  )
+)
+
+===
+Binary expression - logical and
+===
+
+true && true
+
+---
+
+(module
+  (binary_expression
+    (true)
+    (logical_and)
+    (true)
+  )
+)
+
+===
+Binary expression - logical or
+===
+
+true || true
+
+---
+
+(module
+  (binary_expression
+    (true)
+    (logical_or)
+    (true)
+  )
+)
+
+===
+Binary expression - logical and, equal
+===
+
+true && true == true
+
+---
+
+(module
+  (binary_expression
+    (true)
+    (logical_and)
+    (binary_expression
+      (true)
+      (equal)
+      (true)
+    )
+  )
+)
+
+===
+Binary expression - logical or, logical and
+===
+
+true || true && true
+
+---
+
+(module
+  (binary_expression
+    (true)
+    (logical_or)
+    (binary_expression
+      (true)
+      (logical_and)
+      (true)
+    )
+  )
+)

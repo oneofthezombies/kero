@@ -1,0 +1,64 @@
+===
+If statement - one condition, empty block
+===
+
+if true {}
+
+---
+
+(module
+  (if_statement
+    (condition_expression
+      (true)
+    )
+    (block)
+  )
+)
+
+===
+If statement - one condition, empty block, else empty block
+===
+
+if true {} else {}
+
+---
+
+(module
+  (if_statement
+    (condition_expression
+      (true)
+    )
+    (block)
+    (else_clause
+      (block)
+    )
+  )
+)
+
+===
+If statement - one condition, empty block, else if one condition and empty block, else empty block
+===
+
+if true {} else if true {} else {}
+
+---
+
+(module
+  (if_statement
+    (condition_expression
+      (true)
+    )
+    (block)
+    (else_clause
+      (if_statement
+        (condition_expression
+          (true)
+        )
+        (block)
+        (else_clause
+          (block)
+        )
+      )
+    )
+  )
+)

@@ -12,7 +12,7 @@ module.exports = grammar({
     module: ($) => optional(sep1($._statement, ";")),
 
     _statement: ($) =>
-      choice($._expression_statement, $.if_statement, $._definition_statement),
+      choice($._expression_statement, $.if_statement, $.function_definition),
 
     _expression_statement: ($) => $._expression,
 
@@ -33,14 +33,7 @@ module.exports = grammar({
         { precedence: "logical_or", operator: $.logical_or },
       ];
       const rules = precedence_operators.map(({ precedence, operator }) =>
-        prec.left(
-          precedence,
-          seq(
-            field("left", $._expression),
-            field("operator", operator),
-            field("right", $._expression)
-          )
-        )
+        prec.left(precedence, seq($._expression, operator, $._expression))
       );
       return choice(...rules);
     },
@@ -48,39 +41,28 @@ module.exports = grammar({
     _parenthesized_expression: ($) => seq("(", $._expression, ")"),
 
     if_statement: ($) =>
-      seq(
-        "if",
-        field("if_condition", $._expression),
-        "{",
-        field("if_body", optional(sep1($._statement, ";"))),
-        "}",
-        optional(
-          seq(
-            "else",
-            choice(
-              seq(
-                "{",
-                field("else_body", optional(sep1($._statement, ";"))),
-                "}"
-              ),
-              field("else_if_statement", $.if_statement)
-            )
-          )
-        )
-      ),
+      seq("if", $.condition_expression, $.block, optional($.else_clause)),
 
-    _definition_statement: ($) => choice($.function_definition),
+    condition_expression: ($) => $._expression,
+
+    else_clause: ($) => seq("else", choice($.if_statement, $.block)),
 
     function_definition: ($) =>
       seq(
         "fn",
-        field("function_name", $.identifier),
-        seq("(", optional(sep1(seq($.identifier, ":", $.type), ",")), ")"),
-        optional(seq("->", field("return_type", $.type))),
-        "{",
-        field("function_body", optional(sep1($._statement, ";"))),
-        "}"
+        $.identifier,
+        $.parameter_clause,
+        optional($.return_clause),
+        $.block
       ),
+
+    parameter_clause: ($) => seq("(", optional(sep1($.parameter, ",")), ")"),
+
+    parameter: ($) => seq($.identifier, ":", $.type),
+
+    return_clause: ($) => seq("->", $.type),
+
+    block: ($) => seq("{", optional(sep1($._statement, ";")), "}"),
 
     type: ($) => choice("bool"),
 

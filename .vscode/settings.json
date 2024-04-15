@@ -6,13 +6,26 @@
   ],
   "[cpp]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.rulers": [80]
   },
   "[c]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.rulers": [80]
   },
   "[bazel]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.rulers": [80]
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.rulers": [80]
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.rulers": [80]
   }
 }

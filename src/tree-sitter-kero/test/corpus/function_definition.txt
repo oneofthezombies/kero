@@ -1,0 +1,98 @@
+===
+Function definition - no parameters, no return clause, empty block
+===
+
+fn x() {}
+
+---
+
+(module
+  (function_definition
+    (identifier)
+    (parameter_clause)
+    (block)
+  )
+)
+
+===
+Function definition - one parameter, no return clause, empty block
+===
+
+fn x(a: bool) {}
+
+---
+
+(module
+  (function_definition
+    (identifier)
+    (parameter_clause
+      (parameter
+        (identifier)
+        (type)
+      )
+    )
+    (block)
+  )
+)
+
+===
+Function definition - two parameter, no return clause, empty block
+===
+
+fn x(a: bool, b: bool) {}
+
+---
+
+(module
+  (function_definition
+    (identifier)
+    (parameter_clause
+      (parameter
+        (identifier)
+        (type)
+      )
+      (parameter
+        (identifier)
+        (type)
+      )
+    )
+    (block)
+  )
+)
+
+===
+Function definition - no parameter, one return clause, empty block
+===
+
+fn x() -> bool {}
+
+---
+
+(module
+  (function_definition
+    (identifier)
+    (parameter_clause)
+    (return_clause
+      (type)
+    )
+    (block)
+  )
+)
+
+===
+Function definition - no parameter, no return clause, empty block
+===
+
+fn x() { true }
+
+---
+
+(module
+  (function_definition
+    (identifier)
+    (parameter_clause)
+    (block
+      (true)
+    )
+  )
+)

@@ -2,9 +2,8 @@ import { spawnSync } from "child_process";
 
 function run(command, args, options) {
   const result = spawnSync(command, args, options);
-  if (result.error) {
-    console.error(result.error);
-    process.exit(1);
+  if (result.status !== 0) {
+    process.exit(result.status);
   }
 }
 
@@ -21,13 +20,17 @@ function installTreeSitterKero() {
   });
 }
 
-function install() {
-  installTreeSitterCli();
-  installTreeSitterKero();
-}
-
 function generateTreeSitterKero() {
   run("tree-sitter", ["generate", "--no-bindings"], {
+    stdio: "inherit",
+    cwd: "src/tree-sitter-kero",
+  });
+
+  testTreeSitterKero();
+}
+
+function testTreeSitterKero() {
+  run("tree-sitter", ["test"], {
     stdio: "inherit",
     cwd: "src/tree-sitter-kero",
   });
@@ -39,29 +42,13 @@ function generateCompileCommands() {
   });
 }
 
-function generateAll() {
-  generateTreeSitterKero();
-  generateCompileCommands();
-}
-
-function generate(subcommand) {
-  if (subcommand === "tree-sitter-kero") {
-    generateTreeSitterKero();
-  } else if (subcommand === "compile-commands") {
-    generateCompileCommands();
-  } else {
-    generateAll();
-  }
-}
-
 function help() {
   console.log("Usage: dev.mjs [command]");
   console.log("Commands:");
-  console.log("  install: Install dependencies");
-  console.log("  generate: Generate files");
   // prettier-ignore
-  console.log("  generate tree-sitter-kero: Generate Tree-sitter parser for Kero");
-  console.log("  generate compile-commands: Generate compile_commands.json");
+  console.log("  kero init: Install Tree-sitter CLI and install Tree-sitter Kero npm package");
+  console.log("  kero gen: Generate Tree-sitter parser for Kero and run tests");
+  console.log("  ide: Generate IDE support files");
   process.exit(1);
 }
 
@@ -69,10 +56,17 @@ function main() {
   const args = process.argv.slice(2);
   const command = args[0] || "help";
   const subcommand = args[1] || "";
-  if (command === "install") {
-    install();
-  } else if (command === "generate") {
-    generate(subcommand);
+  if (command === "kero") {
+    if (subcommand === "init") {
+      installTreeSitterCli();
+      installTreeSitterKero();
+    } else if (subcommand === "gen") {
+      generateTreeSitterKero();
+    } else {
+      help();
+    }
+  } else if (command === "ide") {
+    generateCompileCommands();
   } else {
     help();
   }
