@@ -130,6 +130,8 @@ auto Number(const IrContext &ir_context, const ts::Node &node)
 
   const auto length = end - start;
   assert(length >= 0 && "length must be greater than or equal to 0");
+  assert(length <= ir_context.source.size() &&
+         "length must be less than or equal to source size");
 
   const auto number_string = ir_context.source.substr(start, length);
   const auto number = std::strtod(number_string.data(), nullptr);
