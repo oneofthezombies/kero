@@ -30,12 +30,17 @@ cc_library(
 cc_library(
     name = "kero_compiler",
     srcs = [
-        "src/compiler/code_generator.cc",
-        "src/compiler/parser.cc",
+        "src/compiler/core.cc",
+        "src/compiler/ir_generator.cc",
+        "src/compiler/ir_visitor.cc",
+        "src/compiler/parser_builder.cc",
     ],
     hdrs = [
-        "src/compiler/code_generator.h",
-        "src/compiler/parser.h",
+        "src/compiler/core.h",
+        "src/compiler/ir_generator.h",
+        "src/compiler/ir_visit_handlers.cc",
+        "src/compiler/ir_visitor.h",
+        "src/compiler/parser_builder.h",
     ],
     copts = [
         "-std=c++20",
@@ -69,13 +74,6 @@ cc_test(
     ],
 )
 
-genrule(
-    name = "llvm_config_flags",
-    outs = ["llvm_config_flags.txt"],
-    cmd = "./.build/llvm/bin/llvm-config --cxxflags --ldflags --system-libs --libs core > $@",
-    tools = [".build/llvm/bin/llvm-config"],
-)
-
 cc_library(
     name = "llvm",
     hdrs = glob([
@@ -102,9 +100,6 @@ cc_library(
         "-lm",
         "-ltinfo",
         "-lxml2",
-    ],
-    deps = [
-        ":llvm_config_flags",
     ],
 )
 

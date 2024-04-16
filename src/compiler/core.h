@@ -4,26 +4,73 @@
 #include <cstdint>
 #include <variant>
 
+namespace ts {
+
+class Language;
+
+} // namespace ts
+
 namespace kero::compiler {
 
-enum class ResultCode : int32_t {
-  kSuccess = 0,
-
-  // CodeGenerator
+enum class ErrorCode : int32_t {
+  // IrVisitor
   // --------
-  kSymbolNotFound = 100,
-  kVisitorAlreadyRegistered,
-
-  // Visitor
-  // --------
-  kBinaryExpressionLeftIsNull = 200,
+  kSymbolNotFound = 0,
+  kVisitHandlerAlreadyRegistered,
+  kVisitHandlerNotFound,
+  kBinaryExpressionLeftIsNull,
   kBinaryExpressionOperatorIsNull,
   kBinaryExpressionRightIsNull,
 };
 
-template <typename T> using Result = std::variant<T, ResultCode>;
+template <typename T> class Result {
+public:
+  Result() = delete;
+  explicit Result(T &&value) noexcept : data_{std::move(value)} {}
+  explicit Result(const ErrorCode code) noexcept : data_(code) {}
 
-using ValueRef = llvm::Value *;
+  Result(const Result &) = delete;
+  Result(Result &&) noexcept = default;
+  ~Result() noexcept = default;
+
+  auto operator=(const Result &) -> Result & = delete;
+  auto operator=(Result &&) noexcept -> Result & = default;
+
+  auto IsOk() const noexcept -> bool {
+    return std::holds_alternative<T>(data_);
+  }
+
+  auto IsErr() const noexcept -> bool {
+    return std::holds_alternative<ErrorCode>(data_);
+  }
+
+  [[nodiscard]] auto TakeOk() noexcept -> T {
+    assert(IsOk() && "Result must be in Ok state");
+    return std::move(std::get<T>(data_));
+  }
+
+  auto Err() const noexcept -> ErrorCode {
+    assert(IsErr() && "Result must be in Err state");
+    return std::get<ErrorCode>(data_);
+  }
+
+  [[nodiscard]] static auto Ok(T &&value) noexcept -> Result<T> {
+    return Result<T>{std::move(value)};
+  }
+
+  static auto Err(const ErrorCode code) noexcept -> Result<T> {
+    return Result<T>{code};
+  }
+
+private:
+  std::variant<std::monostate, T, ErrorCode> data_;
+};
+
+struct Void {};
+
+using VoidResult = Result<Void>;
+
+auto Language() -> ts::Language;
 
 } // namespace kero::compiler
 

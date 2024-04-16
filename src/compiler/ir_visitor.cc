@@ -1,0 +1,72 @@
+#include "ir_visitor.h"
+
+#include "ir_visit_handlers.cc"
+
+using namespace kero::compiler;
+
+static const std::vector<
+    std::tuple<std::pair<std::string_view, bool>, IrVisitHandler>>
+    kIrVisitHandlers = {
+        {
+            {"true", true},
+            True,
+        },
+        {
+            {"false", true},
+            False,
+        },
+
+        // This comment prevents tuple's `}` and vector's `}` from
+        // being attached in the form `}}` by `clang-format`.
+};
+
+auto kero::compiler::IrVisitor::Builder::Build() noexcept -> Result<IrVisitor> {
+  if (auto result = RegisterAllHandler(); result.IsErr()) {
+    return Result<IrVisitor>::Err(result.Err());
+  }
+
+  return Result<IrVisitor>::Ok(IrVisitor{std::move(handlers_)});
+}
+
+auto kero::compiler::IrVisitor::Builder::RegisterAllHandler() noexcept
+    -> VoidResult {
+  for (const auto &[key, visitor] : kIrVisitHandlers) {
+    const auto &[type, named] = key;
+    if (auto result = RegisterHandler(type, named, visitor); result.IsErr()) {
+      return result;
+    }
+  }
+
+  return VoidResult::Ok(Void{});
+}
+
+auto kero::compiler::IrVisitor::Builder::RegisterHandler(
+    const std::string_view type, const bool named,
+    const IrVisitHandler &handler) noexcept -> Result<Void> {
+  const auto symbol = Language().SymbolForName(type, named);
+  if (symbol == ts::Language::kSymbolNotFound) {
+    return VoidResult::Err(ErrorCode::kSymbolNotFound);
+  }
+
+  if (handlers_.find(symbol) != handlers_.end()) {
+    return VoidResult::Err(ErrorCode::kVisitHandlerAlreadyRegistered);
+  }
+
+  handlers_.emplace(symbol, handler);
+  return VoidResult::Ok(Void{});
+}
+
+kero::compiler::IrVisitor::IrVisitor(IrVisitHandlers &&handlers) noexcept
+    : handlers_{std::move(handlers)} {}
+
+auto kero::compiler::IrVisitor::visit(IrContext &ir_context,
+                                      const ts::Node &node) const noexcept
+    -> IrVisitResult {
+  const auto symbol = node.Symbol();
+  const auto handler = handlers_.find(symbol);
+  if (handler == handlers_.end()) {
+    return IrVisitResult::Err(ErrorCode::kVisitHandlerNotFound);
+  }
+
+  return handler->second(ir_context, node);
+}
