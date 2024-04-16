@@ -47,7 +47,7 @@ function testTreeSitterKero() {
 }
 
 function generateCompileCommands() {
-  run("bazel", ["run", "@hedron_compile_commands//:refresh_all"], {
+  run("bazel", ["run", "//:refresh_compile_commands"], {
     stdio: "inherit",
   });
 }
@@ -66,11 +66,18 @@ function cmakeLlvm() {
       "-DLLVM_ENABLE_PROJECTS=",
       "-DLLVM_ENABLE_ASSERTIONS=ON",
       "-DLLVM_USE_LINKER=lld",
+      "-DLLVM_INCLUDE_TESTS=OFF",
     ],
     {
       stdio: "inherit",
     }
   );
+}
+
+function ninjaLlvm() {
+  run("ninja", ["-C", "build/llvm"], {
+    stdio: "inherit",
+  });
 }
 
 function help() {
@@ -95,6 +102,7 @@ function main() {
     checkCommand("cmake");
     checkCommand("ninja");
     cmakeLlvm();
+    ninjaLlvm();
   } else if (command === "kero") {
     if (subcommand === "gen") {
       generateTreeSitterKero();
