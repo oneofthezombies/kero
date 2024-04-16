@@ -59,7 +59,8 @@ cc_library(
 cc_test(
     name = "kero_compiler_test",
     srcs = [
-        "src/compiler/parser_test.cc",
+        "src/compiler/ir_generator_test.cc",
+        "src/compiler/parser_builder_test.cc",
     ],
     copts = [
         "-std=c++20",

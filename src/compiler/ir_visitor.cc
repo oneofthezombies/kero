@@ -4,8 +4,10 @@
 
 using namespace kero::compiler;
 
-static const std::vector<
-    std::tuple<std::pair<std::string_view, bool>, IrVisitHandler>>
+using Type = std::string_view;
+using Named = bool;
+
+static const std::vector<std::pair<std::pair<Type, Named>, IrVisitHandler>>
     kIrVisitHandlers = {
         {
             {"true", true},
@@ -15,8 +17,12 @@ static const std::vector<
             {"false", true},
             False,
         },
+        {
+            {"binary_expression", true},
+            BinaryExpression,
+        },
 
-        // This comment prevents tuple's `}` and vector's `}` from
+        // This comment prevents pair's `}` and vector's `}` from
         // being attached in the form `}}` by `clang-format`.
 };
 

@@ -5,6 +5,7 @@
     "stackbuild.bazel-stack-vscode",
     "usernamehw.errorlens",
     "esbenp.prettier-vscode",
-    "ms-vscode.cmake-tools"
+    "ms-vscode.cmake-tools",
+    "vadimcn.vscode-lldb"
   ]
 }

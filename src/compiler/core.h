@@ -13,9 +13,15 @@ class Language;
 namespace kero::compiler {
 
 enum class ErrorCode : int32_t {
+  kNotImplemented = 0,
+
+  // ParserBuilder
+  // ------------
+  kParserSetLanguageFailed,
+
   // IrVisitor
   // --------
-  kSymbolNotFound = 0,
+  kSymbolNotFound,
   kVisitHandlerAlreadyRegistered,
   kVisitHandlerNotFound,
   kBinaryExpressionLeftIsNull,
@@ -26,9 +32,6 @@ enum class ErrorCode : int32_t {
 template <typename T> class Result {
 public:
   Result() = delete;
-  explicit Result(T &&value) noexcept : data_{std::move(value)} {}
-  explicit Result(const ErrorCode code) noexcept : data_(code) {}
-
   Result(const Result &) = delete;
   Result(Result &&) noexcept = default;
   ~Result() noexcept = default;
@@ -63,6 +66,9 @@ public:
   }
 
 private:
+  explicit Result(T &&value) noexcept : data_{std::move(value)} {}
+  explicit Result(const ErrorCode code) noexcept : data_(code) {}
+
   std::variant<std::monostate, T, ErrorCode> data_;
 };
 

@@ -1,13 +1,9 @@
 #ifndef KERO_COMPILER_PARSER_BUILDER_H
 #define KERO_COMPILER_PARSER_BUILDER_H
 
-#include <optional>
+#include "cpp_tree_sitter/api.h"
 
-namespace ts {
-
-class Parser;
-
-} // namespace ts
+#include "compiler/core.h"
 
 namespace kero::compiler {
 
@@ -25,7 +21,7 @@ public:
   auto SetPrintDotGraphsToStdout(const bool is_set = true) noexcept
       -> ParserBuilder &;
 
-  auto Build() const noexcept -> std::optional<ts::Parser>;
+  auto Build() const noexcept -> Result<ts::Parser>;
 
 private:
   bool set_console_logger_{false};

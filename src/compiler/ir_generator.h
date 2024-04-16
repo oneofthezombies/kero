@@ -1,7 +1,6 @@
 #ifndef KERO_COMPILER_IR_GENERATOR_H
 #define KERO_COMPILER_IR_GENERATOR_H
 
-#include "cpp_tree_sitter/api.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
@@ -12,12 +11,11 @@ namespace kero::compiler {
 
 struct IrContext {
   const IrVisitor &ir_visitor;
-  ts::Parser parser;
   std::unique_ptr<llvm::LLVMContext> llvm_context;
   std::unique_ptr<llvm::Module> module;
   std::unique_ptr<llvm::IRBuilder<>> builder;
 
-  explicit IrContext(const IrVisitor &ir_visitor, ts::Parser &&parser) noexcept;
+  explicit IrContext(const IrVisitor &ir_visitor) noexcept;
   IrContext(const IrContext &) = delete;
   IrContext(IrContext &&) = delete;
   ~IrContext() noexcept = default;
@@ -28,8 +26,7 @@ struct IrContext {
 
 class IrGenerator {
 public:
-  explicit IrGenerator(const IrVisitor &ir_visitor,
-                       ts::Parser &&parser) noexcept;
+  explicit IrGenerator(const IrVisitor &ir_visitor) noexcept;
   IrGenerator(const IrGenerator &) = delete;
   IrGenerator(IrGenerator &&) = delete;
   ~IrGenerator() noexcept = default;
@@ -37,7 +34,7 @@ public:
   auto operator=(const IrGenerator &) -> IrGenerator & = delete;
   auto operator=(IrGenerator &&) -> IrGenerator & = delete;
 
-  auto Generate() noexcept -> void;
+  auto Generate(ts::Tree &&tree) noexcept -> void;
 
 private:
   IrContext ir_context_;
