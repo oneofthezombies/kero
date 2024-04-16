@@ -11,4 +11,8 @@ kero::compiler::IrContext::IrContext(const IrVisitor &ir_visitor) noexcept
 kero::compiler::IrGenerator::IrGenerator(const IrVisitor &ir_visitor) noexcept
     : ir_context_{ir_visitor} {}
 
-auto kero::compiler::IrGenerator::Generate(ts::Tree &&tree) noexcept -> void {}
+auto kero::compiler::IrGenerator::Generate(ts::Tree &&tree) noexcept
+    -> IrVisitResult {
+  const auto root_node = tree.RootNode();
+  return ir_context_.ir_visitor.Visit(ir_context_, root_node);
+}

@@ -99,8 +99,8 @@
                 "name": "_expression"
               },
               {
-                "type": "SYMBOL",
-                "name": "equal"
+                "type": "STRING",
+                "value": "=="
               },
               {
                 "type": "SYMBOL",
@@ -120,8 +120,8 @@
                 "name": "_expression"
               },
               {
-                "type": "SYMBOL",
-                "name": "not_equal"
+                "type": "STRING",
+                "value": "!="
               },
               {
                 "type": "SYMBOL",
@@ -141,8 +141,8 @@
                 "name": "_expression"
               },
               {
-                "type": "SYMBOL",
-                "name": "logical_and"
+                "type": "STRING",
+                "value": "&&"
               },
               {
                 "type": "SYMBOL",
@@ -162,8 +162,8 @@
                 "name": "_expression"
               },
               {
-                "type": "SYMBOL",
-                "name": "logical_or"
+                "type": "STRING",
+                "value": "||"
               },
               {
                 "type": "SYMBOL",
@@ -480,22 +480,6 @@
     "false": {
       "type": "STRING",
       "value": "false"
-    },
-    "equal": {
-      "type": "STRING",
-      "value": "=="
-    },
-    "not_equal": {
-      "type": "STRING",
-      "value": "!="
-    },
-    "logical_and": {
-      "type": "STRING",
-      "value": "&&"
-    },
-    "logical_or": {
-      "type": "STRING",
-      "value": "||"
     }
   },
   "extras": [

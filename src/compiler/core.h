@@ -2,6 +2,7 @@
 #define KERO_COMPILER_RESULT_H
 
 #include <cstdint>
+#include <string>
 #include <variant>
 
 namespace ts {
@@ -24,13 +25,14 @@ enum class ErrorCode : int32_t {
   kSymbolNotFound,
   kVisitHandlerAlreadyRegistered,
   kVisitHandlerNotFound,
-  kBinaryExpressionLeftIsNull,
-  kBinaryExpressionOperatorIsNull,
-  kBinaryExpressionRightIsNull,
+  kNodeIsNull,
+  kBinaryExpressionOperatorIsNotValid,
 };
 
-template <typename T> class Result {
+template <typename T, typename E> class Result {
 public:
+  using Self = Result<T, E>;
+
   Result() = delete;
   Result(const Result &) = delete;
   Result(Result &&) noexcept = default;
@@ -44,7 +46,7 @@ public:
   }
 
   auto IsErr() const noexcept -> bool {
-    return std::holds_alternative<ErrorCode>(data_);
+    return std::holds_alternative<E>(data_);
   }
 
   [[nodiscard]] auto TakeOk() noexcept -> T {
@@ -52,29 +54,43 @@ public:
     return std::move(std::get<T>(data_));
   }
 
-  auto Err() const noexcept -> ErrorCode {
+  [[nodiscard]] auto TakeErr() const noexcept -> E {
     assert(IsErr() && "Result must be in Err state");
-    return std::get<ErrorCode>(data_);
+    return std::move(std::get<E>(data_));
   }
 
-  [[nodiscard]] static auto Ok(T &&value) noexcept -> Result<T> {
-    return Result<T>{std::move(value)};
+  [[nodiscard]] static auto Ok(T &&value) noexcept -> Self {
+    return Self{std::move(value)};
   }
 
-  static auto Err(const ErrorCode code) noexcept -> Result<T> {
-    return Result<T>{code};
+  [[nodiscard]] static auto Err(E &&error) noexcept -> Self {
+    return Self{std::move(error)};
   }
 
 private:
   explicit Result(T &&value) noexcept : data_{std::move(value)} {}
-  explicit Result(const ErrorCode code) noexcept : data_(code) {}
+  explicit Result(E &&error) noexcept : data_{std::move(error)} {}
 
-  std::variant<std::monostate, T, ErrorCode> data_;
+  std::variant<std::monostate, T, E> data_;
 };
 
 struct Void {};
 
-using VoidResult = Result<Void>;
+struct Error {
+  ErrorCode code;
+  std::string message;
+
+  explicit Error(const ErrorCode code) noexcept;
+  explicit Error(const ErrorCode code, std::string &&message) noexcept;
+  ~Error() noexcept = default;
+
+  static auto FromStringView(const ErrorCode code,
+                             std::string_view &&message) noexcept -> Error;
+};
+
+auto operator<<(std::ostream &os, const Error &error) -> std::ostream &;
+
+using VoidResult = Result<Void, Error>;
 
 auto Language() -> ts::Language;
 

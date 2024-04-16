@@ -9,7 +9,6 @@ true == true
 (module
   (binary_expression
     (true)
-    (equal)
     (true)
   )
 )
@@ -25,7 +24,6 @@ true != true
 (module
   (binary_expression
     (true)
-    (not_equal)
     (true)
   )
 )
@@ -41,7 +39,6 @@ true && true
 (module
   (binary_expression
     (true)
-    (logical_and)
     (true)
   )
 )
@@ -57,7 +54,6 @@ true || true
 (module
   (binary_expression
     (true)
-    (logical_or)
     (true)
   )
 )
@@ -73,10 +69,8 @@ true && true == true
 (module
   (binary_expression
     (true)
-    (logical_and)
     (binary_expression
       (true)
-      (equal)
       (true)
     )
   )
@@ -93,10 +87,8 @@ true || true && true
 (module
   (binary_expression
     (true)
-    (logical_or)
     (binary_expression
       (true)
-      (logical_and)
       (true)
     )
   )

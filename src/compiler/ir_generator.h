@@ -34,7 +34,7 @@ public:
   auto operator=(const IrGenerator &) -> IrGenerator & = delete;
   auto operator=(IrGenerator &&) -> IrGenerator & = delete;
 
-  auto Generate(ts::Tree &&tree) noexcept -> void;
+  auto Generate(ts::Tree &&tree) noexcept -> IrVisitResult;
 
 private:
   IrContext ir_context_;

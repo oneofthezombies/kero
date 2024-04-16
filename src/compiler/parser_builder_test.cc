@@ -5,7 +5,7 @@
 auto MatchString(const std::string_view source, const std::string_view s_expr)
     -> void {
   if (auto result = kero::compiler::ParserBuilder{}.Build(); result.IsErr()) {
-    FAIL() << static_cast<int32_t>(result.Err());
+    FAIL() << result.TakeErr();
   } else {
     const auto parser = result.TakeOk();
     auto tree = parser.ParseString(ts::Tree::Null(), source);

@@ -13,7 +13,7 @@ namespace kero::compiler {
 
 struct IrContext;
 
-using IrVisitResult = Result<llvm::Value *>;
+using IrVisitResult = Result<llvm::Value *, Error>;
 using IrVisitHandler =
     std::function<IrVisitResult(IrContext &ir_context, const ts::Node &node)>;
 using IrVisitHandlers = std::unordered_map<ts::Symbol, IrVisitHandler>;
@@ -30,7 +30,7 @@ public:
     auto operator=(const Builder &) -> Builder & = delete;
     auto operator=(Builder &&) -> Builder & = delete;
 
-    auto Build() noexcept -> Result<IrVisitor>;
+    auto Build() noexcept -> Result<IrVisitor, Error>;
 
   private:
     auto RegisterAllHandler() noexcept -> VoidResult;
@@ -47,7 +47,7 @@ public:
   auto operator=(const IrVisitor &) -> IrVisitor & = delete;
   auto operator=(IrVisitor &&) noexcept -> IrVisitor & = default;
 
-  auto visit(IrContext &ir_context, const ts::Node &node) const noexcept
+  auto Visit(IrContext &ir_context, const ts::Node &node) const noexcept
       -> IrVisitResult;
 
 private:

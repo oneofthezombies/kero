@@ -28,10 +28,10 @@ module.exports = grammar({
 
     binary_expression: ($) => {
       const precedence_operators = [
-        { precedence: "binary_equality", operator: $.equal },
-        { precedence: "binary_equality", operator: $.not_equal },
-        { precedence: "logical_and", operator: $.logical_and },
-        { precedence: "logical_or", operator: $.logical_or },
+        { precedence: "binary_equality", operator: "==" },
+        { precedence: "binary_equality", operator: "!=" },
+        { precedence: "logical_and", operator: "&&" },
+        { precedence: "logical_or", operator: "||" },
       ];
       const rules = precedence_operators.map(({ precedence, operator }) =>
         prec.left(precedence, seq($._expression, operator, $._expression))
@@ -77,13 +77,6 @@ module.exports = grammar({
     // --------
     true: ($) => "true",
     false: ($) => "false",
-
-    // Punctuators
-    // --------
-    equal: ($) => "==",
-    not_equal: ($) => "!=",
-    logical_and: ($) => "&&",
-    logical_or: ($) => "||",
   },
 });
 

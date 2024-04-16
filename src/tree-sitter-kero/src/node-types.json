@@ -47,27 +47,11 @@
           "named": true
         },
         {
-          "type": "equal",
-          "named": true
-        },
-        {
           "type": "false",
           "named": true
         },
         {
           "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "logical_and",
-          "named": true
-        },
-        {
-          "type": "logical_or",
-          "named": true
-        },
-        {
-          "type": "not_equal",
           "named": true
         },
         {
@@ -329,6 +313,14 @@
     "fields": {}
   },
   {
+    "type": "!=",
+    "named": false
+  },
+  {
+    "type": "&&",
+    "named": false
+  },
+  {
     "type": "(",
     "named": false
   },
@@ -353,16 +345,16 @@
     "named": false
   },
   {
+    "type": "==",
+    "named": false
+  },
+  {
     "type": "bool",
     "named": false
   },
   {
     "type": "else",
     "named": false
-  },
-  {
-    "type": "equal",
-    "named": true
   },
   {
     "type": "false",
@@ -381,23 +373,15 @@
     "named": false
   },
   {
-    "type": "logical_and",
-    "named": true
-  },
-  {
-    "type": "logical_or",
-    "named": true
-  },
-  {
-    "type": "not_equal",
-    "named": true
-  },
-  {
     "type": "true",
     "named": true
   },
   {
     "type": "{",
+    "named": false
+  },
+  {
+    "type": "||",
     "named": false
   },
   {

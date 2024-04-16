@@ -21,7 +21,7 @@ public:
   auto SetPrintDotGraphsToStdout(const bool is_set = true) noexcept
       -> ParserBuilder &;
 
-  auto Build() const noexcept -> Result<ts::Parser>;
+  auto Build() const noexcept -> Result<ts::Parser, Error>;
 
 private:
   bool set_console_logger_{false};
