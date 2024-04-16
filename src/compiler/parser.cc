@@ -1,5 +1,7 @@
 #include "compiler/parser.h"
 
+#include <unistd.h>
+
 #include "cpp_tree_sitter/api.h"
 #include "tree-sitter-kero.h"
 

@@ -30,9 +30,11 @@ cc_library(
 cc_library(
     name = "kero_compiler",
     srcs = [
+        "src/compiler/code_generator.cc",
         "src/compiler/parser.cc",
     ],
     hdrs = [
+        "src/compiler/code_generator.h",
         "src/compiler/parser.h",
     ],
     copts = [
