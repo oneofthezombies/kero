@@ -11,12 +11,6 @@ kero::compiler::Error::Error(const ErrorCode code,
                              std::string &&message) noexcept
     : code{code}, message{std::move(message)} {}
 
-auto kero::compiler::Error::FromStringView(const ErrorCode code,
-                                           std::string_view &&message) noexcept
-    -> Error {
-  return Error{code, std::string{message}};
-}
-
 auto kero::compiler::operator<<(std::ostream &os, const Error &error)
     -> std::ostream & {
   os << "Error{";

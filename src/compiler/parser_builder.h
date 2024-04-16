@@ -7,21 +7,15 @@
 
 namespace kero::compiler {
 
-class ParserBuilder {
+class ParserBuilder : public NonCopyAndNonMovable {
 public:
-  explicit ParserBuilder() noexcept = default;
-  ParserBuilder(const ParserBuilder &) = delete;
-  ParserBuilder(ParserBuilder &&) noexcept = delete;
-  ~ParserBuilder() noexcept = default;
-
-  auto operator=(const ParserBuilder &) -> ParserBuilder & = delete;
-  auto operator=(ParserBuilder &&) noexcept -> ParserBuilder & = delete;
+  using BuildResult = Result<ts::Parser, Error>;
 
   auto SetConsoleLogger(const bool is_set = true) noexcept -> ParserBuilder &;
   auto SetPrintDotGraphsToStdout(const bool is_set = true) noexcept
       -> ParserBuilder &;
 
-  auto Build() const noexcept -> Result<ts::Parser, Error>;
+  auto Build() const noexcept -> BuildResult;
 
 private:
   bool set_console_logger_{false};

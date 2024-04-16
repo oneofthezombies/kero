@@ -1,7 +1,5 @@
 #include "ir_visitor.h"
 
-#include <sstream>
-
 #include "ir_visit_handlers.cc"
 
 using namespace kero::compiler;
@@ -21,10 +19,17 @@ static const std::vector<std::pair<std::pair<Type, Named>, IrVisitHandler>>
         // being attached in the form `}}` by `clang-format`.
 };
 
+kero::compiler::IrVisitorContext::IrVisitorContext(
+    const IrVisitor &ir_visitor, const LlvmContext &llvm_context,
+    const LlvmModule &module, const LlvmIrBuilder &ir_builder,
+    const std::string_view source) noexcept
+    : ir_visitor{ir_visitor}, llvm_context{llvm_context}, module{module},
+      ir_builder{ir_builder}, source{source} {}
+
 auto kero::compiler::IrVisitor::Builder::Build() noexcept
     -> Result<IrVisitor, Error> {
   if (auto result = RegisterAllHandler(); result.IsErr()) {
-    return Result<IrVisitor, Error>::Err(result.TakeErr());
+    return Result<IrVisitor, Error>::Err(std::move(result.Err()));
   }
 
   return Result<IrVisitor, Error>::Ok(IrVisitor{std::move(handlers_)});
@@ -61,23 +66,20 @@ auto kero::compiler::IrVisitor::Builder::RegisterHandler(
 kero::compiler::IrVisitor::IrVisitor(IrVisitHandlers &&handlers) noexcept
     : handlers_{std::move(handlers)} {}
 
-auto kero::compiler::IrVisitor::Visit(const IrContext &ir_context,
+auto kero::compiler::IrVisitor::Visit(const IrVisitorContext &context,
                                       const ts::Node &node) const noexcept
     -> IrVisitResult {
   if (node.IsNull()) {
-    std::stringstream ss;
-    ss << node;
-    return IrVisitResult::Err(Error{ErrorCode::kNodeIsNull, ss.str()});
+    return IrVisitResult::Err(
+        Error{ErrorCode::kNodeIsNull, NodeToString(node)});
   }
 
   const auto symbol = node.Symbol();
   const auto handler = handlers_.find(symbol);
   if (handler == handlers_.end()) {
-    std::stringstream ss;
-    ss << node;
     return IrVisitResult::Err(
-        Error{ErrorCode::kVisitHandlerNotFound, ss.str()});
+        Error{ErrorCode::kVisitHandlerNotFound, NodeToString(node)});
   }
 
-  return handler->second(ir_context, node);
+  return handler->second(context, node);
 }

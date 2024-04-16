@@ -5,31 +5,44 @@
 #include <string_view>
 
 #include "cpp_tree_sitter/api.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Module.h"
 #include "llvm/IR/Value.h"
 
 #include "compiler/core.h"
 
 namespace kero::compiler {
 
-struct IrContext;
+class IrVisitor;
+
+using LlvmContext = std::unique_ptr<llvm::LLVMContext>;
+using LlvmModule = std::unique_ptr<llvm::Module>;
+using LlvmIrBuilder = std::unique_ptr<llvm::IRBuilder<>>;
+
+struct IrVisitorContext : public NonCopyAndNonMovable {
+  const IrVisitor &ir_visitor;
+  const LlvmContext &llvm_context;
+  const LlvmModule &module;
+  const LlvmIrBuilder &ir_builder;
+  const std::string_view source;
+
+  explicit IrVisitorContext(const IrVisitor &ir_visitor,
+                            const LlvmContext &llvm_context,
+                            const LlvmModule &module,
+                            const LlvmIrBuilder &ir_builder,
+                            const std::string_view source) noexcept;
+};
 
 using IrVisitResult = Result<llvm::Value *, Error>;
-using IrVisitHandler = std::function<IrVisitResult(const IrContext &ir_context,
-                                                   const ts::Node &node)>;
+using IrVisitHandler = std::function<IrVisitResult(
+    const IrVisitorContext &context, const ts::Node &node)>;
 using IrVisitHandlers = std::unordered_map<ts::Symbol, IrVisitHandler>;
 
-class IrVisitor {
+class IrVisitor : public NonCopyAndMovable {
 public:
-  class Builder {
+  class Builder : public NonCopyAndNonMovable {
   public:
-    explicit Builder() noexcept = default;
-    Builder(const Builder &) = delete;
-    Builder(Builder &&) = delete;
-    ~Builder() noexcept = default;
-
-    auto operator=(const Builder &) -> Builder & = delete;
-    auto operator=(Builder &&) -> Builder & = delete;
-
     auto Build() noexcept -> Result<IrVisitor, Error>;
 
   private:
@@ -40,15 +53,8 @@ public:
     IrVisitHandlers handlers_;
   };
 
-  IrVisitor(const IrVisitor &) = delete;
-  IrVisitor(IrVisitor &&) noexcept = default;
-  ~IrVisitor() noexcept = default;
-
-  auto operator=(const IrVisitor &) -> IrVisitor & = delete;
-  auto operator=(IrVisitor &&) noexcept -> IrVisitor & = default;
-
-  auto Visit(const IrContext &ir_context, const ts::Node &node) const noexcept
-      -> IrVisitResult;
+  auto Visit(const IrVisitorContext &context,
+             const ts::Node &node) const noexcept -> IrVisitResult;
 
 private:
   explicit IrVisitor(IrVisitHandlers &&handlers) noexcept;
