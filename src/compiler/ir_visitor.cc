@@ -11,18 +11,10 @@ using Named = bool;
 
 static const std::vector<std::pair<std::pair<Type, Named>, IrVisitHandler>>
     kIrVisitHandlers = {
-        {
-            {"true", true},
-            True,
-        },
-        {
-            {"false", true},
-            False,
-        },
-        {
-            {"binary_expression", true},
-            BinaryExpression,
-        },
+        {{"true", true}, True},
+        {{"false", true}, False},
+        {{"binary_expression", true}, BinaryExpression},
+        {{"module", true}, Module}
 
         // This comment prevents pair's `}` and vector's `}` from
         // being attached in the form `}}` by `clang-format`.
