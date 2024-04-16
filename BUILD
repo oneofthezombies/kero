@@ -70,21 +70,21 @@ cc_test(
 genrule(
     name = "llvm_config_flags",
     outs = ["llvm_config_flags.txt"],
-    cmd = "./build/llvm/bin/llvm-config --cxxflags --ldflags --system-libs --libs core > $@",
-    tools = ["build/llvm/bin/llvm-config"],
+    cmd = "./.build/llvm/bin/llvm-config --cxxflags --ldflags --system-libs --libs core > $@",
+    tools = [".build/llvm/bin/llvm-config"],
 )
 
 cc_library(
     name = "llvm",
     hdrs = glob([
-        "build/llvm/include/**/*",
-        "build/llvm/lib/**/*.*",
+        ".build/llvm/include/**/*",
+        ".build/llvm/lib/**/*.*",
         "third_party/llvm-project-llvmorg-18.1.3/llvm/include/**/*",
         "third_party/llvm-project-llvmorg-18.1.3/llvm/lib/**/*",
     ]),
     copts = [":llvm_config_flags"],
     includes = [
-        "build/llvm/include",
+        ".build/llvm/include",
         "third_party/llvm-project-llvmorg-18.1.3/llvm/include",
     ],
     deps = [

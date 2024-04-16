@@ -35,4 +35,4 @@
 /bazel-*
 
 # local build directory
-/build
+/.build

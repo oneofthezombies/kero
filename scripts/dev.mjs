@@ -59,7 +59,7 @@ function cmakeLlvm() {
       "-S",
       "third_party/llvm-project-llvmorg-18.1.3/llvm",
       "-B",
-      "build/llvm",
+      ".build/llvm",
       "-G",
       "Ninja",
       "-DCMAKE_BUILD_TYPE=Debug",
@@ -75,7 +75,7 @@ function cmakeLlvm() {
 }
 
 function ninjaLlvm() {
-  run("ninja", ["-C", "build/llvm"], {
+  run("ninja", ["-C", ".build/llvm"], {
     stdio: "inherit",
   });
 }
