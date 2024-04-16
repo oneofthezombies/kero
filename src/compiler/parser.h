@@ -42,6 +42,8 @@ public:
 
   auto Parse(const std::string_view source) const noexcept
       -> std::optional<ts::Tree>;
+  auto Symbol(const std::string_view type, const bool named) const noexcept
+      -> ts::Symbol;
 
 private:
   Parser(ts::Parser &&ts_parser) noexcept;

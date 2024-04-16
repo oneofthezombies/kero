@@ -15,10 +15,11 @@ git_override(
     commit = "204aa593e002cbd177d30f11f54cff3559110bb9",
 )
 
-CPP_TREE_SITTER_VERSION = "0.1.4"
+CPP_TREE_SITTER_VERSION = "0.1.5"
 bazel_dep(name = "cpp_tree_sitter", version = CPP_TREE_SITTER_VERSION)
 archive_override(
     module_name = "cpp_tree_sitter",
     urls = ["https://github.com/oneofthezombies/cpp-tree-sitter/archive/refs/tags/v" + CPP_TREE_SITTER_VERSION + ".zip"],
     strip_prefix = "cpp-tree-sitter-" + CPP_TREE_SITTER_VERSION,
+    integrity = "sha256-hE9143GRShGEUL7LgA/7YDWNDk+4YCHoUUacZXFrmFo=",
 )

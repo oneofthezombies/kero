@@ -1,5 +1,6 @@
 #include "compiler/parser.h"
 
+#include <cassert>
 #include <unistd.h>
 
 #include "cpp_tree_sitter/api.h"
@@ -45,4 +46,10 @@ Parser::Parser(ts::Parser &&ts_parser) noexcept
 auto Parser::Parse(const std::string_view source) const noexcept
     -> std::optional<ts::Tree> {
   return ts_parser_.ParseString(ts::Tree::Null(), source);
+}
+
+auto Parser::Symbol(const std::string_view type,
+                    const bool named) const noexcept -> ts::Symbol {
+  assert(type != "ERROR" && "Type cannot be 'ERROR'!");
+  return ts_parser_.Language().SymbolForName(type, named);
 }
