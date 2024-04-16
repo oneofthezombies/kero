@@ -14,7 +14,8 @@ static const std::vector<std::pair<std::pair<Type, Named>, IrVisitHandler>>
         {{"true", true}, True},
         {{"false", true}, False},
         {{"binary_expression", true}, BinaryExpression},
-        {{"module", true}, Module}
+        {{"module", true}, Module},
+        {{"number", true}, Number},
 
         // This comment prevents pair's `}` and vector's `}` from
         // being attached in the form `}}` by `clang-format`.
@@ -60,7 +61,7 @@ auto kero::compiler::IrVisitor::Builder::RegisterHandler(
 kero::compiler::IrVisitor::IrVisitor(IrVisitHandlers &&handlers) noexcept
     : handlers_{std::move(handlers)} {}
 
-auto kero::compiler::IrVisitor::Visit(IrContext &ir_context,
+auto kero::compiler::IrVisitor::Visit(const IrContext &ir_context,
                                       const ts::Node &node) const noexcept
     -> IrVisitResult {
   if (node.IsNull()) {

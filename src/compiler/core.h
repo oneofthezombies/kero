@@ -26,6 +26,7 @@ enum class ErrorCode : int32_t {
   kVisitHandlerAlreadyRegistered,
   kVisitHandlerNotFound,
   kNodeIsNull,
+  kBinaryExpressionChildCountIsNotThree,
   kBinaryExpressionOperatorIsNotValid,
 };
 

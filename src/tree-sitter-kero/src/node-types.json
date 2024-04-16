@@ -24,6 +24,10 @@
           "named": true
         },
         {
+          "type": "number",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         }
@@ -52,6 +56,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "number",
           "named": true
         },
         {
@@ -91,6 +99,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "number",
           "named": true
         },
         {
@@ -141,6 +153,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "number",
           "named": true
         },
         {
@@ -252,6 +268,10 @@
           "named": true
         },
         {
+          "type": "number",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         }
@@ -317,6 +337,10 @@
     "named": false
   },
   {
+    "type": "%",
+    "named": false
+  },
+  {
     "type": "&&",
     "named": false
   },
@@ -329,11 +353,27 @@
     "named": false
   },
   {
+    "type": "*",
+    "named": false
+  },
+  {
+    "type": "+",
+    "named": false
+  },
+  {
     "type": ",",
     "named": false
   },
   {
+    "type": "-",
+    "named": false
+  },
+  {
     "type": "->",
+    "named": false
+  },
+  {
+    "type": "/",
     "named": false
   },
   {
@@ -370,6 +410,14 @@
   },
   {
     "type": "if",
+    "named": false
+  },
+  {
+    "type": "number",
+    "named": true
+  },
+  {
+    "type": "number",
     "named": false
   },
   {

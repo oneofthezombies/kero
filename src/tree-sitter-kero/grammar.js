@@ -6,7 +6,9 @@ module.exports = grammar({
 
   word: ($) => $.identifier,
 
-  precedences: ($) => [["binary_equality", "logical_and", "logical_or"]],
+  precedences: ($) => [
+    ["multiplicative", "additive", "equality", "logical_and", "logical_or"],
+  ],
 
   rules: {
     module: ($) => optional(sep1($._statement, ";")),
@@ -21,6 +23,7 @@ module.exports = grammar({
         $._parenthesized_expression,
         $.binary_expression,
         $.identifier,
+        $.number,
         $.true,
         $.false,
         $.call_expression
@@ -28,8 +31,13 @@ module.exports = grammar({
 
     binary_expression: ($) => {
       const precedence_operators = [
-        { precedence: "binary_equality", operator: "==" },
-        { precedence: "binary_equality", operator: "!=" },
+        { precedence: "multiplicative", operator: "*" },
+        { precedence: "multiplicative", operator: "/" },
+        { precedence: "multiplicative", operator: "%" },
+        { precedence: "additive", operator: "+" },
+        { precedence: "additive", operator: "-" },
+        { precedence: "equality", operator: "==" },
+        { precedence: "equality", operator: "!=" },
         { precedence: "logical_and", operator: "&&" },
         { precedence: "logical_or", operator: "||" },
       ];
@@ -69,9 +77,11 @@ module.exports = grammar({
 
     block: ($) => seq("{", optional(sep1($._statement, ";")), "}"),
 
-    type: ($) => choice("bool"),
+    type: ($) => choice("bool", "number"),
 
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
+
+    number: ($) => /\d+/,
 
     // Keywords
     // --------

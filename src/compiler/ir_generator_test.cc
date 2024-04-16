@@ -4,22 +4,24 @@
 #include "compiler/parser_builder.h"
 
 TEST(IrGeneratorTest, Empty) {
-  if (auto result = kero::compiler::IrVisitor::Builder{}.Build();
+  auto ir_visitor_result = kero::compiler::IrVisitor::Builder{}.Build();
+  if (ir_visitor_result.IsErr()) {
+    FAIL() << ir_visitor_result.TakeErr();
+  }
+
+  const auto ir_visitor = ir_visitor_result.TakeOk();
+  auto parser_result = kero::compiler::ParserBuilder{}.Build();
+  if (parser_result.IsErr()) {
+    FAIL() << parser_result.TakeErr();
+  }
+
+  auto parser = parser_result.TakeOk();
+  const std::string_view source = "123";
+  auto tree = parser.ParseString(ts::Tree::Null(), source);
+  std::cout << tree << std::endl;
+  kero::compiler::IrGenerator ir_generator{ir_visitor};
+  if (auto result = ir_generator.Generate(source, std::move(tree));
       result.IsErr()) {
     FAIL() << result.TakeErr();
-  } else {
-    const auto ir_visitor = result.TakeOk();
-    if (auto result = kero::compiler::ParserBuilder{}.Build(); result.IsErr()) {
-      FAIL() << result.TakeErr();
-    } else {
-      auto parser = result.TakeOk();
-      auto tree = parser.ParseString(ts::Tree::Null(), "tru == false");
-      std::cout << tree << std::endl;
-      kero::compiler::IrGenerator ir_generator{ir_visitor};
-      if (auto result = ir_generator.Generate(std::move(tree));
-          result.IsErr()) {
-        FAIL() << result.TakeErr();
-      }
-    }
   }
 }

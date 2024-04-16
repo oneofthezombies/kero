@@ -11,11 +11,16 @@ namespace kero::compiler {
 
 struct IrContext {
   const IrVisitor &ir_visitor;
-  std::unique_ptr<llvm::LLVMContext> llvm_context;
-  std::unique_ptr<llvm::Module> module;
-  std::unique_ptr<llvm::IRBuilder<>> builder;
+  const std::unique_ptr<llvm::LLVMContext> &llvm_context;
+  const std::unique_ptr<llvm::Module> &module;
+  const std::unique_ptr<llvm::IRBuilder<>> &builder;
+  const std::string_view source;
 
-  explicit IrContext(const IrVisitor &ir_visitor) noexcept;
+  explicit IrContext(const IrVisitor &ir_visitor,
+                     const std::unique_ptr<llvm::LLVMContext> &llvm_context,
+                     const std::unique_ptr<llvm::Module> &module,
+                     const std::unique_ptr<llvm::IRBuilder<>> &builder,
+                     const std::string_view source) noexcept;
   IrContext(const IrContext &) = delete;
   IrContext(IrContext &&) = delete;
   ~IrContext() noexcept = default;
@@ -34,10 +39,14 @@ public:
   auto operator=(const IrGenerator &) -> IrGenerator & = delete;
   auto operator=(IrGenerator &&) -> IrGenerator & = delete;
 
-  auto Generate(ts::Tree &&tree) noexcept -> IrVisitResult;
+  auto Generate(const std::string_view source, ts::Tree &&tree) noexcept
+      -> IrVisitResult;
 
 private:
-  IrContext ir_context_;
+  const IrVisitor &ir_visitor_;
+  const std::unique_ptr<llvm::LLVMContext> llvm_context_;
+  const std::unique_ptr<llvm::Module> module_;
+  const std::unique_ptr<llvm::IRBuilder<>> builder_;
 };
 
 } // namespace kero::compiler

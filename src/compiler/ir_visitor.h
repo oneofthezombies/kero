@@ -14,8 +14,8 @@ namespace kero::compiler {
 struct IrContext;
 
 using IrVisitResult = Result<llvm::Value *, Error>;
-using IrVisitHandler =
-    std::function<IrVisitResult(IrContext &ir_context, const ts::Node &node)>;
+using IrVisitHandler = std::function<IrVisitResult(const IrContext &ir_context,
+                                                   const ts::Node &node)>;
 using IrVisitHandlers = std::unordered_map<ts::Symbol, IrVisitHandler>;
 
 class IrVisitor {
@@ -47,7 +47,7 @@ public:
   auto operator=(const IrVisitor &) -> IrVisitor & = delete;
   auto operator=(IrVisitor &&) noexcept -> IrVisitor & = default;
 
-  auto Visit(IrContext &ir_context, const ts::Node &node) const noexcept
+  auto Visit(const IrContext &ir_context, const ts::Node &node) const noexcept
       -> IrVisitResult;
 
 private:

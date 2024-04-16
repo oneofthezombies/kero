@@ -34,6 +34,7 @@ cc_library(
         "src/compiler/ir_generator.cc",
         "src/compiler/ir_visitor.cc",
         "src/compiler/parser_builder.cc",
+        "src/compiler/utils.cc",
     ],
     hdrs = [
         "src/compiler/core.h",
@@ -41,6 +42,7 @@ cc_library(
         "src/compiler/ir_visit_handlers.cc",
         "src/compiler/ir_visitor.h",
         "src/compiler/parser_builder.h",
+        "src/compiler/utils.h",
     ],
     copts = [
         "-std=c++20",
