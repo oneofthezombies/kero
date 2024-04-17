@@ -11,7 +11,7 @@ module.exports = grammar({
   ],
 
   rules: {
-    module: ($) => repeat(seq($._statement, ";")),
+    module: ($) => optional(sep1($._statement, ";")),
 
     _statement: ($) =>
       choice(
@@ -91,7 +91,7 @@ module.exports = grammar({
 
     argument_clause: ($) => seq("(", optional(sep1($._expression, ",")), ")"),
 
-    block: ($) => seq("{", repeat(seq($._statement, ";")), "}"),
+    block: ($) => seq("{", optional(sep1($._statement, ";")), "}"),
 
     type: ($) => choice("bool", "number"),
 
