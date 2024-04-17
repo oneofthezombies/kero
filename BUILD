@@ -88,7 +88,7 @@ cc_library(
         "third_party/llvm-project-llvmorg-18.1.3/llvm/include",
     ],
     linkopts = [
-        "-L/home/oneofthezombies/repo/kero/.build/llvm/lib",
+        "-L/Users/hunhoekim/repo/kero/.build/llvm/lib",
         "-lLLVMCore",
         "-lLLVMRemarks",
         "-lLLVMBitstreamReader",
@@ -96,10 +96,19 @@ cc_library(
         "-lLLVMTargetParser",
         "-lLLVMSupport",
         "-lLLVMDemangle",
-        "-lrt",
-        "-ldl",
+
+        # linux specific to select
+        # "-lrt",
+        # "-ldl",
+        # "-lm",
+        # "-ltinfo",
+        # "-lxml2",
+
+        # macos specific to select
         "-lm",
-        "-ltinfo",
+        "-lz",
+        "-lzstd",
+        "-lcurses",
         "-lxml2",
     ],
 )

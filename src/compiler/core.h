@@ -111,6 +111,8 @@ enum class ErrorCode : int32_t {
   kNodeIsNull,
   kBinaryExpressionChildCountIsNotThree,
   kBinaryExpressionOperatorIsNotValid,
+  kCallExpressionChildCountIsLessThanOne,
+  kFunctionNotFound,
 };
 
 struct Error final : private NonCopyable, Movable {

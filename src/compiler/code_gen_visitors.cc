@@ -15,7 +15,7 @@ class TrueVisitor final : public CodeGenVisitor {
 public:
   TrueVisitor() noexcept : CodeGenVisitor{CodeGenKind{"true", true}} {}
 
-  auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
+  auto Visit(const CodeGenContext &context, const NodeExt &node) const noexcept
       -> CodeGenResult override {
     return CodeGenResult::Ok(context.builder->getTrue());
   }
@@ -25,7 +25,7 @@ class FalseVisitor final : public CodeGenVisitor {
 public:
   FalseVisitor() noexcept : CodeGenVisitor{CodeGenKind{"false", true}} {}
 
-  auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
+  auto Visit(const CodeGenContext &context, const NodeExt &node) const noexcept
       -> CodeGenResult override {
     return CodeGenResult::Ok(context.builder->getFalse());
   }
@@ -36,15 +36,15 @@ public:
   BinaryExpressionVisitor() noexcept
       : CodeGenVisitor{CodeGenKind{"binary_expression", true}} {}
 
-  auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
+  auto Visit(const CodeGenContext &context, const NodeExt &node) const noexcept
       -> CodeGenResult override {
     if (node.ChildCount() != 3) {
       return CodeGenResult::Err(
           Error{ErrorCode::kBinaryExpressionChildCountIsNotThree,
-                NodeToString(node)});
+                node.DebugString()});
     }
 
-    auto left_result = context.visitor.Visit(context, node.Child(0));
+    auto left_result = context.visitor.Visit(context, node.ChildExt(0));
     if (left_result.IsErr()) {
       return left_result;
     }
@@ -55,7 +55,7 @@ public:
       return CodeGenResult::Err(Error{ErrorCode::kNodeIsNull, "operator"});
     }
 
-    auto right_result = context.visitor.Visit(context, node.Child(2));
+    auto right_result = context.visitor.Visit(context, node.ChildExt(2));
     if (right_result.IsErr()) {
       return right_result;
     }
@@ -115,11 +115,11 @@ class ModuleVisitor final : public CodeGenVisitor {
 public:
   ModuleVisitor() noexcept : CodeGenVisitor{CodeGenKind{"module", true}} {}
 
-  auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
+  auto Visit(const CodeGenContext &context, const NodeExt &node) const noexcept
       -> CodeGenResult override {
     const auto child_count = node.ChildCount();
     for (size_t i = 0; i < child_count; ++i) {
-      auto result = context.visitor.Visit(context, node.Child(i));
+      auto result = context.visitor.Visit(context, node.ChildExt(i));
       if (result.IsErr()) {
         return result;
       }
@@ -133,7 +133,7 @@ class NumberVisitor final : public CodeGenVisitor {
 public:
   NumberVisitor() noexcept : CodeGenVisitor{CodeGenKind{"number", true}} {}
 
-  auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
+  auto Visit(const CodeGenContext &context, const NodeExt &node) const noexcept
       -> CodeGenResult override {
     const auto start = node.StartByte();
     assert(start >= 0 && "start byte must be greater than or equal to 0");
@@ -162,24 +162,33 @@ public:
   CallExpressionVisitor() noexcept
       : CodeGenVisitor{CodeGenKind{"call_expression", true}} {}
 
-  auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
+  auto Visit(const CodeGenContext &context, const NodeExt &node) const noexcept
       -> CodeGenResult override {
-    if (node.ChildCount() != 2) {
-      return CodeGenResult::Err(Error{
-          ErrorCode::kCallExpressionChildCountIsNotTwo, NodeToString(node)});
+    const auto child_count = node.ChildCount();
+    if (child_count < 1) {
+      return CodeGenResult::Err(
+          Error{ErrorCode::kCallExpressionChildCountIsLessThanOne,
+                node.DebugString()});
     }
 
-    const auto callee_result = context.visitor.Visit(context, node.Child(0));
-    if (callee_result.IsErr()) {
-      return callee_result;
-    }
-    const auto callee = callee_result.Ok();
+    const auto child0 = node.ChildExt(0);
+    assert(child0.Type() == "identifier" && "child_0 type must be identifier");
 
-    const auto args_result = context.visitor.Visit(context, node.Child(1));
-    if (args_result.IsErr()) {
-      return args_result;
+    const auto identifier = child0.Token();
+    const auto callee = context.module->getFunction(std::string{identifier});
+    if (!callee) {
+      return CodeGenResult::Err(
+          Error{ErrorCode::kFunctionNotFound, std::string{identifier}});
     }
-    const auto args = args_result.Ok();
+
+    std::vector<llvm::Value *> args;
+    for (size_t i = 1; i < child_count; ++i) {
+      auto arg_result = context.visitor.Visit(context, node.ChildExt(i));
+      if (arg_result.IsErr()) {
+        return arg_result;
+      }
+      args.push_back(std::move(arg_result.Ok()));
+    }
 
     return CodeGenResult::Ok(
         context.builder->CreateCall(callee, args, "calltmp"));

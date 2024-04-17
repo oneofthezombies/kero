@@ -5,6 +5,7 @@
 #include "llvm/IR/IRBuilder.h"
 
 #include "compiler/core.h"
+#include "compiler/utils.h"
 
 namespace kero::compiler {
 
@@ -48,7 +49,7 @@ public:
   [[nodiscard]] auto Kind() const noexcept -> CodeGenKind;
 
   virtual auto Visit(const CodeGenContext &context,
-                     const ts::Node &node) const noexcept -> CodeGenResult = 0;
+                     const NodeExt &node) const noexcept -> CodeGenResult = 0;
 
 private:
   const CodeGenKind kind_;
@@ -61,7 +62,7 @@ class CodeGenVisitorFacade final : private NonCopyable, Movable {
 public:
   friend class CodeGenVisitorFacadeBuilder;
 
-  auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
+  auto Visit(const CodeGenContext &context, const NodeExt &node) const noexcept
       -> CodeGenResult;
 
 private:

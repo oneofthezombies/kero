@@ -76,18 +76,18 @@ kero::compiler::CodeGenVisitorFacade::CodeGenVisitorFacade(
     : visitors_{std::move(visitors)} {}
 
 auto kero::compiler::CodeGenVisitorFacade::Visit(
-    const CodeGenContext &context, const ts::Node &node) const noexcept
+    const CodeGenContext &context, const NodeExt &node) const noexcept
     -> CodeGenResult {
   if (node.IsNull()) {
     return CodeGenResult::Err(
-        Error{ErrorCode::kNodeIsNull, NodeToString(node)});
+        Error{ErrorCode::kNodeIsNull, node.DebugString()});
   }
 
   const auto symbol = node.Symbol();
   const auto visitor = visitors_.find(symbol);
   if (visitor == visitors_.end()) {
     return CodeGenResult::Err(
-        Error{ErrorCode::kVisitorNotFound, NodeToString(node)});
+        Error{ErrorCode::kVisitorNotFound, node.DebugString()});
   }
 
   return visitor->second->Visit(context, node);
@@ -105,7 +105,7 @@ kero::compiler::CodeGenerator::CodeGenerator(
 auto kero::compiler::CodeGenerator::Generate(const std::string_view source,
                                              ts::Tree &&tree) noexcept
     -> CodeGenResult {
-  const auto root_node = tree.RootNode();
+  const auto root_node = NodeExt{source, tree.RootNode()};
   const auto context =
       CodeGenContext{visitor_, llvm_context_, module_, builder_, source};
   return visitor_.Visit(context, root_node);
