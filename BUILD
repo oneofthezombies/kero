@@ -89,6 +89,9 @@ cc_library(
     ],
     linkopts = [
         "-L/Users/hunhoekim/repo/kero/.build/llvm/lib",
+
+        # macos specific to select
+        "-L/opt/homebrew/Cellar/zstd/1.5.6/lib",
         "-lLLVMCore",
         "-lLLVMRemarks",
         "-lLLVMBitstreamReader",
