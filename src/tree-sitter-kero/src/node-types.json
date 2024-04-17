@@ -28,6 +28,10 @@
           "named": true
         },
         {
+          "type": "string_literal",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         }
@@ -63,6 +67,10 @@
           "named": true
         },
         {
+          "type": "string_literal",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         }
@@ -86,6 +94,10 @@
           "named": true
         },
         {
+          "type": "extern_function_declaration",
+          "named": true
+        },
+        {
           "type": "false",
           "named": true
         },
@@ -103,6 +115,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "string_literal",
           "named": true
         },
         {
@@ -160,6 +176,10 @@
           "named": true
         },
         {
+          "type": "string_literal",
+          "named": true
+        },
+        {
           "type": "true",
           "named": true
         }
@@ -180,6 +200,33 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "extern_function_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "parameter_clause",
+          "named": true
+        },
+        {
+          "type": "return_clause",
+          "named": true
+        },
+        {
+          "type": "string_literal",
           "named": true
         }
       ]
@@ -252,6 +299,10 @@
           "named": true
         },
         {
+          "type": "extern_function_declaration",
+          "named": true
+        },
+        {
           "type": "false",
           "named": true
         },
@@ -269,6 +320,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "string_literal",
           "named": true
         },
         {
@@ -397,6 +452,10 @@
     "named": false
   },
   {
+    "type": "extern",
+    "named": false
+  },
+  {
     "type": "false",
     "named": true
   },
@@ -419,6 +478,10 @@
   {
     "type": "number",
     "named": false
+  },
+  {
+    "type": "string_literal",
+    "named": true
   },
   {
     "type": "true",

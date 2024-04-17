@@ -11,10 +11,15 @@ module.exports = grammar({
   ],
 
   rules: {
-    module: ($) => optional(sep1($._statement, ";")),
+    module: ($) => repeat(seq($._statement, ";")),
 
     _statement: ($) =>
-      choice($._expression_statement, $.if_statement, $.function_definition),
+      choice(
+        $._expression_statement,
+        $.if_statement,
+        $.extern_function_declaration,
+        $.function_definition
+      ),
 
     _expression_statement: ($) => $._expression,
 
@@ -23,6 +28,7 @@ module.exports = grammar({
         $._parenthesized_expression,
         $.binary_expression,
         $.identifier,
+        $.string_literal,
         $.number,
         $.true,
         $.false,
@@ -65,6 +71,16 @@ module.exports = grammar({
         $.block
       ),
 
+    extern_function_declaration: ($) =>
+      seq(
+        "extern",
+        $.string_literal,
+        "fn",
+        $.identifier,
+        $.parameter_clause,
+        optional($.return_clause)
+      ),
+
     parameter_clause: ($) => seq("(", optional(sep1($.parameter, ",")), ")"),
 
     parameter: ($) => seq($.identifier, ":", $.type),
@@ -75,13 +91,25 @@ module.exports = grammar({
 
     argument_clause: ($) => seq("(", optional(sep1($._expression, ",")), ")"),
 
-    block: ($) => seq("{", optional(sep1($._statement, ";")), "}"),
+    block: ($) => seq("{", repeat(seq($._statement, ";")), "}"),
 
     type: ($) => choice("bool", "number"),
 
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
-    number: ($) => /\d+/,
+    string_literal: ($) => /"[^"]*"/,
+
+    number: ($) =>
+      token(
+        choice(
+          /0|[1-9][0-9]*/,
+          /0\.[0-9]+/,
+          /[1-9][0-9]*\.[0-9]+/,
+          /-[1-9][0-9]*/,
+          /-0\.[0-9]+/,
+          /-[1-9][0-9]*\.[0-9]+/
+        )
+      ),
 
     // Keywords
     // --------
