@@ -156,3 +156,32 @@ public:
         llvm::ConstantFP::get(*context.llvm_context, llvm::APFloat(number)));
   }
 };
+
+class CallExpressionVisitor final : public CodeGenVisitor {
+public:
+  CallExpressionVisitor() noexcept
+      : CodeGenVisitor{CodeGenKind{"call_expression", true}} {}
+
+  auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
+      -> CodeGenResult override {
+    if (node.ChildCount() != 2) {
+      return CodeGenResult::Err(Error{
+          ErrorCode::kCallExpressionChildCountIsNotTwo, NodeToString(node)});
+    }
+
+    const auto callee_result = context.visitor.Visit(context, node.Child(0));
+    if (callee_result.IsErr()) {
+      return callee_result;
+    }
+    const auto callee = callee_result.Ok();
+
+    const auto args_result = context.visitor.Visit(context, node.Child(1));
+    if (args_result.IsErr()) {
+      return args_result;
+    }
+    const auto args = args_result.Ok();
+
+    return CodeGenResult::Ok(
+        context.builder->CreateCall(callee, args, "calltmp"));
+  }
+};

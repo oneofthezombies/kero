@@ -87,9 +87,8 @@ module.exports = grammar({
 
     return_clause: ($) => seq("->", $.type),
 
-    call_expression: ($) => seq($.identifier, $.argument_clause),
-
-    argument_clause: ($) => seq("(", optional(sep1($._expression, ",")), ")"),
+    call_expression: ($) =>
+      seq($.identifier, seq("(", optional(sep1($._expression, ",")), ")")),
 
     block: ($) => seq("{", optional(sep1($._statement, ";")), "}"),
 

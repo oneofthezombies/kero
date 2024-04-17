@@ -9,7 +9,6 @@ a()
 (module
   (call_expression
     (identifier)
-    (argument_clause)
   )
 )
 
@@ -24,9 +23,7 @@ a(true)
 (module
   (call_expression
     (identifier)
-    (argument_clause
-        (true)
-    )
+    (true)
   )
 )
 
@@ -41,9 +38,7 @@ a(true, true)
 (module
   (call_expression
     (identifier)
-    (argument_clause
-        (true)
-        (true)
-    )
+    (true)
+    (true)
   )
 )
