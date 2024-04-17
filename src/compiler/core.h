@@ -13,54 +13,55 @@ class Language;
 
 namespace kero::compiler {
 
-struct CopyAndMovable {
-  CopyAndMovable() noexcept = default;
-  CopyAndMovable(const CopyAndMovable &) noexcept = default;
-  CopyAndMovable(CopyAndMovable &&) noexcept = default;
-  ~CopyAndMovable() noexcept = default;
+class Copyable {
+public:
+  Copyable() noexcept = default;
+  Copyable(const Copyable &) noexcept = default;
+  Copyable(Copyable &&) noexcept = default;
+  ~Copyable() noexcept = default;
 
-  auto operator=(const CopyAndMovable &) noexcept -> CopyAndMovable & = default;
-  auto operator=(CopyAndMovable &&) noexcept -> CopyAndMovable & = default;
+  auto operator=(const Copyable &) noexcept -> Copyable & = default;
+  auto operator=(Copyable &&) noexcept -> Copyable & = default;
 };
 
-struct NonCopyAndMovable {
-  NonCopyAndMovable() noexcept = default;
-  NonCopyAndMovable(const NonCopyAndMovable &) = delete;
-  NonCopyAndMovable(NonCopyAndMovable &&) noexcept = default;
-  ~NonCopyAndMovable() noexcept = default;
+class NonCopyable {
+public:
+  NonCopyable() noexcept = default;
+  NonCopyable(const NonCopyable &) = delete;
+  NonCopyable(NonCopyable &&) noexcept = default;
+  ~NonCopyable() noexcept = default;
 
-  auto operator=(const NonCopyAndMovable &) -> NonCopyAndMovable & = delete;
-  auto operator=(NonCopyAndMovable &&) noexcept
-      -> NonCopyAndMovable & = default;
+  auto operator=(const NonCopyable &) -> NonCopyable & = delete;
+  auto operator=(NonCopyable &&) noexcept -> NonCopyable & = default;
 };
 
-struct CopyAndNonMovable {
-  CopyAndNonMovable() noexcept = default;
-  CopyAndNonMovable(const CopyAndNonMovable &) noexcept = default;
-  CopyAndNonMovable(CopyAndNonMovable &&) = delete;
-  ~CopyAndNonMovable() noexcept = default;
+class Movable {
+public:
+  Movable() noexcept = default;
+  Movable(const Movable &) noexcept = default;
+  Movable(Movable &&) noexcept = default;
+  ~Movable() noexcept = default;
 
-  auto operator=(const CopyAndNonMovable &) noexcept
-      -> CopyAndNonMovable & = default;
-  auto operator=(CopyAndNonMovable &&) -> CopyAndNonMovable & = delete;
+  auto operator=(const Movable &) noexcept -> Movable & = default;
+  auto operator=(Movable &&) noexcept -> Movable & = default;
 };
 
-struct NonCopyAndNonMovable {
-  NonCopyAndNonMovable() = default;
-  NonCopyAndNonMovable(const NonCopyAndNonMovable &) = delete;
-  NonCopyAndNonMovable(NonCopyAndNonMovable &&) = delete;
-  ~NonCopyAndNonMovable() noexcept = default;
+class NonMovable {
+public:
+  NonMovable() noexcept = default;
+  NonMovable(const NonMovable &) noexcept = default;
+  NonMovable(NonMovable &&) = delete;
+  ~NonMovable() noexcept = default;
 
-  auto operator=(const NonCopyAndNonMovable &)
-      -> NonCopyAndNonMovable & = delete;
-  auto operator=(NonCopyAndNonMovable &&) -> NonCopyAndNonMovable & = delete;
+  auto operator=(const NonMovable &) noexcept -> NonMovable & = default;
+  auto operator=(NonMovable &&) -> NonMovable & = delete;
 };
 
-template <typename T, typename E> class Result : public NonCopyAndMovable {
+template <typename T, typename E>
+  requires std::movable<T> && std::movable<E>
+class Result final : private NonCopyable, Movable {
 public:
   using Self = Result<T, E>;
-
-  Result() = delete;
 
   auto IsOk() const noexcept -> bool {
     return std::holds_alternative<T>(data_);
@@ -81,11 +82,11 @@ public:
   }
 
   [[nodiscard]] static auto Ok(T &&value) noexcept -> Self {
-    return Self{std::move(value)};
+    return std::move(Self{std::move(value)});
   }
 
   [[nodiscard]] static auto Err(E &&error) noexcept -> Self {
-    return Self{std::move(error)};
+    return std::move(Self{std::move(error)});
   }
 
 private:
@@ -95,26 +96,24 @@ private:
   std::variant<std::monostate, T, E> data_;
 };
 
-struct Void : public CopyAndMovable {};
+struct Void final : private Copyable, Movable {};
 
 enum class ErrorCode : int32_t {
   kNotImplemented = 0,
 
   // ParserBuilder
-  // ------------
+  // -------------
   kParserSetLanguageFailed,
 
-  // IrVisitor
-  // --------
-  kSymbolNotFound,
-  kVisitHandlerAlreadyRegistered,
-  kVisitHandlerNotFound,
+  // CodeGenerator
+  // -------------
+  kVisitorNotFound,
   kNodeIsNull,
   kBinaryExpressionChildCountIsNotThree,
   kBinaryExpressionOperatorIsNotValid,
 };
 
-struct Error : public NonCopyAndMovable {
+struct Error final : private NonCopyable, Movable {
   ErrorCode code;
   std::string message;
 
@@ -125,8 +124,6 @@ struct Error : public NonCopyAndMovable {
 auto operator<<(std::ostream &os, const Error &error) -> std::ostream &;
 
 using VoidResult = Result<Void, Error>;
-
-auto Language() -> ts::Language;
 
 } // namespace kero::compiler
 

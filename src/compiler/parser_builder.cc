@@ -19,10 +19,10 @@ auto kero::compiler::ParserBuilder::SetPrintDotGraphsToStdout(
   return *this;
 }
 
-auto kero::compiler::ParserBuilder::Build() const noexcept -> BuildResult {
+auto kero::compiler::ParserBuilder::Build() const noexcept -> Result {
   auto parser = ts::Parser{};
   if (!parser.SetLanguage(ts::Language::FromRaw(tree_sitter_kero()))) {
-    return BuildResult::Err(Error{ErrorCode::kParserSetLanguageFailed});
+    return Result::Err(Error{ErrorCode::kParserSetLanguageFailed});
   }
 
   if (set_console_logger_) {
@@ -34,5 +34,5 @@ auto kero::compiler::ParserBuilder::Build() const noexcept -> BuildResult {
     parser.PrintDotGraphs(stdout_fd);
   }
 
-  return BuildResult::Ok(std::move(parser));
+  return Result::Ok(std::move(parser));
 }

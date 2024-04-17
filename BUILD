@@ -30,17 +30,15 @@ cc_library(
 cc_library(
     name = "kero_compiler",
     srcs = [
+        "src/compiler/code_generator.cc",
         "src/compiler/core.cc",
-        "src/compiler/ir_generator.cc",
-        "src/compiler/ir_visitor.cc",
         "src/compiler/parser_builder.cc",
         "src/compiler/utils.cc",
     ],
     hdrs = [
+        "src/compiler/code_gen_visitors.cc",
+        "src/compiler/code_generator.h",
         "src/compiler/core.h",
-        "src/compiler/ir_generator.h",
-        "src/compiler/ir_visit_handlers.cc",
-        "src/compiler/ir_visitor.h",
         "src/compiler/parser_builder.h",
         "src/compiler/utils.h",
     ],
@@ -61,7 +59,7 @@ cc_library(
 cc_test(
     name = "kero_compiler_test",
     srcs = [
-        "src/compiler/ir_generator_test.cc",
+        "src/compiler/code_generator_test.cc",
         "src/compiler/parser_builder_test.cc",
     ],
     copts = [

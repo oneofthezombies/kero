@@ -7,6 +7,8 @@
 
 namespace kero::compiler {
 
+[[nodiscard]] auto Language() -> ts::Language;
+
 [[nodiscard]] auto NodeToString(const ts::Node &node) noexcept -> std::string;
 
 } // namespace kero::compiler

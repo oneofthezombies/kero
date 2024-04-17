@@ -1,7 +1,6 @@
 #include "core.h"
 
-#include "cpp_tree_sitter/api.h"
-#include "tree-sitter-kero.h"
+#include <ostream>
 
 using namespace kero::compiler;
 
@@ -21,8 +20,4 @@ auto kero::compiler::operator<<(std::ostream &os, const Error &error)
   os << error.message;
   os << "}";
   return os;
-}
-
-auto kero::compiler::Language() -> ts::Language {
-  return ts::Language::FromRaw(tree_sitter_kero());
 }
