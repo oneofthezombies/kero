@@ -21,6 +21,7 @@ struct CodeGenContext final : private NonCopyable, NonMovable {
   const LlvmIrBuilder &builder;
   const std::string_view source;
 
+  // `source` 's lifetime must be longer than `CodeGenContext` 's lifetime.
   explicit CodeGenContext(const CodeGenVisitorFacade &visitor,
                           const LlvmContext &llvm_context,
                           const LlvmModule &module,
@@ -30,12 +31,17 @@ struct CodeGenContext final : private NonCopyable, NonMovable {
 
 using CodeGenResult = Result<llvm::Value *, Error>;
 
-using CodeGenType = std::string_view;
-using CodeGenNamed = bool;
-using CodeGenKind = std::pair<CodeGenType, CodeGenNamed>;
+struct CodeGenKind final : private Copyable, Movable {
+  const std::string_view type;
+  const bool named;
+
+  // `type` 's lifetime must be longer than `CodeGenKind` 's lifetime.
+  explicit CodeGenKind(const std::string_view type, const bool named) noexcept;
+};
 
 class CodeGenVisitor : private NonCopyable, Movable {
 public:
+  // `kind` 's lifetime must be longer than `CodeGenVisitor` 's lifetime.
   CodeGenVisitor(CodeGenKind &&kind) noexcept;
   virtual ~CodeGenVisitor() noexcept = default;
 

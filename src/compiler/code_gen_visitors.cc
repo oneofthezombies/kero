@@ -13,7 +13,7 @@ using namespace kero::compiler;
 
 class TrueVisitor final : public CodeGenVisitor {
 public:
-  TrueVisitor() noexcept : CodeGenVisitor{{"true", true}} {}
+  TrueVisitor() noexcept : CodeGenVisitor{CodeGenKind{"true", true}} {}
 
   auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
       -> CodeGenResult override {
@@ -23,7 +23,7 @@ public:
 
 class FalseVisitor final : public CodeGenVisitor {
 public:
-  FalseVisitor() noexcept : CodeGenVisitor{{"false", true}} {}
+  FalseVisitor() noexcept : CodeGenVisitor{CodeGenKind{"false", true}} {}
 
   auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
       -> CodeGenResult override {
@@ -34,7 +34,7 @@ public:
 class BinaryExpressionVisitor final : public CodeGenVisitor {
 public:
   BinaryExpressionVisitor() noexcept
-      : CodeGenVisitor{{"binary_expression", true}} {}
+      : CodeGenVisitor{CodeGenKind{"binary_expression", true}} {}
 
   auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
       -> CodeGenResult override {
@@ -113,7 +113,7 @@ public:
 
 class ModuleVisitor final : public CodeGenVisitor {
 public:
-  ModuleVisitor() noexcept : CodeGenVisitor{{"module", true}} {}
+  ModuleVisitor() noexcept : CodeGenVisitor{CodeGenKind{"module", true}} {}
 
   auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
       -> CodeGenResult override {
@@ -131,7 +131,7 @@ public:
 
 class NumberVisitor final : public CodeGenVisitor {
 public:
-  NumberVisitor() noexcept : CodeGenVisitor{{"number", true}} {}
+  NumberVisitor() noexcept : CodeGenVisitor{CodeGenKind{"number", true}} {}
 
   auto Visit(const CodeGenContext &context, const ts::Node &node) const noexcept
       -> CodeGenResult override {

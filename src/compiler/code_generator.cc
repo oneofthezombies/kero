@@ -18,6 +18,15 @@ kero::compiler::CodeGenContext::CodeGenContext(
     : visitor{visitor}, llvm_context{llvm_context}, module{module},
       builder{builder}, source{source} {}
 
+// CodeGenKind
+// -----------
+
+kero::compiler::CodeGenKind::CodeGenKind(const std::string_view type,
+                                         const bool named) noexcept
+    : type{type}, named{named} {
+  assert(!type.empty() && "Type must not be empty");
+}
+
 // CodeGenVisitor
 // --------------
 
