@@ -1,6 +1,6 @@
 # Kero
 
-Kero is an asynchronous-based programming language.
+Kero is a programming language written in C++.
 
 ![mascot](/resources/mascot.webp)
 
