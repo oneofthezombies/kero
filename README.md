@@ -1,6 +1,7 @@
 # Kero
 
 Kero is a programming language written in C++.
+It is a simple and intuitive system programming language with the philosophy “Less is better than more.”
 
 ![mascot](/resources/mascot.webp)
 
