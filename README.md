@@ -11,13 +11,14 @@ It is a simple and intuitive system programming language with the philosophy “
 
 ```sh
 LLVM_VERSION=18.1.4
-curl -LO https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-${LLVM_VERSION}.zip
-unzip llvmorg-${LLVM_VERSION}.zip
-rm -f llvmorg-${LLVM_VERSION}.zip
-cd llvm-project-llvmorg-${LLVM_VERSION}
+LLVM_INSTALL_PATH="$HOME/.local"
+curl -LO https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-$LLVM_VERSION.zip
+unzip llvmorg-$LLVM_VERSION.zip
+rm -f llvmorg-$LLVM_VERSION.zip
+cd llvm-project-llvmorg-$LLVM_VERSION
 cmake -S llvm -B build -G Ninja \
     -DLLVM_ENABLE_PROJECTS="" \
-    -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
+    -DCMAKE_INSTALL_PREFIX="$LLVM_INSTALL_PATH" \
     -DCMAKE_BUILD_TYPE=Debug \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=lld
@@ -28,11 +29,12 @@ cmake --build build
 
 ```sh
 CPP_TREE_SITTER_VERSION=0.2.0
-curl -LO https://github.com/oneofthezombies/cpp-tree-sitter/archive/refs/tags/v${CPP_TREE_SITTER_VERSION}.zip
-unzip v${CPP_TREE_SITTER_VERSION}.zip
-rm -f v${CPP_TREE_SITTER_VERSION}.zip
-cd cpp-tree-sitter-${CPP_TREE_SITTER_VERSION}
-cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX="$HOME/.local"
+CPP_TREE_SITTER_INSTALL_PATH="$HOME/.local"
+curl -LO https://github.com/oneofthezombies/cpp-tree-sitter/archive/refs/tags/v$CPP_TREE_SITTER_VERSION.zip
+unzip v$CPP_TREE_SITTER_VERSION.zip
+rm -f v$CPP_TREE_SITTER_VERSION.zip
+cd cpp-tree-sitter-$CPP_TREE_SITTER_VERSION
+cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX="$CPP_TREE_SITTER_INSTALL_PATH"
 cmake --build build
 sudo cmake --install build
 ```
@@ -41,6 +43,6 @@ sudo cmake --install build
 
 ```sh
 mkdir build && cd build
-cmake .. -G Ninja -DCMAKE_PREFIX_PATH="$HOME/.local"
+cmake .. -G Ninja -DCMAKE_PREFIX_PATH="$LLVM_INSTALL_PATH;$CPP_TREE_SITTER_INSTALL_PATH"
 cmake --build .
 ```
