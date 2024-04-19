@@ -17,11 +17,24 @@ rm -f llvmorg-${LLVM_VERSION}.zip
 cd llvm-project-llvmorg-${LLVM_VERSION}
 cmake -S llvm -B build -G Ninja \
     -DLLVM_ENABLE_PROJECTS="" \
-    -DCMAKE_INSTALL_PREFIX=$HOME/.local \
+    -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
     -DCMAKE_BUILD_TYPE=Debug \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=lld
 cmake --build build
+```
+
+## Install C++ Tree-sitter
+
+```sh
+CPP_TREE_SITTER_VERSION=0.2.0
+curl -LO https://github.com/oneofthezombies/cpp-tree-sitter/archive/refs/tags/v${CPP_TREE_SITTER_VERSION}.zip
+unzip v${CPP_TREE_SITTER_VERSION}.zip
+rm -f v${CPP_TREE_SITTER_VERSION}.zip
+cd cpp-tree-sitter-${CPP_TREE_SITTER_VERSION}
+cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX="$HOME/.local"
+cmake --build build
+sudo cmake --install build
 ```
 
 ## Kero
