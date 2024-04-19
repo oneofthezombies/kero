@@ -22,7 +22,7 @@ https://github.com/hedronvision/bazel-compile-commands-extractor
 
 ## References
 
-PackCC - https://github.com/arithy/packcc
-PEGTL - https://github.com/taocpp/PEGTL
-ECMAScript - https://ecma-international.org/publications-and-standards/standards/ecma-262/
-TypeScript - https://javascript.xgqfrms.xyz/pdfs/TypeScript%20Language%20Specification.pdf
+PackCC - https://github.com/arithy/packcc  
+PEGTL - https://github.com/taocpp/PEGTL  
+ECMAScript - https://ecma-international.org/publications-and-standards/standards/ecma-262/  
+TypeScript - https://javascript.xgqfrms.xyz/pdfs/TypeScript%20Language%20Specification.pdf  
