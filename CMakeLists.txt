@@ -8,8 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(CppTreeSitter REQUIRED)
-find_package(TreeSitter REQUIRED)
+find_package(cpp_tree_sitter REQUIRED)
 
 # tree-sitter-kero
 # ----------------
