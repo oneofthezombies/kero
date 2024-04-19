@@ -22,7 +22,7 @@ cmake -S llvm -B build -G Ninja \
     -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DLLVM_ENABLE_PROJECTS="" \
+    -DLLVM_ENABLE_PROJECTS="clang;lld;lldb" \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=lld
 cd build
@@ -33,7 +33,7 @@ cmake -S llvm -B build -G "Unix Makefiles" \
     -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DLLVM_ENABLE_PROJECTS="" \
+    -DLLVM_ENABLE_PROJECTS="clang;lld;lldb" \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=lld
 
