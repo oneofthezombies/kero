@@ -13,8 +13,7 @@
       "cwd": "${workspaceFolder}",
       "linux": {
         "sourceMap": {
-          "/proc/self/cwd": "${workspaceFolder}",
-          ".": "${workspaceFolder}"
+          "/proc/self/cwd": "${workspaceFolder}"
         }
       },
       "osx": {
