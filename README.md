@@ -16,6 +16,8 @@ curl -LO https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-$LLVM_VE
 unzip llvmorg-$LLVM_VERSION.zip
 rm -f llvmorg-$LLVM_VERSION.zip
 cd llvm-project-llvmorg-$LLVM_VERSION
+
+# Ninja or "Unix Makefiles"
 cmake -S llvm -B build -G Ninja \
     -DLLVM_ENABLE_PROJECTS="" \
     -DCMAKE_INSTALL_PREFIX="$LLVM_INSTALL_PATH" \
