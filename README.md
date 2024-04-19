@@ -21,6 +21,8 @@ cd llvm-project-llvmorg-$LLVM_VERSION
 cmake -S llvm -B build -G Ninja \
     -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
     -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DLLVM_ENABLE_PROJECTS="clang;lld;lldb" \
     -DLLVM_ENABLE_ASSERTIONS=ON \
@@ -32,6 +34,8 @@ cmake --build .
 cmake -S llvm -B build -G "Unix Makefiles" \
     -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
     -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DLLVM_ENABLE_PROJECTS="clang;lld;lldb" \
     -DLLVM_ENABLE_ASSERTIONS=ON \
@@ -55,9 +59,11 @@ curl -LO https://github.com/oneofthezombies/cpp-tree-sitter/archive/refs/tags/v$
 unzip v$CPP_TREE_SITTER_VERSION.zip
 rm -f v$CPP_TREE_SITTER_VERSION.zip
 cd cpp-tree-sitter-$CPP_TREE_SITTER_VERSION
-mkdir build && cd build
+mkdir -p build && cd build
 cmake .. -G Ninja \
     -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 cmake --build .
 sudo cmake --install .
@@ -75,9 +81,11 @@ curl -LO https://github.com/google/googletest/archive/refs/tags/v$GOOGLE_TEST_VE
 unzip v$GOOGLE_TEST_VERSION.zip
 rm -f v$GOOGLE_TEST_VERSION.zip
 cd googletest-$GOOGLE_TEST_VERSION
-mkdir build && cd build
+mkdir -p build && cd build
 cmake .. -G Ninja \
     -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 cmake --build .
 sudo cmake --install .
@@ -90,7 +98,7 @@ mkdir -p $HOME/.local/share/compile_commands/googletest && \
 ## Kero
 
 ```sh
-mkdir build && cd build
+mkdir -p build && cd build
 cmake .. -G Ninja -DCMAKE_PREFIX_PATH="$HOME/.local"
 cmake --build .
 ```

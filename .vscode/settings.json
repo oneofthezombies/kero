@@ -2,10 +2,10 @@
   "clangd.arguments": [
     "--header-insertion=never",
     "--query-driver=**",
-    "-compile-commands-dir=${workspaceFolder}/build",
-    "-compile-commands-dir=${env:HOME}/.local/share/compile_commands/cpp-tree-sitter",
-    "-compile-commands-dir=${env:HOME}/.local/share/compile_commands/googletest",
-    "-compile-commands-dir=${env:HOME}/.local/share/compile_commands/llvm"
+    "--compile-commands-dir=${workspaceFolder}/build",
+    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/cpp-tree-sitter",
+    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/googletest",
+    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/llvm"
   ],
   "[cpp]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
