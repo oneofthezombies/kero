@@ -17,7 +17,8 @@ unzip llvmorg-$LLVM_VERSION.zip
 rm -f llvmorg-$LLVM_VERSION.zip
 cd llvm-project-llvmorg-$LLVM_VERSION
 
-# Ninja or "Unix Makefiles"
+# choose ninja or make
+# build using ninja
 cmake -S llvm -B build -G Ninja \
     -DLLVM_ENABLE_PROJECTS="" \
     -DCMAKE_INSTALL_PREFIX="$LLVM_INSTALL_PATH" \
@@ -25,6 +26,16 @@ cmake -S llvm -B build -G Ninja \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=lld
 cmake --build build
+
+# build using make
+cmake -S llvm -B build -G "Unix Makefiles" \
+    -DLLVM_ENABLE_PROJECTS="" \
+    -DCMAKE_INSTALL_PREFIX="$LLVM_INSTALL_PATH" \
+    -DCMAKE_BUILD_TYPE=Debug \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DLLVM_USE_LINKER=lld
+cd build
+make -j
 ```
 
 ## Install C++ Tree-sitter
