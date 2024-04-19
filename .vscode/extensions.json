@@ -1,11 +1,11 @@
 {
   "recommendations": [
-    "bazelbuild.vscode-bazel",
     "llvm-vs-code-extensions.vscode-clangd",
-    "stackbuild.bazel-stack-vscode",
     "usernamehw.errorlens",
     "esbenp.prettier-vscode",
     "ms-vscode.cmake-tools",
-    "vadimcn.vscode-lldb"
+    "vadimcn.vscode-lldb",
+    "cheshirekow.cmake-format",
+    "twxs.cmake"
   ]
 }

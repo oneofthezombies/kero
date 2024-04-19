@@ -14,8 +14,9 @@
     "editor.formatOnSave": true,
     "editor.rulers": [80]
   },
-  "[bazel]": {
+  "[cmake]": {
     "editor.formatOnSave": true,
+    "editor.defaultFormatter": "cheshirekow.cmake-format",
     "editor.rulers": [80]
   },
   "[javascript]": {
