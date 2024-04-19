@@ -12,6 +12,16 @@ refresh_compile_commands(
     ],
 )
 
+config_setting(
+    name = "linux",
+    constraint_values = ["@platforms//os:linux"],
+)
+
+config_setting(
+    name = "macos",
+    constraint_values = ["@platforms//os:macos"],
+)
+
 cc_library(
     name = "tree_sitter_kero",
     srcs = ["src/tree-sitter-kero/src/parser.c"],
@@ -75,6 +85,17 @@ cc_test(
     ],
 )
 
+LLVM_COMMON_LINKOPTS = [
+    "-L.build/llvm/lib",
+    "-lLLVMCore",
+    "-lLLVMRemarks",
+    "-lLLVMBitstreamReader",
+    "-lLLVMBinaryFormat",
+    "-lLLVMTargetParser",
+    "-lLLVMSupport",
+    "-lLLVMDemangle",
+]
+
 cc_library(
     name = "llvm",
     hdrs = glob([
@@ -87,33 +108,23 @@ cc_library(
         ".build/llvm/include",
         "third_party/llvm-project-llvmorg-18.1.3/llvm/include",
     ],
-    linkopts = [
-        "-L/Users/hunhoekim/repo/kero/.build/llvm/lib",
-
-        # macos specific to select
-        "-L/opt/homebrew/Cellar/zstd/1.5.6/lib",
-        "-lLLVMCore",
-        "-lLLVMRemarks",
-        "-lLLVMBitstreamReader",
-        "-lLLVMBinaryFormat",
-        "-lLLVMTargetParser",
-        "-lLLVMSupport",
-        "-lLLVMDemangle",
-
-        # linux specific to select
-        # "-lrt",
-        # "-ldl",
-        # "-lm",
-        # "-ltinfo",
-        # "-lxml2",
-
-        # macos specific to select
-        "-lm",
-        "-lz",
-        "-lzstd",
-        "-lcurses",
-        "-lxml2",
-    ],
+    linkopts = LLVM_COMMON_LINKOPTS + select({
+        ":linux": [
+            "-lrt",
+            "-ldl",
+            "-lm",
+            "-ltinfo",
+            "-lxml2",
+        ],
+        ":macos": [
+            "-L/opt/homebrew/Cellar/zstd/1.5.6/lib",
+            "-lm",
+            "-lz",
+            "-lzstd",
+            "-lcurses",
+            "-lxml2",
+        ],
+    }),
 )
 
 # This test is for generating compile_commands.json. It's not really a test.
