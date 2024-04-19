@@ -36,7 +36,6 @@ cmake -S llvm -B build -G "Unix Makefiles" \
     -DLLVM_ENABLE_PROJECTS="clang;lld;lldb" \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_USE_LINKER=lld
-
 cd build
 make -j
 
