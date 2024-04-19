@@ -5,24 +5,15 @@ It is a simple and intuitive system programming language with the philosophy “
 
 ![mascot](/resources/mascot.webp)
 
-## For Contributors
+# How to Build
 
-This project was developed based on Bazel.  
-Please ensure `bazel` command and after calling the `bazel --version` command, check whether the version is higher than `7.0.0`.
-
-You can get IDE support by running the command below.
+## Install LLVM
 
 ```sh
-bazel run @hedron_compile_commands//:refresh_all
+curl -LO https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.4.zip
+unzip llvmorg-18.1.4.zip
+rm -f llvmorg-18.1.4.zip
+cd llvm-project-llvmorg-18.1.4
+cmake -S llvm -B build -G Ninja -DLLVM_ENABLE_PROJECTS="" -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_ASSERTIONS=ON -DLLVM_USE_LINKER=lld
+cmake --build build
 ```
-
-For more information, please refer to the link below.
-
-https://github.com/hedronvision/bazel-compile-commands-extractor
-
-## References
-
-PackCC - https://github.com/arithy/packcc  
-PEGTL - https://github.com/taocpp/PEGTL  
-ECMAScript - https://ecma-international.org/publications-and-standards/standards/ecma-262/  
-TypeScript - https://javascript.xgqfrms.xyz/pdfs/TypeScript%20Language%20Specification.pdf  

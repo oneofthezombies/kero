@@ -7,12 +7,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(tree_sitter_kero_path ${CMAKE_CURRENT_SOURCE_DIR}/src/tree-sitter-kero)
 
+# tree-sitter-kero
+# ----------------
+
 add_library(tree_sitter_kero STATIC ${tree_sitter_kero_path}/src/parser.c)
 target_compile_options(tree_sitter_kero PRIVATE -std=c17)
 target_include_directories(
   tree_sitter_kero PUBLIC $<BUILD_INTERFACE:${tree_sitter_kero_path}/bindings/c>
                           $<INSTALL_INTERFACE:include>)
 target_include_directories(tree_sitter_kero PRIVATE ${tree_sitter_path}/src)
+
+# install
+# -------
 
 install(
   TARGETS tree_sitter_kero
