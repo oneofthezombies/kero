@@ -10,10 +10,24 @@ It is a simple and intuitive system programming language with the philosophy “
 ## Install LLVM
 
 ```sh
-curl -LO https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.4.zip
-unzip llvmorg-18.1.4.zip
-rm -f llvmorg-18.1.4.zip
-cd llvm-project-llvmorg-18.1.4
-cmake -S llvm -B build -G Ninja -DLLVM_ENABLE_PROJECTS="" -DCMAKE_INSTALL_PREFIX=$HOME/.local -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_ASSERTIONS=ON -DLLVM_USE_LINKER=lld
+LLVM_VERSION=18.1.4
+curl -LO https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-${LLVM_VERSION}.zip
+unzip llvmorg-${LLVM_VERSION}.zip
+rm -f llvmorg-${LLVM_VERSION}.zip
+cd llvm-project-llvmorg-${LLVM_VERSION}
+cmake -S llvm -B build -G Ninja \
+    -DLLVM_ENABLE_PROJECTS="" \
+    -DCMAKE_INSTALL_PREFIX=$HOME/.local \
+    -DCMAKE_BUILD_TYPE=Debug \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DLLVM_USE_LINKER=lld
 cmake --build build
+```
+
+## Kero
+
+```sh
+mkdir build && cd build
+cmake .. -G Ninja -DCMAKE_PREFIX_PATH="$HOME/.local"
+cmake --build .
 ```
