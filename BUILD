@@ -22,6 +22,11 @@ config_setting(
     constraint_values = ["@platforms//os:macos"],
 )
 
+config_setting(
+    name = "windows",
+    constraint_values = ["@platforms//os:windows"],
+)
+
 cc_library(
     name = "tree_sitter_kero",
     srcs = ["src/tree-sitter-kero/src/parser.c"],
@@ -123,6 +128,8 @@ cc_library(
             "-lzstd",
             "-lcurses",
             "-lxml2",
+        ],
+        ":windows": [
         ],
     }),
 )
