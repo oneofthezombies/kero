@@ -54,7 +54,7 @@ run("mkdir", ["-p", localPath]);
 const COMMON_CMAKE_ARGS = [
   "-G",
   buildSystem === "ninja" ? "Ninja" : "Unix Makefiles",
-  `-DCMAKE_INSTALL_PREFIX="${localPath}"`,
+  `-DCMAKE_INSTALL_PREFIX=${localPath}`,
   "-DCMAKE_BUILD_TYPE=Debug",
   "-DCMAKE_C_COMPILER=clang",
   "-DCMAKE_CXX_COMPILER=clang++",
@@ -76,7 +76,7 @@ const defaultInstall = () => {
   run("sudo", ["cmake", "--install", "."], { stdio: "inherit" });
 };
 
-const defaultCopyCompileCommands = (project) => () => {
+const defaultCopyCompileCommands = (project) => {
   const compileCommandsPath = path.resolve(
     localPath,
     "share",
