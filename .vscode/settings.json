@@ -3,9 +3,9 @@
     "--header-insertion=never",
     "--query-driver=**",
     "--compile-commands-dir=${workspaceFolder}/build",
-    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/cpp-tree-sitter",
-    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/googletest",
-    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/llvm"
+    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/cpp-tree-sitter-0.2.1",
+    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/googletest-1.14.0",
+    "--compile-commands-dir=${env:HOME}/.local/share/compile_commands/llvm-project-llvmorg-18.1.4"
   ],
   "[cpp]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",

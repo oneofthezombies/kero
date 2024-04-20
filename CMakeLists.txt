@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.28)
 project(kero VERSION 0.1.0)
 
 set(CMAKE_C_STANDARD 17)
@@ -60,9 +60,11 @@ list(FILTER KERO_COMPILER_SOURCES EXCLUDE REGEX ".*_test\\.cc$")
 
 add_library(kero_compiler STATIC ${KERO_COMPILER_SOURCES})
 target_include_directories(kero_compiler PUBLIC src)
-target_include_directories(kero_compiler PRIVATE ${LLVM_INCLUDE_DIRS})
-target_link_libraries(kero_compiler tree_sitter_kero ${LLVM_LIBS_CORE}
-                      ${LLVM_SYSTEM_LIBS})
+target_include_directories(
+  kero_compiler PRIVATE ${LLVM_INCLUDE_DIRS} ${cpp_tree_sitter_INCLUDE_DIRS})
+target_link_libraries(
+  kero_compiler tree_sitter_kero cpp_tree_sitter::cpp_tree_sitter
+  ${LLVM_LIBS_CORE} ${LLVM_SYSTEM_LIBS})
 
 # kero_compiler_test
 # ------------------
@@ -72,10 +74,8 @@ file(GLOB_RECURSE KERO_COMPILER_TEST_SOURCES
 
 add_executable(kero_compiler_test ${KERO_COMPILER_TEST_SOURCES})
 target_include_directories(kero_compiler_test PRIVATE ${GTEST_INCLUDE_DIRS})
-target_link_libraries(
-  kero_compiler_test
-  PRIVATE GTest::GTest GTest::Main cpp_tree_sitter::cpp_tree_sitter
-          tree_sitter_kero kero_compiler)
+target_link_libraries(kero_compiler_test PRIVATE GTest::GTest GTest::Main
+                                                 kero_compiler)
 
 # # install # -------
 
