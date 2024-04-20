@@ -64,37 +64,35 @@ const COMMON_CMAKE_ARGS = [
 const getDefaultBuildPath = (project) =>
   path.resolve(archivesPath, project, "build");
 
-const getDefaultBuildFunction = () => () => {
-  return () => {
-    if (buildSystem === "ninja") {
-      run("ninja");
-    } else if (buildSystem === "make") {
-      run("make", ["-j"]);
-    }
-  };
+const defaultBuild = () => {
+  if (buildSystem === "ninja") {
+    run("cmake", ["--build", "."], { stdio: "inherit" });
+  } else if (buildSystem === "make") {
+    run("make", ["-j"], { stdio: "inherit" });
+  }
 };
 
-const getDefaultInstallFunction = () => {
-  return () => {
-    run("sudo", ["cmake", "--install", "."]);
-  };
+const defaultInstall = () => {
+  run("sudo", ["cmake", "--install", "."], { stdio: "inherit" });
 };
 
-const getDefaultCopyCompileCommandsFunction = (project) => () => {
-  return () => {
-    const compileCommandsPath = path.resolve(
-      localPath,
-      "share",
-      "compile_commands",
-      project
-    );
-    run("mkdir", ["-p", compileCommandsPath]);
-    run("cp", [
+const defaultCopyCompileCommands = (project) => () => {
+  const compileCommandsPath = path.resolve(
+    localPath,
+    "share",
+    "compile_commands",
+    project
+  );
+  run("mkdir", ["-p", compileCommandsPath], { stdio: "inherit" });
+  run(
+    "cp",
+    [
       "-f",
       "compile_commands.json",
       path.resolve(compileCommandsPath, "compile_commands.json"),
-    ]);
-  };
+    ],
+    { stdio: "inherit" }
+  );
 };
 
 const dependencyFactories = [
@@ -104,22 +102,30 @@ const dependencyFactories = [
     return {
       project,
       download: () => {
-        run("curl", [
-          "-LO",
-          `https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-${version}.zip`,
-        ]);
-        run("unzip", [`llvmorg-${version}.zip`]);
-        run("rm", ["-f", `llvmorg-${version}.zip`]);
+        run(
+          "curl",
+          [
+            "-LO",
+            `https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-${version}.zip`,
+          ],
+          { stdio: "inherit" }
+        );
+        run("unzip", [`llvmorg-${version}.zip`], { stdio: "inherit" });
+        run("rm", ["-f", `llvmorg-${version}.zip`], { stdio: "inherit" });
       },
       configure: () => {
-        run("cmake", [
-          "../llvm",
-          ...COMMON_CMAKE_ARGS,
-          `-DLLVM_ENABLE_PROJECTS="clang;lld;lldb"`,
-          "-DLLVM_ENABLE_ASSERTIONS=ON",
-          "-DLLVM_USE_LINKER=lld",
-          "-DLLDB_INCLUDE_TESTS=OFF",
-        ]);
+        run(
+          "cmake",
+          [
+            "../llvm",
+            ...COMMON_CMAKE_ARGS,
+            "-DLLVM_ENABLE_PROJECTS=clang;lld;lldb",
+            "-DLLVM_ENABLE_ASSERTIONS=ON",
+            "-DLLVM_USE_LINKER=lld",
+            "-DLLDB_INCLUDE_TESTS=OFF",
+          ],
+          { stdio: "inherit" }
+        );
       },
     };
   },
@@ -129,15 +135,19 @@ const dependencyFactories = [
     return {
       project,
       download: () => {
-        run("curl", [
-          "-LO",
-          `https://github.com/oneofthezombies/cpp-tree-sitter/archive/refs/tags/v${version}.zip`,
-        ]);
-        run("unzip", [`v${version}.zip`]);
-        run("rm", ["-f", `v${version}.zip`]);
+        run(
+          "curl",
+          [
+            "-LO",
+            `https://github.com/oneofthezombies/cpp-tree-sitter/archive/refs/tags/v${version}.zip`,
+          ],
+          { stdio: "inherit" }
+        );
+        run("unzip", [`v${version}.zip`], { stdio: "inherit" });
+        run("rm", ["-f", `v${version}.zip`], { stdio: "inherit" });
       },
       configure: () => {
-        run("cmake", ["..", ...COMMON_CMAKE_ARGS]);
+        run("cmake", ["..", ...COMMON_CMAKE_ARGS], { stdio: "inherit" });
       },
     };
   },
@@ -147,15 +157,19 @@ const dependencyFactories = [
     return {
       project,
       download: () => {
-        run("curl", [
-          "-LO",
-          `https://github.com/google/googletest/archive/refs/tags/v${version}.zip`,
-        ]);
-        run("unzip", [`v${version}.zip`]);
-        run("rm", ["-f", `v${version}.zip`]);
+        run(
+          "curl",
+          [
+            "-LO",
+            `https://github.com/google/googletest/archive/refs/tags/v${version}.zip`,
+          ],
+          { stdio: "inherit" }
+        );
+        run("unzip", [`v${version}.zip`], { stdio: "inherit" });
+        run("rm", ["-f", `v${version}.zip`], { stdio: "inherit" });
       },
       configure: () => {
-        run("cmake", ["..", ...COMMON_CMAKE_ARGS]);
+        run("cmake", ["..", ...COMMON_CMAKE_ARGS], { stdio: "inherit" });
       },
     };
   },
@@ -184,15 +198,26 @@ for (const factory of dependencyFactories) {
 
     configure();
 
-    const resolvedBuild = build || getDefaultBuildFunction();
-    resolvedBuild();
+    if (build) {
+      build();
+    } else {
+      defaultBuild();
+    }
 
-    const resolvedInstall = install || getDefaultInstallFunction();
-    resolvedInstall();
+    if (install) {
+      install();
+    } else {
+      defaultInstall();
+    }
 
-    const resolvedCopyCompileCommands =
-      copyCompileCommands || getDefaultCopyCompileCommandsFunction(project);
-    resolvedCopyCompileCommands();
+    if (copyCompileCommands) {
+      copyCompileCommands();
+    } else {
+      defaultCopyCompileCommands(project);
+    }
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
   } finally {
     process.chdir(cwd);
   }
