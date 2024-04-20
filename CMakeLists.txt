@@ -58,6 +58,8 @@ file(GLOB_RECURSE KERO_COMPILER_SOURCES
      ${CMAKE_CURRENT_SOURCE_DIR}/src/compiler/*.cc)
 list(FILTER KERO_COMPILER_SOURCES EXCLUDE REGEX ".*_test\\.cc$")
 
+message("cpp_tree_sitter_INCLUDE_DIRS: ${cpp_tree_sitter_INCLUDE_DIRS}")
+
 add_library(kero_compiler STATIC ${KERO_COMPILER_SOURCES})
 target_include_directories(kero_compiler PUBLIC src)
 target_include_directories(

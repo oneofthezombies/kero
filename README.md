@@ -17,6 +17,6 @@ node scripts/install.mjs
 
 ```sh
 mkdir -p build && cd build
-cmake .. -G Ninja -DCMAKE_PREFIX_PATH="$HOME/.local"
-cmake --build .
+cmake .. -G Ninja -DCMAKE_PREFIX_PATH="$HOME/.local" && \
+    cmake --build .
 ```

@@ -130,7 +130,7 @@ const dependencyFactories = [
     };
   },
   () => {
-    const version = "0.2.1";
+    const version = "0.2.4";
     const project = `cpp-tree-sitter-${version}`;
     return {
       project,
