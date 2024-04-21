@@ -70,6 +70,34 @@ function build() {
     "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
   ]);
   run("cmake", ["--build", "build"]);
+  mergeCompileCommands();
+}
+
+function getCompileCommandsPath(...paths) {
+  return path.resolve(...paths, "compile_commands.json");
+}
+
+function mergeCompileCommands() {
+  const compileCommandsPaths = [
+    getCompileCommandsPath("build"),
+    getCompileCommandsPath(getProjectPath("cpp-tree-sitter"), "build"),
+    getCompileCommandsPath(getProjectPath("googletest"), "build"),
+    getCompileCommandsPath(getProjectPath("llvm"), "build"),
+  ];
+  const compileCommands = compileCommandsPaths
+    .map(getCompileCommands)
+    .reduce((acc, val) => acc.concat(val), []);
+  fs.writeFileSync(
+    path.resolve("compile_commands.json"),
+    JSON.stringify(compileCommands, null, 2)
+  );
+}
+
+function getCompileCommands(path) {
+  if (!fs.existsSync(path)) {
+    return [];
+  }
+  return JSON.parse(fs.readFileSync(path, "utf8"));
 }
 
 function cacheLlvm() {
