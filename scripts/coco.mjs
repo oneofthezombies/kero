@@ -65,6 +65,7 @@ function build() {
     "-DCMAKE_CXX_COMPILER=clang++",
     "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
   ]);
+  run("cmake", ["--build", "build"]);
 }
 
 function cacheLlvm() {
