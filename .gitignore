@@ -31,5 +31,8 @@
 *.out
 *.app
 
-# Build files
+# Build directory
 build/
+.temp/
+.cache/
+.local/
