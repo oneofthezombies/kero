@@ -3,19 +3,8 @@
  */
 
 import { spawnSync } from "child_process";
-import os from "os";
 import fs from "fs";
 import path from "path";
-
-process.on("unhandledRejection", (reason) => {
-  console.error(`Unhandled Rejection: ${reason}`);
-  process.exit(1);
-});
-
-process.on("uncaughtException", (error) => {
-  console.error(`Uncaught Exception: ${error}`);
-  process.exit(1);
-});
 
 const CACHE_PATH = path.resolve(process.cwd(), ".cache");
 const TEMP_PATH = path.resolve(process.cwd(), ".temp");
@@ -60,11 +49,23 @@ function help() {
 
 function install() {
   cacheCppTreeSitter();
-  // cacheGoogletest();
+  cacheGoogletest();
   // cacheLlvm();
 }
 
-function build() {}
+function build() {
+  run("cmake", [
+    "-S",
+    ".",
+    "-B",
+    "build",
+    "-G Ninja",
+    "-DCMAKE_BUILD_TYPE=Debug",
+    "-DCMAKE_C_COMPILER=clang",
+    "-DCMAKE_CXX_COMPILER=clang++",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+  ]);
+}
 
 function cacheLlvm() {
   downloadGithubZip({
@@ -84,8 +85,7 @@ function cacheLlvm() {
       "-DLLVM_USE_LINKER=lld",
       "-DLLDB_INCLUDE_TESTS=OFF",
     ]);
-    run("cmake", ["--build", "build"]);
-    run("sudo", ["cmake", "--install", "build"]);
+    run("cmake", ["--build", "build", "--install"]);
   });
 }
 
@@ -99,7 +99,7 @@ function cacheCppTreeSitter() {
   });
   withPath(projectPath, () => {
     run("cmake", ["-S", ".", "-B", "build", ...COMMON_CMAKE_ARGS]);
-    run("sudo", ["cmake", "--install", "build"]);
+    buildAndInstall();
   });
 }
 
@@ -113,7 +113,7 @@ function cacheGoogletest() {
   });
   withPath(projectPath, () => {
     run("cmake", ["-S", ".", "-B", "build", ...COMMON_CMAKE_ARGS]);
-    run("sudo", ["cmake", "--install", "build"]);
+    buildAndInstall();
   });
 }
 
@@ -168,7 +168,7 @@ function downloadGithubZip(options) {
 
     const zipPath = path.resolve(TEMP_PATH, `${project}.zip`);
     run("curl", ["-L", "-o", zipPath, url]);
-    run("unzip", [zipPath]);
+    run("unzip", [zipPath, "-d", TEMP_PATH]);
     run("rm", ["-f", zipPath]);
 
     const unzippedPath = path.resolve(TEMP_PATH, unzippedDir);
@@ -184,7 +184,7 @@ function downloadGithubZip(options) {
     run("mv", [unzippedPath, projectPath]);
 
     metadata.url = url;
-    fs.writeFileSync(metadataPath, JSON.stringify(metadata));
+    fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
   } finally {
     run("rm", ["-rf", TEMP_PATH]);
   }
@@ -202,6 +202,11 @@ function withPath(path, fn) {
   } finally {
     process.chdir(cwd);
   }
+}
+
+function buildAndInstall() {
+  run("cmake", ["--build", "build"]);
+  run("sudo", ["cmake", "--install", "build"]);
 }
 
 // #endregion

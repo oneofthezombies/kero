@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/.local)
 set(TREE_SITTER_KERO_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/tree-sitter-kero)
 
 # dependencies
@@ -58,12 +59,9 @@ file(GLOB_RECURSE KERO_COMPILER_SOURCES
      ${CMAKE_CURRENT_SOURCE_DIR}/src/compiler/*.cc)
 list(FILTER KERO_COMPILER_SOURCES EXCLUDE REGEX ".*_test\\.cc$")
 
-message("cpp_tree_sitter_INCLUDE_DIRS: ${cpp_tree_sitter_INCLUDE_DIRS}")
-
 add_library(kero_compiler STATIC ${KERO_COMPILER_SOURCES})
 target_include_directories(kero_compiler PUBLIC src)
-target_include_directories(
-  kero_compiler PRIVATE ${LLVM_INCLUDE_DIRS} ${cpp_tree_sitter_INCLUDE_DIRS})
+target_include_directories(kero_compiler PRIVATE ${LLVM_INCLUDE_DIRS})
 target_link_libraries(
   kero_compiler tree_sitter_kero cpp_tree_sitter::cpp_tree_sitter
   ${LLVM_LIBS_CORE} ${LLVM_SYSTEM_LIBS})
