@@ -13,8 +13,6 @@ const COMMON_CMAKE_ARGS = [
   "-G Ninja",
   `-DCMAKE_INSTALL_PREFIX=${LOCAL_PATH}`,
   "-DCMAKE_BUILD_TYPE=Debug",
-  "-DCMAKE_C_COMPILER=clang",
-  "-DCMAKE_CXX_COMPILER=clang++",
   "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
 ];
 
@@ -26,7 +24,9 @@ function main() {
   run("mkdir", ["-p", TEMP_PATH]);
   run("mkdir", ["-p", LOCAL_PATH]);
 
-  if (command === "install") {
+  if (command === "clean") {
+    clean();
+  } else if (command === "install") {
     install();
   } else if (command === "build") {
     build();
@@ -42,9 +42,17 @@ main();
 function help() {
   console.log("Usage: node scripts/coco.mjs <command> [options]");
   console.log("Commands:");
-  console.log("  install");
-  console.log("  build");
+  console.log("  clean   Clean up cache and temporary files");
+  console.log("  install Install dependencies");
+  console.log("  build   Build the project");
   process.exit(1);
+}
+
+function clean() {
+  run("rm", ["-rf", CACHE_PATH]);
+  run("rm", ["-rf", TEMP_PATH]);
+  run("rm", ["-rf", LOCAL_PATH]);
+  run("rm", ["-rf", "build"]);
 }
 
 function install() {
@@ -55,14 +63,10 @@ function install() {
 
 function build() {
   run("cmake", [
-    "-S",
-    ".",
-    "-B",
-    "build",
+    "-S .",
+    "-B build",
     "-G Ninja",
     "-DCMAKE_BUILD_TYPE=Debug",
-    "-DCMAKE_C_COMPILER=clang",
-    "-DCMAKE_CXX_COMPILER=clang++",
     "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
   ]);
   run("cmake", ["--build", "build"]);
@@ -76,10 +80,8 @@ function cacheLlvm() {
   });
   withPath(getProjectPath("llvm"), () => {
     run("cmake", [
-      "-S",
-      "llvm",
-      "-B",
-      "build",
+      "-S llvm",
+      "-B build",
       ...COMMON_CMAKE_ARGS,
       "-DLLVM_ENABLE_PROJECTS=",
       "-DLLVM_ENABLE_ASSERTIONS=ON",
@@ -99,7 +101,7 @@ function cacheCppTreeSitter() {
     unzippedDir: "cpp-tree-sitter-0.2.4",
   });
   withPath(projectPath, () => {
-    run("cmake", ["-S", ".", "-B", "build", ...COMMON_CMAKE_ARGS]);
+    run("cmake", ["-S .", "-B build", ...COMMON_CMAKE_ARGS]);
     buildAndInstall();
   });
 }
@@ -113,7 +115,7 @@ function cacheGoogletest() {
     unzippedDir: "googletest-1.14.0",
   });
   withPath(projectPath, () => {
-    run("cmake", ["-S", ".", "-B", "build", ...COMMON_CMAKE_ARGS]);
+    run("cmake", ["-S .", "-B build", ...COMMON_CMAKE_ARGS]);
     buildAndInstall();
   });
 }
