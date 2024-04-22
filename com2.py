@@ -4,7 +4,7 @@ import shutil
 import os
 import subprocess
 import abc
-from typing import Callable
+from typing import Callable, List, Optional
 import zipfile
 import json
 
@@ -79,9 +79,9 @@ class Arguments:
         self,
         program: str,
         file: str,
-        command: str | None,
-        subcommand: str | None,
-        args: list[str],
+        command: Optional[str],
+        subcommand: Optional[str],
+        args: List[str],
     ):
         self.program = program
         self.file = file
@@ -91,14 +91,14 @@ class Arguments:
 
 
 def _parse_arguments() -> Arguments:
-    program = sys.orig_argv[0]
-    file = sys.orig_argv[1]
-    command = sys.orig_argv[2] if len(sys.orig_argv) > 2 else None
+    program = sys.executable.split(os.sep)[-1]
+    file = sys.argv[0]
+    command = sys.argv[1] if len(sys.argv) > 1 else None
     has_subcommand = False
-    if len(sys.orig_argv) > 3:
-        has_subcommand = not sys.orig_argv[3].startswith("-")
-    subcommand = sys.orig_argv[3] if has_subcommand else None
-    args = sys.orig_argv[4:] if has_subcommand else sys.orig_argv[3:]
+    if len(sys.argv) > 2:
+        has_subcommand = not sys.argv[2].startswith("-")
+    subcommand = sys.argv[2] if has_subcommand else None
+    args = sys.argv[3:] if has_subcommand else sys.argv[2:]
     return Arguments(
         program=program, file=file, command=command, subcommand=subcommand, args=args
     )
@@ -270,7 +270,7 @@ class CommandCtx:
         com2_path: str,
         install_path: str,
         command_line_runner: CommandLineRunner,
-        libraries: list[Library],
+        libraries: List[Library],
     ):
         self.project_build_path = project_build_path
         self.com2_path = com2_path
@@ -294,7 +294,9 @@ class CommandRegistry:
         self.commands: dict[str, CommandInfo] = {}
         self.subcommands: dict[str, dict[str, CommandInfo]] = {}
 
-    def register(self, command: str, subcommand: str | None, command_info: CommandInfo):
+    def register(
+        self, command: str, subcommand: Optional[str], command_info: CommandInfo
+    ):
         if subcommand is None:
             self.commands[command] = command_info
         else:
@@ -302,7 +304,7 @@ class CommandRegistry:
                 self.subcommands[command] = {}
             self.subcommands[command][subcommand] = command_info
 
-    def get(self, command: str, subcommand: str | None) -> CommandInfo | None:
+    def get(self, command: str, subcommand: Optional[str]) -> Optional[CommandInfo]:
         if subcommand is None:
             return self.commands.get(command)
         return self.subcommands.get(command, {}).get(subcommand)
@@ -397,7 +399,7 @@ class App:
         project_build_dir="build",
         install_path=os.path.join(os.getcwd(), ".com2", "local"),
         command_line_runner: CommandLineRunner = SubprocessCommandLineRunner(),
-        libraries: list[Library] = [],
+        libraries: List[Library] = [],
     ):
         self.arguments = _parse_arguments()
         self.__command_registry = CommandRegistry()
@@ -408,7 +410,7 @@ class App:
         self.__libraries = libraries
         self.__validate_library_uniqueness()
 
-    def command(self, command: str, subcommand: str | None = None, description=""):
+    def command(self, command: str, subcommand: Optional[str] = None, description=""):
         self.__check_command_uniqueness(command, subcommand)
 
         def decorator(fn):
@@ -444,7 +446,7 @@ class App:
                 )
             )
         except Exception:
-            command_line = " ".join(sys.orig_argv)
+            command_line = " ".join(sys.argv)
             print(f"Error running command line: {command_line}")
             traceback.print_exc()
             sys.exit(1)
@@ -490,7 +492,7 @@ class App:
                 raise ValueError(f"Library name '{library.name}' is duplicated")
             names.add(library.name)
 
-    def __check_command_uniqueness(self, command: str, subcommand: str | None):
+    def __check_command_uniqueness(self, command: str, subcommand: Optional[str]):
         command_info = self.__command_registry.get(command, subcommand)
         if command_info is not None:
             if subcommand is None:
