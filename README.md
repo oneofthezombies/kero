@@ -10,13 +10,11 @@ It is a simple and intuitive system programming language with the philosophy “
 ## Install Dependencies
 
 ```sh
-node scripts/install.mjs
+python .com2.py libraries install
 ```
 
 ## Kero
 
 ```sh
-mkdir -p build && cd build
-cmake .. -G Ninja -DCMAKE_PREFIX_PATH="$HOME/.local" && \
-    cmake --build .
+python .com2.py project build
 ```
