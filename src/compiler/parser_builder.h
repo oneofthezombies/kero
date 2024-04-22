@@ -9,7 +9,7 @@ namespace kero::compiler {
 
 class ParserBuilder final : private NonCopyable, NonMovable {
 public:
-  using Result = Result<ts::Parser, Error>;
+  using Result = kero::compiler::Result<ts::Parser, Error>;
 
   auto SetConsoleLogger(const bool is_set = true) noexcept -> ParserBuilder &;
   auto SetPrintDotGraphsToStdout(const bool is_set = true) noexcept

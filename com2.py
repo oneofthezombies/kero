@@ -444,7 +444,8 @@ class App:
                 )
             )
         except Exception:
-            print(f"Error running command line: {" ".join(sys.orig_argv)}")
+            command_line = " ".join(sys.orig_argv)
+            print(f"Error running command line: {command_line}")
             traceback.print_exc()
             sys.exit(1)
         finally:
