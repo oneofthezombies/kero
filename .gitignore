@@ -36,3 +36,10 @@ build/
 .temp/
 .cache/
 .local/
+
+# com2
+/.com2/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

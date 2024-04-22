@@ -6,6 +6,9 @@
     "ms-vscode.cmake-tools",
     "vadimcn.vscode-lldb",
     "cheshirekow.cmake-format",
-    "twxs.cmake"
+    "twxs.cmake",
+    "ms-python.black-formatter",
+    "ms-python.python",
+    "ms-python.debugpy"
   ]
 }
