@@ -1,5 +1,10 @@
 [workspace]
-members = ["crates/lexer"]
+members = [
+    "crates/kero_lexer",
+    "crates/kero_parser",
+    "crates/kero_resolver",
+    "crates/kero_trie",
+]
 resolver = "2"
 
 [workspace.package]
