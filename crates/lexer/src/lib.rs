@@ -1,11 +1,16 @@
-pub struct Source {
-    file_path: String,
-    file_content: String,
+struct File {
+    path: String,
+    content: String,
 }
 
-pub fn tokenize(source: &Source) {
-    println!("{}", source.file_path);
-    println!("{}", source.file_content)
+struct Lexer<'a> {
+    file: &'a File,
+}
+
+impl<'a> Lexer<'a> {
+    fn tokenize() {
+        println!("hello")
+    }
 }
 
 #[cfg(test)]
@@ -13,10 +18,5 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_tokenize() {
-        tokenize(&Source {
-            file_path: "".to_string(),
-            file_content: "".to_string(),
-        })
-    }
+    fn test_tokenize() {}
 }

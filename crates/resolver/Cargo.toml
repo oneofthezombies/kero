@@ -1,5 +1,5 @@
 [package]
-name = "kero_lexer"
+name = "kero_resolver"
 edition.workspace = true
 version.workspace = true
 
