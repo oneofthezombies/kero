@@ -1,2 +1,5 @@
 [package]
 name = "kero_lexer"
+edition.workspace = true
+
+[lib]
