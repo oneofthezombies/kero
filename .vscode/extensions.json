@@ -3,6 +3,8 @@
     "rust-lang.rust-analyzer",
     "tamasfe.even-better-toml",
     "esbenp.prettier-vscode",
-    "editorconfig.editorconfig"
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+    "usernamehw.errorlens"
   ]
 }
