@@ -3,4 +3,7 @@ name = "kero_lexer"
 edition.workspace = true
 version.workspace = true
 
+[dependencies]
+kero_trie = { path = "../kero_trie" }
+
 [lib]
