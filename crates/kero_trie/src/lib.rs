@@ -3,7 +3,8 @@ use std::collections::HashMap;
 
 #[derive(Debug, PartialEq)]
 pub enum TrieError {
-    ElementsIsEmpty,
+    SequenceIsEmpty,
+    SequenceNotExist,
 }
 
 impl std::error::Error for TrieError {}
@@ -11,7 +12,8 @@ impl std::error::Error for TrieError {}
 impl core::fmt::Display for TrieError {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
-            TrieError::ElementsIsEmpty => write!(f, "Elements is empty"),
+            TrieError::SequenceIsEmpty => write!(f, "Sequence is empty"),
+            TrieError::SequenceNotExist => write!(f, "Sequence not exist"),
         }
     }
 }
@@ -45,9 +47,9 @@ where
         Self { root: Node::new() }
     }
 
-    pub fn push(&mut self, elements: &[T]) {
+    pub fn push(&mut self, sequence: &[T]) {
         let mut current = &mut self.root;
-        for element in elements {
+        for element in sequence {
             current = current
                 .children
                 .entry(element.clone())
@@ -73,18 +75,24 @@ where
         Self { root }
     }
 
-    pub fn exact_match(&self, elements: &[T]) -> Result<bool, TrieError> {
-        if elements.is_empty() {
-            return Err(TrieError::ElementsIsEmpty);
+    pub fn exact_match(&self, sequence: &[T]) -> Result<(), TrieError> {
+        if sequence.is_empty() {
+            return Err(TrieError::SequenceIsEmpty);
         }
+
         let mut current = &self.root;
-        for element in elements {
+        for element in sequence {
             let Some(child) = current.children.get(element) else {
-                return Ok(false);
+                return Err(TrieError::SequenceNotExist);
             };
             current = child;
         }
-        Ok(current.is_end)
+
+        if !current.is_end {
+            return Err(TrieError::SequenceNotExist);
+        }
+
+        Ok(())
     }
 }
 
@@ -93,19 +101,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_empty_elements() {
+    fn test_sequence_is_empty() {
         let builder = TrieBuilder::new();
         let trie = builder.build();
         let result = trie.exact_match("".as_bytes());
-        assert_eq!(result.unwrap_err(), TrieError::ElementsIsEmpty)
+        assert_eq!(result.unwrap_err(), TrieError::SequenceIsEmpty)
     }
 
     #[test]
-    fn test_not_exist() {
+    fn test_sequence_not_exist() {
         let builder = TrieBuilder::new();
         let trie = builder.build();
         let result = trie.exact_match("a".as_bytes());
-        assert!(!result.unwrap());
+        assert_eq!(result.unwrap_err(), TrieError::SequenceNotExist)
     }
 
     #[test]
@@ -114,7 +122,7 @@ mod tests {
         builder.push("a".as_bytes());
         let trie = builder.build();
         let result = trie.exact_match("a".as_bytes());
-        assert!(result.unwrap());
+        assert!(result.is_ok())
     }
 
     #[test]
@@ -123,7 +131,7 @@ mod tests {
         builder.push("aa".as_bytes());
         let trie = builder.build();
         let result = trie.exact_match("aa".as_bytes());
-        assert!(result.unwrap());
+        assert!(result.is_ok());
     }
 
     #[test]
@@ -132,6 +140,6 @@ mod tests {
         builder.push("aaa".as_bytes());
         let trie = builder.build();
         let result = trie.exact_match("aaa".as_bytes());
-        assert!(result.unwrap());
+        assert!(result.is_ok());
     }
 }
