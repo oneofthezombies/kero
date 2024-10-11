@@ -58,17 +58,17 @@ pub fn is_continuation_byte(byte: u8) -> bool {
     byte & 0b1100_0000 == 0b1000_0000
 }
 
-pub fn utf8_byte_len(leader_byte: u8) -> Option<usize> {
-    if leader_byte & 0b1000_0000 == 0 {
+pub fn utf8_byte_len(leading_byte: u8) -> Option<usize> {
+    if leading_byte & 0b1000_0000 == 0 {
         Some(1)
-    } else if leader_byte & 0b1110_0000 == 0b1100_0000 {
+    } else if leading_byte & 0b1110_0000 == 0b1100_0000 {
         Some(2)
-    } else if leader_byte & 0b1111_0000 == 0b1110_0000 {
+    } else if leading_byte & 0b1111_0000 == 0b1110_0000 {
         Some(3)
-    } else if leader_byte & 0b1111_1000 == 0b1111_0000 {
+    } else if leading_byte & 0b1111_1000 == 0b1111_0000 {
         Some(4)
     } else {
-        // continuation byte
+        // continuation byte or invalid byte
         None
     }
 }

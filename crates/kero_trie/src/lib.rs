@@ -205,30 +205,4 @@ mod tests {
         let result = trie.match_prefix("aaa".as_bytes());
         assert_eq!(result.unwrap_err(), TrieError::SequenceNotExist);
     }
-
-    #[test]
-    fn test_xxx() {
-        let a = "Hello, 世界";
-        println!("{}", a.len());
-        let mut i = 0;
-        let mut utf8_i = 0;
-        let mut utf8_len = 0;
-        let bytes = a.as_bytes();
-        loop {
-            if i >= a.len() {
-                break;
-            }
-
-            if a.is_char_boundary(i) {
-                utf8_i = i;
-                utf8_len = utf8_char_len(bytes[i]).unwrap();
-            }
-            let s = &bytes[utf8_i..utf8_i + utf8_len];
-            let str = std::str::from_utf8(s).unwrap();
-            println!("{} {}", bytes[i], str);
-
-            i += 1;
-        }
-        // println!("{}", a
-    }
 }
