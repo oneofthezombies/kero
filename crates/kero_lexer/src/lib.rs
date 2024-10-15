@@ -3,7 +3,6 @@ mod utils;
 
 use crate::utf8::Utf8CharWindowBufReader;
 use anyhow::{anyhow, bail, Result};
-use core::num;
 use kero_trie::Trie;
 use std::io::{BufRead, BufReader, Read};
 
