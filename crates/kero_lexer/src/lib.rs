@@ -112,32 +112,6 @@ where
             end: None,
         })
     }
-
-    fn parse_indent(&self) -> Result<usize> {
-        let ch = self
-            .reader
-            .get(0)?
-            .ok_or_else(|| anyhow!("Must ch exist in parse_indent"))?;
-        if ch != ' ' {
-            self.consume();
-            return Ok(0);
-        }
-    }
-
-    fn consume(&mut self) -> Result<()> {
-        let ch = self.reader.get(0)?;
-        let ch = self
-            .ch
-            .ok_or_else(|| anyhow!("Must self.ch exit in consume"))?;
-        if ch == '\r' {
-            self.pos.line += 1;
-            self.pos.column = 1;
-            // if next is \n consume
-        } else if ch == '\n' {
-            self.pos.line += 1;
-            self.pos.column = 1;
-        }
-    }
 }
 
 #[cfg(test)]
