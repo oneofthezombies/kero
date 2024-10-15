@@ -113,12 +113,12 @@ where
                 break;
             };
 
-            if ch == ' ' {
-                num_space += 1;
-                self.reader.pop()?;
-            } else {
+            if ch != ' ' {
                 break;
             }
+
+            num_space += 1;
+            self.reader.pop()?;
         }
 
         Ok(())
@@ -135,6 +135,8 @@ where
         if ch == '\r' || ch == '\n' {
             pos.line += 1;
             pos.column = 1;
+        } else {
+            pos.column += 1;
         }
 
         let mut num_pop = 1usize;
