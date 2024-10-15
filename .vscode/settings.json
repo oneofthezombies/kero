@@ -15,5 +15,5 @@
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.formatOnSave": true
   },
-  "cSpell.words": ["embeddable", "oneofthezombies", "webp"]
+  "cSpell.words": ["Deque", "embeddable", "oneofthezombies", "webp"]
 }

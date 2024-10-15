@@ -4,6 +4,7 @@ edition.workspace = true
 version.workspace = true
 
 [dependencies]
+anyhow = "1.0.89"
 kero_trie = { path = "../kero_trie" }
 
 [lib]
