@@ -3,6 +3,7 @@ mod utils;
 
 use crate::utf8::Utf8CharWindowBufReader;
 use anyhow::{anyhow, bail, Result};
+use core::num;
 use kero_trie::Trie;
 use std::io::{BufRead, BufReader, Read};
 
@@ -82,7 +83,7 @@ where
     }
 
     pub fn next(&mut self) -> Result<Token> {
-        let cur = self.reader.get(0)?;
+        let cur = self.reader.read(0)?;
         let is_cond_of_eof = cur.is_none();
         if is_cond_of_eof {
             return Ok(Token {
@@ -95,15 +96,7 @@ where
         let ch = cur.ok_or_else(|| anyhow!("Must ch exist after checking EOF"))?;
         let is_cond_of_indent_like = self.pos.column == 1;
         if is_cond_of_indent_like {
-            if ch != ' ' {}
-
-            let current_indent = 0usize;
-
-            let last_indent = self
-                .indents
-                .last()
-                .ok_or_else(|| anyhow!("Last indent must be exist"))?
-                .clone();
+            return self.process_indent_like()?;
         }
 
         Ok(Token {
@@ -111,6 +104,54 @@ where
             start: None,
             end: None,
         })
+    }
+
+    fn process_indent_like(&mut self) -> Result<()> {
+        let mut num_space = 0usize;
+        loop {
+            let Some(ch) = self.reader.read(0)? else {
+                break;
+            };
+
+            if ch == ' ' {
+                num_space += 1;
+                self.reader.pop()?;
+            } else {
+                break;
+            }
+        }
+
+        Ok(())
+    }
+
+    fn consume(&mut self) -> Result<()> {
+        let Some(ch) = self.reader.read(0)? else {
+            bail!("Must be called when there is a current value");
+        };
+
+        let mut pos = self.pos.clone();
+        pos.index += 1;
+
+        if ch == '\r' || ch == '\n' {
+            pos.line += 1;
+            pos.column = 1;
+        }
+
+        let mut num_pop = 1usize;
+        if ch == '\r' {
+            if let Some(ch) = self.reader.read(1)? {
+                if ch == '\n' {
+                    num_pop += 1;
+                }
+            }
+        }
+
+        for _ in 0..num_pop {
+            self.reader.pop()?;
+        }
+
+        self.pos = pos;
+        Ok(())
     }
 }
 
