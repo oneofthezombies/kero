@@ -154,6 +154,9 @@ where
     }
 
     fn process_name_or_keyword(&mut self, byte: u8) -> Result<()> {
+        debug_assert!(
+            (b'a' <= byte && byte <= b'z') || (b'A' <= byte && byte <= b'Z') || byte == b'_'
+        );
         todo!();
     }
 
@@ -162,6 +165,8 @@ where
     }
 
     fn process_indent_or_dedent(&mut self) -> Result<()> {
+        debug_assert!(self.paren_count == 0);
+
         let string_start = self.byte_offset;
         let position_start = self.position.clone();
         let mut space_count = 0;
@@ -190,8 +195,13 @@ where
         }
 
         if space_count > last_space_count {
+            self.indent_stack.push(space_count);
             self.push_info(TokenKind::Indent, string_start, position_start);
         } else if space_count < last_space_count {
+            let Some(_) = self.indent_stack.pop() else {
+                bail!("Must have last indent present");
+            };
+
             self.push_info(TokenKind::Dedent, string_start, position_start);
         }
 
@@ -199,6 +209,8 @@ where
     }
 
     fn process_newline_or_nl(&mut self, byte: u8) -> Result<()> {
+        debug_assert!(byte == b'\r' || byte == b'\n');
+
         let string_start = self.byte_offset;
         let position_start = self.position.clone();
 
