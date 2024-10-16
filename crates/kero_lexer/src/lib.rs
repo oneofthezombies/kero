@@ -112,7 +112,9 @@ where
     fn read_line(&mut self) -> Result<()> {
         let line_start = self.byte_offset;
         let info_start_index = self.info_queue.len();
-        self.process_indent_or_dedent()?;
+        if self.paren_count == 0 {
+            self.process_indent_or_dedent()?;
+        }
 
         loop {
             let Some(point) = self.lookahead(0)? else {
