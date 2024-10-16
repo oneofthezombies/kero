@@ -5,6 +5,8 @@
     "esbenp.prettier-vscode",
     "editorconfig.editorconfig",
     "streetsidesoftware.code-spell-checker",
-    "usernamehw.errorlens"
+    "usernamehw.errorlens",
+    "ms-python.python",
+    "ms-python.black-formatter"
   ]
 }

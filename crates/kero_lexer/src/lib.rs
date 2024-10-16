@@ -1,61 +1,71 @@
 mod utf8;
 mod utils;
 
-use crate::utf8::Utf8CharWindowBufReader;
+use std::{collections::VecDeque, io::Read};
+
 use anyhow::{anyhow, bail, Result};
 use kero_trie::Trie;
-use std::io::{BufRead, BufReader, Read};
+use utf8::unchecked::{CodePoint, Reader};
 
 #[derive(Debug, PartialEq)]
 enum TokenKind {
     Eof,
+    Newline,
+    Nl,
+    Indent,
+    Dedent,
+    // Identifier,
+    // Number,
+    // String,
 
-    Identifier,
-    Number,
-    String,
+    // // Keywords
+    // As,     // as
+    // From,   // from
+    // Import, // import
+    // True,   // True
+    // False,  // False
+    // None,   // None
 
-    // Keywords
-    As,     // as
-    From,   // from
-    Import, // import
-    True,   // True
-    False,  // False
-    None,   // None
-
-    // Symbols
-    Asterisk, // *
-    Colon,    // :
-    Equal,    // =
-    LParen,   // (
-    RParen,   // )
-    Indent,   // Indent 4 spaces beyond the line above.
-    Dedent,   // Dedent 4 spaces beyond the line above.
-    Minus,    // -
-    Plus,     // +
+    // // Symbols
+    // Asterisk, // *
+    // Colon,    // :
+    // Equal,    // =
+    // LParen,   // (
+    // RParen,   // )
+    // Minus,    // -
+    // Plus,     // +
 }
 
 #[derive(Debug)]
-struct Token {
-    kind: TokenKind,
-    start: Option<Position>, // inclusive
-    end: Option<Position>,   // exclusive
+struct ByteRange {
+    start: usize, // inclusive
+    end: usize,   // exclusive
 }
 
 #[derive(Debug, Clone)]
 struct Position {
-    index: usize,
     line: usize,
     column: usize,
 }
 
 impl Position {
     fn new() -> Self {
-        Self {
-            index: 0,
-            line: 1,
-            column: 1,
-        }
+        Self { line: 1, column: 0 }
     }
+}
+
+#[derive(Debug, Clone)]
+struct PositionRange {
+    start: Position, // inclusive
+    end: Position,   // exclusive
+}
+
+#[derive(Debug)]
+struct TokenInfo {
+    kind: TokenKind,
+    string_range: ByteRange,
+    position_range: PositionRange,
+    line_range: ByteRange,
 }
 
 struct Lexer<'a, R>
@@ -63,9 +73,13 @@ where
     R: Read,
 {
     keywords: &'a Trie<char>,
-    reader: Utf8CharWindowBufReader<R>,
-    indents: Vec<usize>,
-    pos: Position,
+    reader: Reader<R>,
+    indent_stack: Vec<usize>,
+    paren_count: usize,
+    byte_offset: usize,
+    position: Position,
+    point_queue: VecDeque<CodePoint>,
+    info_queue: VecDeque<TokenInfo>,
 }
 
 impl<'a, R> Lexer<'a, R>
@@ -75,83 +89,181 @@ where
     pub fn new(keywords: &'a Trie<char>, reader: R) -> Lexer<'a, R> {
         Lexer {
             keywords,
-            reader: Utf8CharWindowBufReader::new(reader),
-            indents: vec![0],
-            pos: Position::new(),
+            reader: Reader::new(reader),
+            indent_stack: vec![0],
+            paren_count: 0,
+            position: Position::new(),
+            info_queue: VecDeque::<TokenInfo>::new(),
+            byte_offset: 0,
+            point_queue: VecDeque::<CodePoint>::new(),
         }
     }
 
-    pub fn next(&mut self) -> Result<Token> {
-        let cur = self.reader.read(0)?;
-        let is_cond_of_eof = cur.is_none();
-        if is_cond_of_eof {
-            return Ok(Token {
-                kind: TokenKind::Eof,
-                start: Some(self.pos.clone()),
-                end: None,
-            });
-        }
-
-        let ch = cur.ok_or_else(|| anyhow!("Must ch exist after checking EOF"))?;
-        let is_cond_of_indent_like = self.pos.column == 1;
-        if is_cond_of_indent_like {
-            return self.process_indent_like()?;
-        }
-
-        Ok(Token {
-            kind: TokenKind::Eof,
-            start: None,
-            end: None,
-        })
-    }
-
-    fn process_indent_like(&mut self) -> Result<()> {
-        let mut num_space = 0usize;
+    pub fn next(&mut self) -> Result<TokenInfo> {
         loop {
-            let Some(ch) = self.reader.read(0)? else {
+            if let Some(info) = self.info_queue.pop_front() {
+                return Ok(info);
+            }
+
+            self.read_line()?;
+        }
+    }
+
+    fn read_line(&mut self) -> Result<()> {
+        let line_start = self.byte_offset;
+        let info_start_index = self.info_queue.len();
+        self.process_indent_or_dedent()?;
+
+        loop {
+            let Some(point) = self.lookahead(0)? else {
+                self.push_info(TokenKind::Eof, self.byte_offset, self.position.clone());
                 break;
             };
 
-            if ch != ' ' {
+            match point {
+                CodePoint::B1(b) => {
+                    if b == b'\r' || b == b'\n' {
+                        self.process_newline_or_nl(b)?;
+                        break;
+                    } else if (b'a' <= b && b <= b'z') || (b'A' <= b && b <= b'Z') || b == b'_' {
+                        self.process_name_or_keyword(b)?;
+                    }
+                }
+                CodePoint::B2(bs) => self.process_name(&bs)?,
+                CodePoint::B3(bs) => self.process_name(&bs)?,
+                CodePoint::B4(bs) => self.process_name(&bs)?,
+            }
+        }
+
+        self.process_line_range(info_start_index, line_start)?;
+        Ok(())
+    }
+
+    fn process_line_range(&mut self, info_start_index: usize, line_start: usize) -> Result<()> {
+        for i in info_start_index..self.info_queue.len() {
+            let Some(info) = self.info_queue.get_mut(i) else {
+                bail!("Must have info present");
+            };
+
+            info.line_range.start = line_start;
+            info.line_range.end = self.byte_offset;
+        }
+        Ok(())
+    }
+
+    fn process_name_or_keyword(&mut self, byte: u8) -> Result<()> {
+        todo!();
+    }
+
+    fn process_name(&mut self, bytes: &[u8]) -> Result<()> {
+        todo!();
+    }
+
+    fn process_indent_or_dedent(&mut self) -> Result<()> {
+        let string_start = self.byte_offset;
+        let position_start = self.position.clone();
+        let mut space_count = 0;
+        loop {
+            let Some(point) = self.lookahead(space_count)? else {
+                break;
+            };
+
+            let CodePoint::B1(b) = point else {
+                break;
+            };
+
+            if b != b' ' {
                 break;
             }
 
-            num_space += 1;
-            self.reader.pop()?;
+            space_count += 1;
+        }
+
+        let Some(last_space_count) = self.indent_stack.last().cloned() else {
+            bail!("Must have last indent present");
+        };
+
+        for _ in 0..=space_count {
+            self.consume()?;
+        }
+
+        if space_count > last_space_count {
+            self.push_info(TokenKind::Indent, string_start, position_start);
+        } else if space_count < last_space_count {
+            self.push_info(TokenKind::Dedent, string_start, position_start);
         }
 
         Ok(())
     }
 
-    fn consume(&mut self) -> Result<()> {
-        let Some(ch) = self.reader.read(0)? else {
-            bail!("Must be called when there is a current value");
-        };
+    fn process_newline_or_nl(&mut self, byte: u8) -> Result<()> {
+        let string_start = self.byte_offset;
+        let position_start = self.position.clone();
 
-        let mut pos = self.pos.clone();
-        pos.index += 1;
+        self.position.line += 1;
+        self.position.column = 0;
+        self.consume()?;
 
-        if ch == '\r' || ch == '\n' {
-            pos.line += 1;
-            pos.column = 1;
-        } else {
-            pos.column += 1;
-        }
-
-        let mut num_pop = 1usize;
-        if ch == '\r' {
-            if let Some(ch) = self.reader.read(1)? {
-                if ch == '\n' {
-                    num_pop += 1;
+        if byte == b'\r' {
+            if let Some(next_point) = self.lookahead(1)? {
+                if let CodePoint::B1(next_byte) = next_point {
+                    if next_byte == b'\n' {
+                        self.consume()?;
+                    }
                 }
             }
         }
 
-        for _ in 0..num_pop {
-            self.reader.pop()?;
-        }
+        self.push_info(
+            if self.paren_count > 0 {
+                TokenKind::Nl
+            } else {
+                TokenKind::Newline
+            },
+            string_start,
+            position_start,
+        );
+        Ok(())
+    }
 
-        self.pos = pos;
+    fn push_info(&mut self, kind: TokenKind, string_start: usize, position_start: Position) {
+        self.info_queue.push_back(TokenInfo {
+            kind,
+            string_range: ByteRange {
+                start: string_start,
+                end: self.byte_offset,
+            },
+            position_range: PositionRange {
+                start: position_start,
+                end: self.position.clone(),
+            },
+            line_range: ByteRange {
+                start: 0, // set at the end of read_line
+                end: 0,   // set at the end of read_line
+            },
+        });
+    }
+
+    fn lookahead(&mut self, offset: usize) -> Result<Option<CodePoint>> {
+        loop {
+            if let Some(point) = self.point_queue.get(offset) {
+                return Ok(Some(point.clone()));
+            }
+
+            let Some(point) = self.reader.read()? else {
+                return Ok(None);
+            };
+
+            self.point_queue.push_back(point);
+        }
+    }
+
+    fn consume(&mut self) -> Result<()> {
+        let Some(point) = self.point_queue.pop_front() else {
+            bail!("Must be called when there is an point");
+        };
+
+        self.byte_offset += point.len();
         Ok(())
     }
 }
@@ -163,13 +275,5 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_lexer() {
-        let text = r#"123"#;
-        let mut reader = BufReader::new(text.as_bytes());
-        let trie = TrieBuilder::<char>::new().build();
-        let mut lexer = Lexer::new(&trie, &mut reader);
-        let result = lexer.next();
-        let error = result.unwrap_err();
-        println!("@ {}", error.backtrace());
-    }
+    fn test_lexer() {}
 }

@@ -15,5 +15,9 @@
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.formatOnSave": true
   },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
   "cSpell.words": ["Deque", "embeddable", "oneofthezombies", "webp"]
 }
