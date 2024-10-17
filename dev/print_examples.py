@@ -14,3 +14,11 @@ print_example(b"")
 print_example(b"\r")
 print_example(b"\n")
 print_example(b"\r\n")
+print_example(b"#")
+print_example(b"#\n")
+print_example(b"\\\na")
+print_example(b"\\\na#")
+print_example(
+    b"""'''
+'''"""
+)

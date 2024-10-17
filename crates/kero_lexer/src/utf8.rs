@@ -130,57 +130,71 @@ pub mod unchecked {
         }
     }
 
-    pub struct LookaheadBufReader<R> {
-        inner: Reader<R>,
-        buf: VecDeque<CodePoint>,
-        offset: usize,
-    }
+    // pub struct StreamBufReader<R> {
+    //     inner: Reader<R>,
+    //     buf: VecDeque<CodePoint>,
+    //     offset: usize,
+    //     previous_capacity: usize,
+    //     previous_length: usize,
+    // }
 
-    impl<R> LookaheadBufReader<R>
-    where
-        R: Read,
-    {
-        pub fn new(inner: R) -> Self {
-            Self {
-                inner: Reader::new(inner),
-                buf: VecDeque::<CodePoint>::new(),
-                offset: 0,
-            }
-        }
+    // const DEFAULT_PREVIOUS_CAPACITY: usize = 1;
 
-        pub fn lookahead(&mut self, offset: usize) -> Result<Option<CodePoint>> {
-            loop {
-                if let Some(point) = self.buf.get(offset) {
-                    return Ok(Some(point.clone()));
-                }
+    // impl<R> StreamBufReader<R>
+    // where
+    //     R: Read,
+    // {
+    //     pub fn new(inner: R) -> Self {
+    //         Self::with_previous_capacity(inner, DEFAULT_PREVIOUS_CAPACITY)
+    //     }
 
-                let Some(point) = self.inner.read()? else {
-                    return Ok(None);
-                };
+    //     pub fn with_previous_capacity(inner: R, capacity: usize) -> Self {
+    //         Self {
+    //             inner: Reader::new(inner),
+    //             buf: VecDeque::<CodePoint>::new(),
+    //             byte_offset: 0,
+    //             previous_capacity: capacity,
+    //             previous_length: 0,
+    //         }
+    //     }
 
-                self.buf.push_back(point);
-            }
-        }
+    //     pub fn lookahead(&mut self, offset: usize) -> Result<Option<CodePoint>> {
+    //         loop {
+    //             if let Some(point) = self.buf.get(offset) {
+    //                 return Ok(Some(point.clone()));
+    //             }
 
-        pub fn advance(&mut self, amount: usize) -> Result<()> {
-            if amount > self.buf.len() {
-                bail!("Must be less than or equal to the length of the buffer");
-            }
+    //             let Some(point) = self.inner.read()? else {
+    //                 return Ok(None);
+    //             };
 
-            for _ in 0..amount {
-                let Some(point) = self.buf.pop_front() else {
-                    bail!("Must contain the element");
-                };
+    //             self.buf.push_back(point);
+    //         }
+    //     }
 
-                self.offset += point.len();
-            }
-            Ok(())
-        }
+    //     pub fn advance(&mut self, amount: usize) -> Result<()> {
+    //         if amount > self.buf.len() {
+    //             bail!("Must be less than or equal to the length of the buffer");
+    //         }
 
-        pub fn offset(&self) -> usize {
-            self.offset
-        }
-    }
+    //         for _ in 0..amount {
+    //             let Some(point) = self.buf.pop_front() else {
+    //                 bail!("Must contain the element");
+    //             };
+
+    //             self.byte_offset += point.len();
+    //         }
+    //         Ok(())
+    //     }
+
+    //     pub fn byte_offset(&self) -> usize {
+    //         self.byte_offset
+    //     }
+
+    //     fn get(&mut self, offset: isize) -> Result<CodePoint> {
+    //         todo!();
+    //     }
+    // }
 }
 
 pub mod checked {
