@@ -358,7 +358,45 @@ mod tests {
     }
 
     #[test]
-    fn nl_linefeed() {
+    fn nl_carriage_return() {
+        let builder = TrieBuilder::<u8>::new();
+        let keywords = builder.build();
+        let source = b"\n";
+        let mut lexer = Lexer::new(&keywords, source.as_slice());
+        let result = lexer.next();
+        let info = result.unwrap();
+        assert!(info.kind == TokenKind::Nl);
+        assert!(info.string_range.start == 0);
+        assert!(info.string_range.end == 0);
+        assert!(info.position_range.start.line == 1);
+        assert!(info.position_range.start.column == 0);
+        assert!(info.position_range.end.line == 1);
+        assert!(info.position_range.end.column == 0);
+        assert!(info.line_range.start == 0);
+        assert!(info.line_range.end == 0);
+    }
+
+    #[test]
+    fn nl_line_feed() {
+        let builder = TrieBuilder::<u8>::new();
+        let keywords = builder.build();
+        let source = b"\n";
+        let mut lexer = Lexer::new(&keywords, source.as_slice());
+        let result = lexer.next();
+        let info = result.unwrap();
+        assert!(info.kind == TokenKind::Nl);
+        assert!(info.string_range.start == 0);
+        assert!(info.string_range.end == 0);
+        assert!(info.position_range.start.line == 1);
+        assert!(info.position_range.start.column == 0);
+        assert!(info.position_range.end.line == 1);
+        assert!(info.position_range.end.column == 0);
+        assert!(info.line_range.start == 0);
+        assert!(info.line_range.end == 0);
+    }
+
+    #[test]
+    fn nl_carriage_return_line_feed() {
         let builder = TrieBuilder::<u8>::new();
         let keywords = builder.build();
         let source = b"\n";
