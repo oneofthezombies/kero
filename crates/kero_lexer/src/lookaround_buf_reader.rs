@@ -57,7 +57,7 @@ where
 
     pub fn advance(&mut self, offset: isize) -> Result<()> {
         if offset >= 0 {
-            if offset as usize > self.get_lookahead_length() {
+            if offset as usize > self.lookahead_length() {
                 bail!("Must be less than or equal to the lookahead length");
             }
 
@@ -99,23 +99,23 @@ where
         Ok(v)
     }
 
-    pub fn get_total_offset(&self) -> usize {
+    pub fn total_offset(&self) -> usize {
         self.total_offset
     }
 
-    pub fn get_lookbehind_length(&self) -> usize {
+    pub fn lookbehind_length(&self) -> usize {
         self.lookbehind_length
     }
 
-    pub fn get_lookbehind_capacity(&self) -> usize {
+    pub fn lookbehind_capacity(&self) -> usize {
         self.lookbehind_capacity
     }
 
-    pub fn get_lookahead_length(&self) -> usize {
+    pub fn lookahead_length(&self) -> usize {
         self.buf.len() - self.lookbehind_length
     }
 
-    pub fn get_buffer_length(&self) -> usize {
+    pub fn buffer_length(&self) -> usize {
         self.buf.len()
     }
 }
@@ -130,11 +130,11 @@ mod tests {
         let mut reader = LookaroundBufReader::new(source.as_slice());
         let result = reader.read(0);
         assert!(result.unwrap().is_none());
-        assert!(reader.get_buffer_length() == 0);
-        assert!(reader.get_lookahead_length() == 0);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 0);
+        assert!(reader.lookahead_length() == 0);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -143,11 +143,11 @@ mod tests {
         let mut reader = LookaroundBufReader::new(source.as_slice());
         let result = reader.read(1);
         assert!(result.unwrap().is_none());
-        assert!(reader.get_buffer_length() == 0);
-        assert!(reader.get_lookahead_length() == 0);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 0);
+        assert!(reader.lookahead_length() == 0);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -162,11 +162,11 @@ mod tests {
             let result = reader.read(0);
             assert!(result.unwrap().is_none());
         }
-        assert!(reader.get_buffer_length() == 0);
-        assert!(reader.get_lookahead_length() == 0);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 0);
+        assert!(reader.lookahead_length() == 0);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -175,11 +175,11 @@ mod tests {
         let mut reader = LookaroundBufReader::new(source.as_slice());
         let result = reader.read(0);
         assert!(result.unwrap().unwrap() == b'a');
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 1);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 1);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -194,11 +194,11 @@ mod tests {
             let result = reader.read(0);
             assert!(result.unwrap().unwrap() == b'a');
         }
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 1);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 1);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -207,11 +207,11 @@ mod tests {
         let mut reader = LookaroundBufReader::new(source.as_slice());
         let result = reader.read(1);
         assert!(result.unwrap().is_none());
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 1);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 1);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -220,11 +220,11 @@ mod tests {
         let mut reader = LookaroundBufReader::new(source.as_slice());
         let result = reader.read(2);
         assert!(result.unwrap().is_none());
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 1);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 1);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -239,11 +239,11 @@ mod tests {
             let result = reader.advance(0);
             assert!(result.is_ok());
         }
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 1);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 1);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -262,11 +262,11 @@ mod tests {
             let result = reader.read(0);
             assert!(result.unwrap().is_none());
         }
-        assert!(reader.get_buffer_length() == 0);
-        assert!(reader.get_lookahead_length() == 0);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 1);
+        assert!(reader.buffer_length() == 0);
+        assert!(reader.lookahead_length() == 0);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 1);
     }
 
     #[test]
@@ -281,11 +281,11 @@ mod tests {
             let result = reader.advance(2);
             assert!(result.is_err());
         }
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 1);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 1);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -300,11 +300,11 @@ mod tests {
             let result = reader.advance(-1);
             assert!(result.is_err());
         }
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 1);
-        assert!(reader.get_lookbehind_capacity() == 0);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 1);
+        assert!(reader.lookbehind_capacity() == 0);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 
     #[test]
@@ -319,11 +319,11 @@ mod tests {
             let result = reader.advance(1);
             assert!(result.is_ok());
         }
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 0);
-        assert!(reader.get_lookbehind_capacity() == 1);
-        assert!(reader.get_lookbehind_length() == 1);
-        assert!(reader.get_total_offset() == 1);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 0);
+        assert!(reader.lookbehind_capacity() == 1);
+        assert!(reader.lookbehind_length() == 1);
+        assert!(reader.total_offset() == 1);
     }
 
     #[test]
@@ -342,10 +342,10 @@ mod tests {
             let result = reader.advance(-1);
             assert!(result.is_ok());
         }
-        assert!(reader.get_buffer_length() == 1);
-        assert!(reader.get_lookahead_length() == 1);
-        assert!(reader.get_lookbehind_capacity() == 1);
-        assert!(reader.get_lookbehind_length() == 0);
-        assert!(reader.get_total_offset() == 0);
+        assert!(reader.buffer_length() == 1);
+        assert!(reader.lookahead_length() == 1);
+        assert!(reader.lookbehind_capacity() == 1);
+        assert!(reader.lookbehind_length() == 0);
+        assert!(reader.total_offset() == 0);
     }
 }

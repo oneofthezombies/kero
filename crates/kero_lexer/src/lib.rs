@@ -1,412 +1,148 @@
+mod core;
+mod line_scanner;
 mod lookaround_buf_reader;
+mod string_scanner;
 mod utf8;
 
+use crate::{
+    core::TokenInfoPtr, line_scanner::LineScanner, lookaround_buf_reader::LookaroundBufReader,
+};
 use anyhow::{bail, Result};
+use core::Scanner;
 use kero_trie::Trie;
-use lookaround_buf_reader::LookaroundBufReader;
 use std::{collections::VecDeque, io::Read};
 use unicode_ident::is_xid_start;
 
-#[derive(Debug, PartialEq)]
-enum TokenKind {
-    Endmarker, // EOF
-    Newline,
-    Nl,
-    Indent,
-    Dedent,
-    Comment, // #
+pub(crate) struct LexerContext<'ke, R> {
+    pub(crate) keywords: &'ke Trie<u8>,
+    pub(crate) reader: LookaroundBufReader<R>,
+    pub(crate) info_queue: VecDeque<TokenInfoPtr>,
+    pub(crate) indent_stack: Vec<usize>,
+    pub(crate) bracket_level: usize,
+    pub(crate) line: usize,
+    pub(crate) is_processed_endmarker: bool,
 }
 
-#[derive(Debug)]
-struct ByteRange {
-    start: usize, // inclusive
-    end: usize,   // exclusive
+struct Lexer<'ke, R> {
+    ctx: LexerContext<'ke, R>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-struct Position {
-    line: usize,
-    column: usize,
-}
-
-impl Position {
-    fn new() -> Self {
-        Self { line: 1, column: 0 }
-    }
-}
-
-#[derive(Debug)]
-struct PositionRange {
-    start: Position, // inclusive
-    end: Position,   // exclusive
-}
-
-#[derive(Debug)]
-struct TokenInfo {
-    kind: TokenKind,
-    string_range: ByteRange,
-    position_range: PositionRange,
-    line_range: ByteRange,
-}
-
-type TokenInfoPtr = Box<TokenInfo>;
-
-#[derive(Debug)]
-struct LineContext {
-    info_start_index: usize,
-    line_start_offset: usize,
-    column: usize,
-    is_processed_nl_or_newline: bool,
-    is_processed_name_or_string: bool,
-}
-
-#[derive(Debug)]
-struct StringContext {
-    string_start_offset: usize,
-    position_start: Position,
-}
-
-struct Lexer<'a, R>
+impl<'ke, R> Lexer<'ke, R>
 where
     R: Read,
 {
-    keywords: &'a Trie<u8>,
-    reader: LookaroundBufReader<R>,
-    info_queue: VecDeque<TokenInfoPtr>,
-    indent_stack: Vec<usize>,
-    bracket_level: usize,
-    line: usize,
-    is_processed_endmarker: bool,
-}
-
-impl<'a, R> Lexer<'a, R>
-where
-    R: Read,
-{
-    pub fn new(keywords: &'a Trie<u8>, reader: R) -> Lexer<'a, R> {
+    pub fn new(keywords: &'ke Trie<u8>, reader: R) -> Lexer<'ke, R> {
         Lexer {
-            keywords,
-            reader: LookaroundBufReader::with_lookbehind_capacity(reader, 1),
-            indent_stack: vec![0],
-            bracket_level: 0,
-            line: 1,
-            info_queue: VecDeque::<TokenInfoPtr>::new(),
-            is_processed_endmarker: false,
+            ctx: LexerContext {
+                keywords,
+                reader: LookaroundBufReader::with_lookbehind_capacity(reader, 1),
+                indent_stack: vec![0],
+                bracket_level: 0,
+                line: 1,
+                info_queue: VecDeque::<TokenInfoPtr>::new(),
+                is_processed_endmarker: false,
+            },
         }
     }
 
     pub fn next(&mut self) -> Result<TokenInfoPtr> {
         loop {
-            if let Some(info) = self.info_queue.pop_front() {
-                return Ok(info);
-            }
+            // if let Some(info) = self.info_queue.pop_front() {
+            //     return Ok(info);
+            // }
 
-            if self.is_processed_endmarker {
-                bail!("All tokens have already been processed");
-            }
+            // if self.is_processed_endmarker {
+            //     bail!("All tokens have already been processed");
+            // }
 
-            self.parse_line()?;
+            LineScanner::new(&mut self.ctx).scan()?;
         }
     }
 
-    fn parse_line(&mut self) -> Result<()> {
-        let mut line_ctx = self.create_line_context();
-        loop {
-            if self.is_start_of_endmarker()? {
-                self.process_endmarker(&mut line_ctx)?;
-                break;
-            } else if self.is_start_of_nl_or_newline()? {
-                self.process_nl_or_newline(&mut line_ctx)?;
-                break;
-            } else if self.is_start_of_comment()? {
-                self.process_comment(&mut line_ctx)?;
-            } else {
-                todo!();
-            }
-        }
-        self.update_line_range_end(&line_ctx)?;
-        Ok(())
-    }
-
-    fn create_line_context(&self) -> LineContext {
-        LineContext {
-            info_start_index: self.info_queue.len(),
-            line_start_offset: self.reader.get_total_offset(),
-            column: 0,
-            is_processed_name_or_string: false,
-            is_processed_nl_or_newline: false,
-        }
-    }
-
-    fn create_string_context(&self, line_ctx: &LineContext) -> StringContext {
-        StringContext {
-            string_start_offset: self.reader.get_total_offset(),
-            position_start: Position {
-                line: self.line,
-                column: line_ctx.column,
-            },
-        }
-    }
-
-    fn update_line_range_end(&mut self, line_ctx: &LineContext) -> Result<()> {
-        for i in line_ctx.info_start_index..self.info_queue.len() {
-            let Some(info) = self.info_queue.get_mut(i) else {
-                bail!("Must have a info present");
-            };
-            info.line_range.end = self.reader.get_total_offset();
-        }
-        Ok(())
-    }
-
-    fn push_info(&mut self, line_ctx: &LineContext, str_ctx: &StringContext, kind: TokenKind) {
-        self.info_queue.push_back(Box::new(TokenInfo {
-            kind,
-            string_range: ByteRange {
-                start: str_ctx.string_start_offset,
-                end: self.reader.get_total_offset(),
-            },
-            position_range: PositionRange {
-                start: str_ctx.position_start.clone(),
-                end: Position {
-                    line: self.line,
-                    column: line_ctx.column,
-                },
-            },
-            line_range: ByteRange {
-                start: line_ctx.line_start_offset,
-                end: 0, // set on update_line_range_end
-            },
-        }));
-    }
-
-    fn is_start_of_comment(&mut self) -> Result<bool> {
-        let Some(current) = self.reader.read(0)? else {
-            return Ok(false);
-        };
-
-        Ok(current == b'#')
-    }
-
-    fn process_comment(&mut self, line_ctx: &mut LineContext) -> Result<()> {
-        debug_assert!(self.is_start_of_comment()?);
-
-        let str_ctx = self.create_string_context(line_ctx);
-        self.advance(line_ctx, 1)?;
-
-        loop {
-            if self.is_eof()? {
-                break;
-            }
-
-            if self.is_line_separator()? {
-                break;
-            }
-
-            self.advance(line_ctx, 1)?;
-        }
-
-        self.push_info(&line_ctx, &str_ctx, TokenKind::Comment);
-        Ok(())
-    }
-
-    fn is_eof(&mut self) -> Result<bool> {
-        let Some(_) = self.reader.read(0)? else {
-            return Ok(true);
-        };
-
-        Ok(false)
-    }
-
-    fn is_line_separator(&mut self) -> Result<bool> {
-        let Some(current) = self.reader.read(0)? else {
-            return Ok(false);
-        };
-
-        Ok(current == b'\r' || current == b'\n')
-    }
-
-    fn is_start_of_endmarker(&mut self) -> Result<bool> {
-        self.is_eof()
-    }
-
-    fn process_endmarker(&mut self, line_ctx: &mut LineContext) -> Result<()> {
-        debug_assert!(self.is_start_of_endmarker()?);
-
-        let has_info_in_line = line_ctx.line_start_offset < self.info_queue.len();
-        if has_info_in_line {
-            if !line_ctx.is_processed_nl_or_newline {
-                let str_ctx = self.create_string_context(line_ctx);
-                line_ctx.column += 1;
-                self.push_info_nl_or_newline(
-                    line_ctx,
-                    &str_ctx,
-                    if line_ctx.is_processed_name_or_string {
-                        TokenKind::Newline
-                    } else {
-                        TokenKind::Nl
-                    },
-                );
-            }
-        }
-
-        let line_ctx = self.create_line_context();
-        let str_ctx = self.create_string_context(&line_ctx);
-        self.push_info(&line_ctx, &str_ctx, TokenKind::Endmarker);
-        self.is_processed_endmarker = true;
-        Ok(())
-    }
-
-    // fn is_start_of_indent_or_dedent(&self) -> bool {
-    //     self.paren_count == 0
-    // }
-
-    // fn parse_indent_or_dedent(&mut self) -> Result<()> {
-    //     debug_assert!(self.is_start_of_indent_or_dedent());
-
-    //     let string_start = self.reader.get_total_offset();
-    //     let position_start = self.position.clone();
-    //     let mut space_count = 0;
-    //     loop {
-    //         let Some(point) = self.reader.read(space_count)? else {
-    //             break;
-    //         };
-
-    //         let CodePoint::B1(b) = point else {
-    //             break;
-    //         };
-
-    //         if b != b' ' {
-    //             break;
-    //         }
-
-    //         space_count += 1;
-    //     }
-
-    //     let Some(last_space_count) = self.indent_stack.last().cloned() else {
-    //         bail!("Must have last indent present");
-    //     };
-
-    //     for _ in 0..space_count {
-    //         self.reader.advance(1)?;
-    //     }
-
-    //     if space_count > last_space_count {
-    //         self.indent_stack.push(space_count);
-    //         self.push_info(TokenKind::Indent, string_start, position_start)
-    //     } else if space_count < last_space_count {
-    //         let Some(_) = self.indent_stack.pop() else {
-    //             bail!("Must have last indent present");
-    //         };
-
-    //         self.push_info(TokenKind::Dedent, string_start, position_start)
-    //     }
+    // fn advance(&mut self, line_ctx: &mut LineContext, offset: usize) -> Result<()> {
+    //     self.reader.advance(offset.try_into()?)?;
+    //     line_ctx.column += offset;
     //     Ok(())
-    // }
-
-    fn is_start_of_nl_or_newline(&mut self) -> Result<bool> {
-        self.is_line_separator()
-    }
-
-    fn process_nl_or_newline(&mut self, line_ctx: &mut LineContext) -> Result<()> {
-        debug_assert!(self.is_start_of_nl_or_newline()?);
-
-        let str_ctx = self.create_string_context(line_ctx);
-        let Some(current) = self.reader.read(0)? else {
-            bail!("Must have a byte present");
-        };
-
-        self.advance(line_ctx, 1)?;
-
-        if current == b'\r' {
-            if let Some(next) = self.reader.read(1)? {
-                if next == b'\n' {
-                    self.advance(line_ctx, 1)?;
-                }
-            }
-        }
-
-        self.push_info_nl_or_newline(
-            line_ctx,
-            &str_ctx,
-            if line_ctx.is_processed_name_or_string {
-                TokenKind::Newline
-            } else {
-                TokenKind::Nl
-            },
-        );
-        Ok(())
-    }
-
-    fn push_info_nl_or_newline(
-        &mut self,
-        line_ctx: &mut LineContext,
-        str_ctx: &StringContext,
-        kind: TokenKind,
-    ) {
-        debug_assert!(kind == TokenKind::Nl || kind == TokenKind::Newline);
-
-        self.push_info(line_ctx, str_ctx, kind);
-        self.line += 1;
-        line_ctx.column = 0;
-    }
-
-    fn advance(&mut self, line_ctx: &mut LineContext, offset: usize) -> Result<()> {
-        self.reader.advance(offset.try_into()?)?;
-        line_ctx.column += offset;
-        Ok(())
-    }
-
-    // fn is_start_of_name_or_keyword(&mut self) -> Result<bool> {
-    //     let Some(point) = self.reader.lookahead(0)? else {
-    //         return Ok(false);
-    //     };
-
-    //     match point {
-    //         CodePoint::B1(b) => {
-    //             Ok((b'a' <= b && b <= b'z') || (b'A' <= b && b <= b'Z') || b == b'_')
-    //         }
-    //         CodePoint::B2(_) | CodePoint::B3(_) | CodePoint::B4(_) => {
-    //             let ch: char = point.try_into()?;
-    //             Ok(is_xid_start(ch))
-    //         }
-    //     }
-    // }
-
-    // fn parse_name_or_keyword(&mut self) -> Result<()> {
-    //     debug_assert!(self.is_start_of_name_or_keyword()?);
-    //     todo!();
     // }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::core::TokenKind;
     use kero_trie::TrieBuilder;
 
-    fn check_info(
-        source: &[u8],
-        info: &TokenInfo,
+    struct CheckInfo<'a> {
+        source: &'a [u8],
+        info: &'a TokenInfoPtr,
         kind: TokenKind,
-        (string_start, string_end): (usize, usize),
-        string: &[u8],
-        ((position_start_line, position_start_column), (position_end_line, position_end_column)): (
-            (usize, usize),
-            (usize, usize),
-        ),
-        (line_start, line_end): (usize, usize),
-        line: &[u8],
-    ) {
-        assert_eq!(info.kind, kind);
-        assert_eq!(info.string_range.start, string_start);
-        assert_eq!(info.string_range.end, string_end);
-        assert_eq!(&source[string_start..string_end], string);
-        assert_eq!(info.position_range.start.line, position_start_line);
-        assert_eq!(info.position_range.start.column, position_start_column);
-        assert_eq!(info.position_range.end.line, position_end_line);
-        assert_eq!(info.position_range.end.column, position_end_column);
-        assert_eq!(info.line_range.start, line_start);
-        assert_eq!(info.line_range.end, line_end);
-        assert_eq!(&source[line_start..line_end], line);
+        string_range: (usize, usize),
+        string: &'a [u8],
+        position_range: ((usize, usize), (usize, usize)),
+        line_range: (usize, usize),
+        line: &'a [u8],
+    }
+
+    fn check_info(check_info: CheckInfo) {
+        assert_eq!(
+            check_info.info.kind, check_info.kind,
+            "kind real: {:?} expected: {:?}",
+            check_info.info.kind, check_info.kind
+        );
+        assert_eq!(
+            check_info.info.string_range.start, check_info.string_range.0,
+            "string_range.start real: {} expected: {}",
+            check_info.info.string_range.start, check_info.string_range.0,
+        );
+        assert_eq!(
+            check_info.info.string_range.end, check_info.string_range.1,
+            "string_range.end real: {} expected: {}",
+            check_info.info.string_range.end, check_info.string_range.1,
+        );
+        assert_eq!(
+            &check_info.source[check_info.string_range.0..check_info.string_range.1],
+            check_info.string,
+            "string real: {:?} expected: {:?}",
+            &check_info.source[check_info.string_range.0..check_info.string_range.1],
+            check_info.string,
+        );
+        assert_eq!(
+            check_info.info.position_range.start.line, check_info.position_range.0 .0,
+            "position_range.start.line real: {} expected: {}",
+            check_info.info.position_range.start.line, check_info.position_range.0 .0,
+        );
+        assert_eq!(
+            check_info.info.position_range.start.column, check_info.position_range.0 .1,
+            "position_range.start.column real: {} expected: {}",
+            check_info.info.position_range.start.column, check_info.position_range.0 .1,
+        );
+        assert_eq!(
+            check_info.info.position_range.end.line, check_info.position_range.1 .0,
+            "position_range.end.line real: {} expected: {}",
+            check_info.info.position_range.end.line, check_info.position_range.1 .0,
+        );
+        assert_eq!(
+            check_info.info.position_range.end.column, check_info.position_range.1 .1,
+            "position_range.end.line real: {} expected: {}",
+            check_info.info.position_range.end.column, check_info.position_range.1 .1,
+        );
+        assert_eq!(
+            check_info.info.line_range.start, check_info.line_range.0,
+            "line_range.start real: {} expected: {}",
+            check_info.info.line_range.start, check_info.line_range.0,
+        );
+        assert_eq!(
+            check_info.info.line_range.end, check_info.line_range.1,
+            "line_range.end real: {} expected: {}",
+            check_info.info.line_range.end, check_info.line_range.1,
+        );
+        assert_eq!(
+            &check_info.source[check_info.line_range.0..check_info.line_range.1],
+            check_info.line,
+            "line real: {:?} expected: {:?}",
+            &check_info.source[check_info.line_range.0..check_info.line_range.1],
+            check_info.line,
+        );
     }
 
     #[test]
@@ -415,25 +151,17 @@ mod tests {
         let keywords = builder.build();
         let source = b"";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
-        let result = lexer.next();
-        let info = result.unwrap();
-        check_info(
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
             source,
-            info,
-            TokenKind::Endmarker,
-            (0, 0),
-            b"",
-            ((1, 0), (1, 0)),
-        );
-        assert!(info.kind == TokenKind::Endmarker);
-        assert!(info.string_range.start == 0);
-        assert!(info.string_range.end == 0);
-        assert!(info.position_range.start.line == 1);
-        assert!(info.position_range.start.column == 0);
-        assert!(info.position_range.end.line == 1);
-        assert!(info.position_range.end.column == 0);
-        assert!(info.line_range.start == 0);
-        assert!(info.line_range.end == 0);
+            info: &info,
+            kind: TokenKind::Endmarker,
+            string_range: (0, 0),
+            string: b"",
+            position_range: ((1, 0), (1, 0)),
+            line_range: (0, 0),
+            line: b"",
+        });
     }
 
     #[test]
@@ -443,30 +171,30 @@ mod tests {
         let source = b"\r";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
         {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Nl);
-            assert!(info.string_range.start == 0);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 1);
-            assert!(info.position_range.start.column == 0);
-            assert!(info.position_range.end.line == 1);
-            assert!(info.position_range.end.column == 1);
-            assert!(info.line_range.start == 0);
-            assert!(info.line_range.end == 1);
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Nl,
+                string_range: (0, 1),
+                string: b"\r",
+                position_range: ((1, 0), (1, 1)),
+                line_range: (0, 1),
+                line: b"\r",
+            });
         }
         {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Endmarker);
-            assert!(info.string_range.start == 1);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 2);
-            assert!(info.position_range.start.column == 0);
-            assert!(info.position_range.end.line == 2);
-            assert!(info.position_range.end.column == 0);
-            assert!(info.line_range.start == 1);
-            assert!(info.line_range.end == 1);
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Endmarker,
+                string_range: (1, 1),
+                string: b"",
+                position_range: ((2, 0), (2, 0)),
+                line_range: (1, 1),
+                line: b"",
+            });
         }
     }
 
@@ -477,30 +205,30 @@ mod tests {
         let source = b"\n";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
         {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Nl);
-            assert!(info.string_range.start == 0);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 1);
-            assert!(info.position_range.start.column == 0);
-            assert!(info.position_range.end.line == 1);
-            assert!(info.position_range.end.column == 1);
-            assert!(info.line_range.start == 0);
-            assert!(info.line_range.end == 1);
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Nl,
+                string_range: (0, 1),
+                string: b"\n",
+                position_range: ((1, 0), (1, 1)),
+                line_range: (0, 1),
+                line: b"\n",
+            });
         }
         {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Endmarker);
-            assert!(info.string_range.start == 1);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 2);
-            assert!(info.position_range.start.column == 0);
-            assert!(info.position_range.end.line == 2);
-            assert!(info.position_range.end.column == 0);
-            assert!(info.line_range.start == 1);
-            assert!(info.line_range.end == 1);
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Endmarker,
+                string_range: (1, 1),
+                string: b"",
+                position_range: ((2, 0), (2, 0)),
+                line_range: (1, 1),
+                line: b"",
+            });
         }
     }
 
@@ -508,33 +236,20 @@ mod tests {
     fn nl_carriage_return_line_feed() {
         let builder = TrieBuilder::<u8>::new();
         let keywords = builder.build();
-        let source = b"\n";
+        let source = b"\r\n";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
         {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Nl);
-            assert!(info.string_range.start == 0);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 1);
-            assert!(info.position_range.start.column == 0);
-            assert!(info.position_range.end.line == 1);
-            assert!(info.position_range.end.column == 1);
-            assert!(info.line_range.start == 0);
-            assert!(info.line_range.end == 1);
-        }
-        {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Endmarker);
-            assert!(info.string_range.start == 1);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 2);
-            assert!(info.position_range.start.column == 0);
-            assert!(info.position_range.end.line == 2);
-            assert!(info.position_range.end.column == 0);
-            assert!(info.line_range.start == 1);
-            assert!(info.line_range.end == 1);
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Nl,
+                string_range: (0, 2),
+                string: b"\r\n",
+                position_range: ((1, 0), (1, 2)),
+                line_range: (0, 2),
+                line: b"\r\n",
+            });
         }
     }
 
@@ -545,43 +260,184 @@ mod tests {
         let source = b"#";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
         {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Comment);
-            assert!(info.string_range.start == 0);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 1);
-            assert!(info.position_range.start.column == 0);
-            assert!(info.position_range.end.line == 1);
-            assert!(info.position_range.end.column == 1);
-            assert!(info.line_range.start == 0);
-            assert!(info.line_range.end == 1);
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Comment,
+                string_range: (0, 1),
+                string: b"#",
+                position_range: ((1, 0), (1, 1)),
+                line_range: (0, 1),
+                line: b"#",
+            });
         }
         {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Nl);
-            assert!(info.string_range.start == 1);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 1);
-            assert!(info.position_range.start.column == 1);
-            assert!(info.position_range.end.line == 1);
-            assert!(info.position_range.end.column == 2);
-            assert!(info.line_range.start == 0);
-            assert!(info.line_range.end == 1);
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Nl,
+                string_range: (1, 1),
+                string: b"",
+                position_range: ((1, 1), (1, 2)),
+                line_range: (0, 1),
+                line: b"#",
+            });
         }
         {
-            let result = lexer.next();
-            let info = result.unwrap();
-            assert!(info.kind == TokenKind::Endmarker);
-            assert!(info.string_range.start == 1);
-            assert!(info.string_range.end == 1);
-            assert!(info.position_range.start.line == 2);
-            assert!(info.position_range.start.column == 0);
-            assert!(info.position_range.end.line == 2);
-            assert!(info.position_range.end.column == 0);
-            assert!(info.line_range.start == 1);
-            assert!(info.line_range.end == 1);
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Endmarker,
+                string_range: (1, 1),
+                string: b"",
+                position_range: ((2, 0), (2, 0)),
+                line_range: (1, 1),
+                line: b"",
+            });
+        }
+    }
+
+    #[test]
+    fn comment_carriage_return() {
+        let builder = TrieBuilder::<u8>::new();
+        let keywords = builder.build();
+        let source = b"#\r";
+        let mut lexer = Lexer::new(&keywords, source.as_slice());
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Comment,
+                string_range: (0, 1),
+                string: b"#",
+                position_range: ((1, 0), (1, 1)),
+                line_range: (0, 2),
+                line: b"#\r",
+            });
+        }
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Nl,
+                string_range: (1, 2),
+                string: b"\r",
+                position_range: ((1, 1), (1, 2)),
+                line_range: (0, 2),
+                line: b"#\r",
+            });
+        }
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Endmarker,
+                string_range: (2, 2),
+                string: b"",
+                position_range: ((2, 0), (2, 0)),
+                line_range: (2, 2),
+                line: b"",
+            });
+        }
+    }
+
+    #[test]
+    fn comment_line_feed() {
+        let builder = TrieBuilder::<u8>::new();
+        let keywords = builder.build();
+        let source = b"#\n";
+        let mut lexer = Lexer::new(&keywords, source.as_slice());
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Comment,
+                string_range: (0, 1),
+                string: b"#",
+                position_range: ((1, 0), (1, 1)),
+                line_range: (0, 2),
+                line: b"#\n",
+            });
+        }
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Nl,
+                string_range: (1, 2),
+                string: b"\n",
+                position_range: ((1, 1), (1, 2)),
+                line_range: (0, 2),
+                line: b"#\n",
+            });
+        }
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Endmarker,
+                string_range: (2, 2),
+                string: b"",
+                position_range: ((2, 0), (2, 0)),
+                line_range: (2, 2),
+                line: b"",
+            });
+        }
+    }
+
+    #[test]
+    fn comment_carriage_return_line_feed() {
+        let builder = TrieBuilder::<u8>::new();
+        let keywords = builder.build();
+        let source = b"#\r\n";
+        let mut lexer = Lexer::new(&keywords, source.as_slice());
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Comment,
+                string_range: (0, 1),
+                string: b"#",
+                position_range: ((1, 0), (1, 1)),
+                line_range: (0, 3),
+                line: b"#\r\n",
+            });
+        }
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Nl,
+                string_range: (1, 3),
+                string: b"\r\n",
+                position_range: ((1, 1), (1, 3)),
+                line_range: (0, 3),
+                line: b"#\r\n",
+            });
+        }
+        {
+            let info = lexer.next().unwrap();
+            check_info(CheckInfo {
+                source,
+                info: &info,
+                kind: TokenKind::Endmarker,
+                string_range: (3, 3),
+                string: b"",
+                position_range: ((2, 0), (2, 0)),
+                line_range: (3, 3),
+                line: b"",
+            });
         }
     }
 }
