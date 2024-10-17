@@ -20,5 +20,7 @@ print_example(b"\\\na")
 print_example(b"\\\na#")
 print_example(
     b"""'''
-'''"""
+
+''' # a
+#"""
 )

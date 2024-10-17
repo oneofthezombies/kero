@@ -53,9 +53,17 @@ type TokenInfoPtr = Box<TokenInfo>;
 
 #[derive(Debug)]
 struct LineContext {
-    infos: Vec<TokenInfoPtr>,
+    info_start_index: usize,
     line_start_offset: usize,
     column: usize,
+    is_processed_nl_or_newline: bool,
+    is_processed_name_or_string: bool,
+}
+
+#[derive(Debug)]
+struct StringContext {
+    string_start_offset: usize,
+    position_start: Position,
 }
 
 struct Lexer<'a, R>
@@ -102,60 +110,69 @@ where
     }
 
     fn parse_line(&mut self) -> Result<()> {
-        let mut ctx = self.on_start_parse_line();
+        let mut line_ctx = self.create_line_context();
         loop {
             if self.is_start_of_endmarker()? {
-                self.process_endmarker(&mut ctx)?;
+                self.process_endmarker(&mut line_ctx)?;
                 break;
             } else if self.is_start_of_nl_or_newline()? {
-                self.process_nl_or_newline(&mut ctx)?;
+                self.process_nl_or_newline(&mut line_ctx)?;
                 break;
             } else {
                 todo!();
             }
         }
-        self.on_complete_parse_line(ctx);
+        self.update_line_range_end(&line_ctx)?;
         Ok(())
     }
 
-    fn on_start_parse_line(&self) -> LineContext {
-        return LineContext {
-            infos: vec![],
+    fn create_line_context(&self) -> LineContext {
+        LineContext {
+            info_start_index: self.info_queue.len(),
             line_start_offset: self.reader.get_total_offset(),
             column: 0,
-        };
+            is_processed_name_or_string: false,
+            is_processed_nl_or_newline: false,
+        }
     }
 
-    fn on_complete_parse_line(&mut self, mut ctx: LineContext) {
-        for info in &mut ctx.infos {
+    fn create_string_context(&self, line_ctx: &LineContext) -> StringContext {
+        StringContext {
+            string_start_offset: self.reader.get_total_offset(),
+            position_start: Position {
+                line: self.line,
+                column: line_ctx.column,
+            },
+        }
+    }
+
+    fn update_line_range_end(&mut self, line_ctx: &LineContext) -> Result<()> {
+        for i in line_ctx.info_start_index..self.info_queue.len() {
+            let Some(info) = self.info_queue.get_mut(i) else {
+                bail!("Must have a info present");
+            };
             info.line_range.end = self.reader.get_total_offset();
         }
-        self.info_queue.extend(ctx.infos.drain(..));
+        Ok(())
     }
 
-    fn push_info(
-        &self,
-        ctx: &mut LineContext,
-        kind: TokenKind,
-        string_start: usize,
-        position_start: Position,
-    ) {
-        ctx.infos.push(Box::new(TokenInfo {
+    fn push_info(&mut self, line_ctx: &LineContext, str_ctx: &StringContext, kind: TokenKind) {
+        self.info_queue.push_back(Box::new(TokenInfo {
             kind,
             string_range: ByteRange {
-                start: string_start,
+                start: str_ctx.string_start_offset,
                 end: self.reader.get_total_offset(),
             },
             position_range: PositionRange {
-                start: position_start,
+                start: str_ctx.position_start.clone(),
                 end: Position {
                     line: self.line,
-                    column: ctx.column,
+                    column: line_ctx.column,
                 },
             },
             line_range: ByteRange {
-                start: ctx.line_start_offset,
-                end: 0, // set at on_complete_parse_line
+                start: line_ctx.line_start_offset,
+                end: 0, // set on update_line_range_end
             },
         }));
     }
@@ -168,33 +185,29 @@ where
         Ok(false)
     }
 
-    fn process_endmarker(&mut self, ctx: &mut LineContext) -> Result<()> {
+    fn process_endmarker(&mut self, line_ctx: &mut LineContext) -> Result<()> {
         debug_assert!(self.is_start_of_endmarker()?);
 
-        if let Some(last) = ctx.infos.last() {
-            let is_line_end_token = last.kind == TokenKind::Nl || last.kind == TokenKind::Newline;
-            if !is_line_end_token {
-                ctx.column += 1;
+        let has_info_in_line = line_ctx.line_start_offset < self.info_queue.len();
+        if has_info_in_line {
+            if !line_ctx.is_processed_nl_or_newline {
+                line_ctx.column += 1;
+                let str_ctx = self.create_string_context(line_ctx);
                 self.push_info(
-                    ctx,
-                    TokenKind::Nl,
-                    last.string_range.end,
-                    last.position_range.end.clone(),
+                    &line_ctx,
+                    &str_ctx,
+                    if line_ctx.is_processed_name_or_string {
+                        TokenKind::Newline
+                    } else {
+                        TokenKind::Nl
+                    },
                 );
                 self.line += 1;
             }
         }
 
-        self.push_info(
-            ctx,
-            TokenKind::Endmarker,
-            self.reader.get_total_offset(),
-            Position {
-                line: self.line,
-                column: ctx.column,
-            },
-        );
-
+        let str_ctx = self.create_string_context(line_ctx);
+        self.push_info(&line_ctx, &str_ctx, TokenKind::Endmarker);
         self.is_processed_endmarker = true;
         Ok(())
     }
@@ -254,39 +267,37 @@ where
         Ok(current == b'\r' || current == b'\n')
     }
 
-    fn process_nl_or_newline(&mut self, ctx: &mut LineContext) -> Result<()> {
+    fn process_nl_or_newline(&mut self, line_ctx: &mut LineContext) -> Result<()> {
         debug_assert!(self.is_start_of_nl_or_newline()?);
 
         let Some(current) = self.reader.read(0)? else {
             bail!("Must have a byte present");
         };
 
-        let string_start = self.reader.get_total_offset();
-        let position_start = self.position.clone();
-
-        self.position.line += 1;
-        self.position.column = 0;
+        let str_ctx = self.create_string_context(line_ctx);
         self.reader.advance(1)?;
+        line_ctx.column += 1;
 
         if current == b'\r' {
             if let Some(next) = self.reader.read(1)? {
                 if next == b'\n' {
                     self.reader.advance(1)?;
+                    line_ctx.column += 1;
                 }
             }
         }
 
-        //     self.push_info(
-        //         if self.paren_count > 0 {
-        //             TokenKind::Nl
-        //         } else {
-        //             TokenKind::Newline
-        //         },
-        //         string_start,
-        //         position_start,
-        //     );
-        //     Ok(())
-        todo!();
+        self.push_info(
+            &line_ctx,
+            &str_ctx,
+            if line_ctx.is_processed_name_or_string {
+                TokenKind::Newline
+            } else {
+                TokenKind::Nl
+            },
+        );
+        self.line += 1;
+        Ok(())
     }
 
     // fn is_start_of_name_or_keyword(&mut self) -> Result<bool> {
@@ -339,19 +350,34 @@ mod tests {
     fn nl_carriage_return() {
         let builder = TrieBuilder::<u8>::new();
         let keywords = builder.build();
-        let source = b"\n";
+        let source = b"\r";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
-        let result = lexer.next();
-        let info = result.unwrap();
-        assert!(info.kind == TokenKind::Nl);
-        assert!(info.string_range.start == 0);
-        assert!(info.string_range.end == 0);
-        assert!(info.position_range.start.line == 1);
-        assert!(info.position_range.start.column == 0);
-        assert!(info.position_range.end.line == 1);
-        assert!(info.position_range.end.column == 0);
-        assert!(info.line_range.start == 0);
-        assert!(info.line_range.end == 0);
+        {
+            let result = lexer.next();
+            let info = result.unwrap();
+            assert!(info.kind == TokenKind::Nl);
+            assert!(info.string_range.start == 0);
+            assert!(info.string_range.end == 1);
+            assert!(info.position_range.start.line == 1);
+            assert!(info.position_range.start.column == 0);
+            assert!(info.position_range.end.line == 1);
+            assert!(info.position_range.end.column == 1);
+            assert!(info.line_range.start == 0);
+            assert!(info.line_range.end == 1);
+        }
+        {
+            let result = lexer.next();
+            let info = result.unwrap();
+            assert!(info.kind == TokenKind::Endmarker);
+            assert!(info.string_range.start == 1);
+            assert!(info.string_range.end == 1);
+            assert!(info.position_range.start.line == 2);
+            assert!(info.position_range.start.column == 0);
+            assert!(info.position_range.end.line == 2);
+            assert!(info.position_range.end.column == 0);
+            assert!(info.line_range.start == 1);
+            assert!(info.line_range.end == 1);
+        }
     }
 
     #[test]
@@ -360,17 +386,32 @@ mod tests {
         let keywords = builder.build();
         let source = b"\n";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
-        let result = lexer.next();
-        let info = result.unwrap();
-        assert!(info.kind == TokenKind::Nl);
-        assert!(info.string_range.start == 0);
-        assert!(info.string_range.end == 0);
-        assert!(info.position_range.start.line == 1);
-        assert!(info.position_range.start.column == 0);
-        assert!(info.position_range.end.line == 1);
-        assert!(info.position_range.end.column == 0);
-        assert!(info.line_range.start == 0);
-        assert!(info.line_range.end == 0);
+        {
+            let result = lexer.next();
+            let info = result.unwrap();
+            assert!(info.kind == TokenKind::Nl);
+            assert!(info.string_range.start == 0);
+            assert!(info.string_range.end == 1);
+            assert!(info.position_range.start.line == 1);
+            assert!(info.position_range.start.column == 0);
+            assert!(info.position_range.end.line == 1);
+            assert!(info.position_range.end.column == 1);
+            assert!(info.line_range.start == 0);
+            assert!(info.line_range.end == 1);
+        }
+        {
+            let result = lexer.next();
+            let info = result.unwrap();
+            assert!(info.kind == TokenKind::Endmarker);
+            assert!(info.string_range.start == 1);
+            assert!(info.string_range.end == 1);
+            assert!(info.position_range.start.line == 2);
+            assert!(info.position_range.start.column == 0);
+            assert!(info.position_range.end.line == 2);
+            assert!(info.position_range.end.column == 0);
+            assert!(info.line_range.start == 1);
+            assert!(info.line_range.end == 1);
+        }
     }
 
     #[test]
@@ -379,16 +420,31 @@ mod tests {
         let keywords = builder.build();
         let source = b"\n";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
-        let result = lexer.next();
-        let info = result.unwrap();
-        assert!(info.kind == TokenKind::Nl);
-        assert!(info.string_range.start == 0);
-        assert!(info.string_range.end == 0);
-        assert!(info.position_range.start.line == 1);
-        assert!(info.position_range.start.column == 0);
-        assert!(info.position_range.end.line == 1);
-        assert!(info.position_range.end.column == 0);
-        assert!(info.line_range.start == 0);
-        assert!(info.line_range.end == 0);
+        {
+            let result = lexer.next();
+            let info = result.unwrap();
+            assert!(info.kind == TokenKind::Nl);
+            assert!(info.string_range.start == 0);
+            assert!(info.string_range.end == 1);
+            assert!(info.position_range.start.line == 1);
+            assert!(info.position_range.start.column == 0);
+            assert!(info.position_range.end.line == 1);
+            assert!(info.position_range.end.column == 1);
+            assert!(info.line_range.start == 0);
+            assert!(info.line_range.end == 1);
+        }
+        {
+            let result = lexer.next();
+            let info = result.unwrap();
+            assert!(info.kind == TokenKind::Endmarker);
+            assert!(info.string_range.start == 1);
+            assert!(info.string_range.end == 1);
+            assert!(info.position_range.start.line == 2);
+            assert!(info.position_range.start.column == 0);
+            assert!(info.position_range.end.line == 2);
+            assert!(info.position_range.end.column == 0);
+            assert!(info.line_range.start == 1);
+            assert!(info.line_range.end == 1);
+        }
     }
 }
