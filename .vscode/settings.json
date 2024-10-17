@@ -19,5 +19,11 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
   },
-  "cSpell.words": ["Deque", "embeddable", "oneofthezombies", "webp"]
+  "cSpell.words": [
+    "Deque",
+    "embeddable",
+    "Endmarker",
+    "oneofthezombies",
+    "webp"
+  ]
 }

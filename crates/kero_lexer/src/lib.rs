@@ -8,7 +8,7 @@ use unicode_ident::is_xid_start;
 
 #[derive(Debug, PartialEq)]
 enum TokenKind {
-    Eof,
+    Endmarker,
     Newline,
     Nl,
     Indent,
@@ -120,8 +120,8 @@ where
         }
 
         loop {
-            if self.is_start_of_eof()? {
-                self.parse_eof()?;
+            if self.is_start_of_endmarker()? {
+                self.parse_endmarker()?;
                 break;
             }
 
@@ -173,7 +173,7 @@ where
         self.read_line_context.is_some()
     }
 
-    fn is_start_of_eof(&mut self) -> Result<bool> {
+    fn is_start_of_endmarker(&mut self) -> Result<bool> {
         let Some(_) = self.reader.lookahead(0)? else {
             return Ok(true);
         };
@@ -181,10 +181,14 @@ where
         Ok(false)
     }
 
-    fn parse_eof(&mut self) -> Result<()> {
-        debug_assert!(self.is_start_of_eof()?);
+    fn parse_endmarker(&mut self) -> Result<()> {
+        debug_assert!(self.is_start_of_endmarker()?);
 
-        self.push_info(TokenKind::Eof, self.reader.offset(), self.position.clone());
+        self.push_info(
+            TokenKind::Endmarker,
+            self.reader.offset(),
+            self.position.clone(),
+        );
         Ok(())
     }
 
@@ -335,14 +339,33 @@ mod tests {
     use kero_trie::TrieBuilder;
 
     #[test]
-    fn source_empty() {
+    fn endmarker() {
         let builder = TrieBuilder::<u8>::new();
         let keywords = builder.build();
         let source = b"";
         let mut lexer = Lexer::new(&keywords, source.as_slice());
         let result = lexer.next();
         let info = result.unwrap();
-        assert!(info.kind == TokenKind::Eof);
+        assert!(info.kind == TokenKind::Endmarker);
+        assert!(info.string_range.start == 0);
+        assert!(info.string_range.end == 0);
+        assert!(info.position_range.start.line == 1);
+        assert!(info.position_range.start.column == 0);
+        assert!(info.position_range.end.line == 1);
+        assert!(info.position_range.end.column == 0);
+        assert!(info.line_range.start == 0);
+        assert!(info.line_range.end == 0);
+    }
+
+    #[test]
+    fn nl_linefeed() {
+        let builder = TrieBuilder::<u8>::new();
+        let keywords = builder.build();
+        let source = b"\n";
+        let mut lexer = Lexer::new(&keywords, source.as_slice());
+        let result = lexer.next();
+        let info = result.unwrap();
+        assert!(info.kind == TokenKind::Nl);
         assert!(info.string_range.start == 0);
         assert!(info.string_range.end == 0);
         assert!(info.position_range.start.line == 1);
