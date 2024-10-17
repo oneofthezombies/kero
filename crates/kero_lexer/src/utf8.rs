@@ -129,6 +129,58 @@ pub mod unchecked {
             Ok(Some(code_point))
         }
     }
+
+    pub struct LookaheadBufReader<R> {
+        inner: Reader<R>,
+        buf: VecDeque<CodePoint>,
+        offset: usize,
+    }
+
+    impl<R> LookaheadBufReader<R>
+    where
+        R: Read,
+    {
+        pub fn new(inner: R) -> Self {
+            Self {
+                inner: Reader::new(inner),
+                buf: VecDeque::<CodePoint>::new(),
+                offset: 0,
+            }
+        }
+
+        pub fn lookahead(&mut self, offset: usize) -> Result<Option<CodePoint>> {
+            loop {
+                if let Some(point) = self.buf.get(offset) {
+                    return Ok(Some(point.clone()));
+                }
+
+                let Some(point) = self.inner.read()? else {
+                    return Ok(None);
+                };
+
+                self.buf.push_back(point);
+            }
+        }
+
+        pub fn advance(&mut self, amount: usize) -> Result<()> {
+            if amount > self.buf.len() {
+                bail!("Must be less than or equal to the length of the buffer");
+            }
+
+            for _ in 0..amount {
+                let Some(point) = self.buf.pop_front() else {
+                    bail!("Must contain the element");
+                };
+
+                self.offset += point.len();
+            }
+            Ok(())
+        }
+
+        pub fn offset(&self) -> usize {
+            self.offset
+        }
+    }
 }
 
 pub mod checked {
@@ -154,11 +206,11 @@ pub mod checked {
         }
 
         pub fn read(&mut self) -> Result<Option<char>> {
-            let Some(code_point) = self.inner.read()? else {
+            let Some(point) = self.inner.read()? else {
                 return Ok(None);
             };
 
-            let ch: char = code_point.try_into()?;
+            let ch: char = point.try_into()?;
             Ok(Some(ch))
         }
     }

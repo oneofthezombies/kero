@@ -1,25 +1,6 @@
 use core::hash::Hash;
 use std::collections::HashMap;
 
-#[derive(Debug, PartialEq)]
-pub enum TrieError {
-    SequenceIsEmpty,
-    SequenceNotExist,
-    SequenceNotFullMatch,
-}
-
-impl std::error::Error for TrieError {}
-
-impl core::fmt::Display for TrieError {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        match self {
-            TrieError::SequenceIsEmpty => write!(f, "Sequence is empty"),
-            TrieError::SequenceNotExist => write!(f, "Sequence not exist"),
-            TrieError::SequenceNotFullMatch => write!(f, "Sequence not full match"),
-        }
-    }
-}
-
 pub struct Node<T> {
     children: HashMap<T, Node<T>>,
     is_end: bool,
@@ -49,7 +30,7 @@ where
         Self { root: Node::new() }
     }
 
-    pub fn push(&mut self, sequence: &[T]) {
+    pub fn insert(&mut self, sequence: &[T]) -> &mut Self {
         let mut current = &mut self.root;
         for element in sequence {
             current = current
@@ -58,6 +39,7 @@ where
                 .or_insert_with(Node::new);
         }
         current.is_end = true;
+        self
     }
 
     pub fn build(self) -> Trie<T> {
@@ -77,40 +59,30 @@ where
         Self { root }
     }
 
-    pub fn match_full(&self, sequence: &[T]) -> Result<(), TrieError> {
-        match self.match_internal(sequence) {
-            Ok(v) => {
-                if v {
-                    Ok(())
-                } else {
-                    Err(TrieError::SequenceNotFullMatch)
-                }
-            }
-            Err(e) => Err(e),
+    pub fn match_full(&self, sequence: &[T]) -> bool {
+        let mut current = &self.root;
+        for element in sequence {
+            let Some(child) = current.children.get(element) else {
+                return false;
+            };
+            current = child;
         }
+        current.is_end
     }
 
-    pub fn match_prefix(&self, sequence: &[T]) -> Result<(), TrieError> {
-        match self.match_internal(sequence) {
-            Ok(_) => Ok(()),
-            Err(e) => Err(e),
-        }
-    }
-
-    fn match_internal(&self, sequence: &[T]) -> Result<bool, TrieError> {
-        if sequence.is_empty() {
-            return Err(TrieError::SequenceIsEmpty);
+    pub fn match_prefix(&self, sequence: &[T]) -> bool {
+        if sequence.len() == 0 {
+            return false;
         }
 
         let mut current = &self.root;
         for element in sequence {
             let Some(child) = current.children.get(element) else {
-                return Err(TrieError::SequenceNotExist);
+                return false;
             };
             current = child;
         }
-
-        Ok(current.is_end)
+        true
     }
 }
 
@@ -119,90 +91,140 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_match_full_sequence_is_empty() {
+    fn match_full_no_exist_length_0() {
         let builder = TrieBuilder::new();
         let trie = builder.build();
-        let result = trie.match_full("".as_bytes());
-        assert_eq!(result.unwrap_err(), TrieError::SequenceIsEmpty)
+        assert!(!trie.match_full(b""));
     }
 
     #[test]
-    fn test_match_full_sequence_not_exist() {
+    fn match_full_no_exist_length_1() {
         let builder = TrieBuilder::new();
         let trie = builder.build();
-        let result = trie.match_full("a".as_bytes());
-        assert_eq!(result.unwrap_err(), TrieError::SequenceNotExist)
+        assert!(!trie.match_full(b"a"));
     }
 
     #[test]
-    fn test_match_full_sequence_not_full_match() {
-        let mut builder = TrieBuilder::new();
-        builder.push("aa".as_bytes());
+    fn match_full_no_exist_length_2() {
+        let builder = TrieBuilder::new();
         let trie = builder.build();
-        let result = trie.match_full("a".as_bytes());
-        assert_eq!(result.unwrap_err(), TrieError::SequenceNotFullMatch);
+        assert!(!trie.match_full(b"aa"));
     }
 
     #[test]
-    fn test_match_full_same_a() {
+    fn match_full_exist_length_1_length_0() {
         let mut builder = TrieBuilder::new();
-        builder.push("a".as_bytes());
+        builder.insert(b"a");
         let trie = builder.build();
-        let result = trie.match_full("a".as_bytes());
-        assert!(result.is_ok())
+        assert!(!trie.match_full(b""));
     }
 
     #[test]
-    fn test_match_full_same_aa() {
+    fn match_full_exist_length_1_length_1() {
         let mut builder = TrieBuilder::new();
-        builder.push("aa".as_bytes());
+        builder.insert(b"a");
         let trie = builder.build();
-        let result = trie.match_full("aa".as_bytes());
-        assert!(result.is_ok());
+        assert!(trie.match_full(b"a"));
     }
 
     #[test]
-    fn test_match_full_same_aaa() {
+    fn match_full_exist_length_1_length_2() {
         let mut builder = TrieBuilder::new();
-        builder.push("aaa".as_bytes());
+        builder.insert(b"a");
         let trie = builder.build();
-        let result = trie.match_full("aaa".as_bytes());
-        assert!(result.is_ok());
+        assert!(!trie.match_full(b"aa"));
     }
 
     #[test]
-    fn test_match_prefix_partial() {
+    fn match_full_exist_length_2_length_0() {
         let mut builder = TrieBuilder::new();
-        builder.push("aa".as_bytes());
+        builder.insert(b"aa");
         let trie = builder.build();
-        let result = trie.match_prefix("a".as_bytes());
-        assert!(result.is_ok());
+        assert!(!trie.match_full(b""));
     }
 
     #[test]
-    fn test_match_prefix_same() {
+    fn match_full_exist_length_2_length_1() {
         let mut builder = TrieBuilder::new();
-        builder.push("aa".as_bytes());
+        builder.insert(b"aa");
         let trie = builder.build();
-        let result = trie.match_prefix("aa".as_bytes());
-        assert!(result.is_ok());
+        assert!(!trie.match_full(b"a"));
     }
 
     #[test]
-    fn test_match_prefix_sequence_is_empty() {
+    fn match_full_exist_length_2_length_2() {
         let mut builder = TrieBuilder::new();
-        builder.push("aa".as_bytes());
+        builder.insert(b"aa");
         let trie = builder.build();
-        let result = trie.match_prefix("".as_bytes());
-        assert_eq!(result.unwrap_err(), TrieError::SequenceIsEmpty);
+        assert!(trie.match_full(b"aa"));
     }
 
     #[test]
-    fn test_match_prefix_sequence_not_exist() {
-        let mut builder = TrieBuilder::new();
-        builder.push("aa".as_bytes());
+    fn match_prefix_no_exist_length_0() {
+        let builder = TrieBuilder::new();
         let trie = builder.build();
-        let result = trie.match_prefix("aaa".as_bytes());
-        assert_eq!(result.unwrap_err(), TrieError::SequenceNotExist);
+        assert!(!trie.match_prefix(b""));
+    }
+
+    #[test]
+    fn match_prefix_no_exist_length_1() {
+        let builder = TrieBuilder::new();
+        let trie = builder.build();
+        assert!(!trie.match_prefix(b"a"));
+    }
+
+    #[test]
+    fn match_prefix_no_exist_length_2() {
+        let builder = TrieBuilder::new();
+        let trie = builder.build();
+        assert!(!trie.match_prefix(b"aa"));
+    }
+
+    #[test]
+    fn match_prefix_exist_length_1_length_0() {
+        let mut builder = TrieBuilder::new();
+        builder.insert(b"a");
+        let trie = builder.build();
+        assert!(!trie.match_prefix(b""));
+    }
+
+    #[test]
+    fn match_prefix_exist_length_1_length_1() {
+        let mut builder = TrieBuilder::new();
+        builder.insert(b"a");
+        let trie = builder.build();
+        assert!(trie.match_prefix(b"a"));
+    }
+
+    #[test]
+    fn match_prefix_exist_length_1_length_2() {
+        let mut builder = TrieBuilder::new();
+        builder.insert(b"a");
+        let trie = builder.build();
+        assert!(!trie.match_prefix(b"aa"));
+    }
+
+    #[test]
+    fn match_prefix_exist_length_2_length_0() {
+        let mut builder = TrieBuilder::new();
+        builder.insert(b"aa");
+        let trie = builder.build();
+        assert!(!trie.match_prefix(b""));
+    }
+
+    #[test]
+    fn match_prefix_exist_length_2_length_1() {
+        let mut builder = TrieBuilder::new();
+        builder.insert(b"aa");
+        let trie = builder.build();
+        assert!(trie.match_prefix(b"a"));
+    }
+
+    #[test]
+    fn match_prefix_exist_length_2_length_2() {
+        let mut builder = TrieBuilder::new();
+        builder.insert(b"aa");
+        let trie = builder.build();
+        assert!(trie.match_prefix(b"aa"));
     }
 }
