@@ -1,9 +1,11 @@
 use crate::{
     core::{ByteRange, KeywordMap, Position, PositionRange, Token, TokenInfo, TokenKind},
     lookaround_buf_reader::LookaroundBufReader,
+    utf8::unchecked::ByteKind,
 };
 use anyhow::{bail, Result};
-use std::{collections::VecDeque, io::Read};
+use std::{collections::VecDeque, io::Read, str};
+use unicode_ident::is_xid_continue;
 
 pub struct Lexer<'a, R> {
     keyword_map: &'a KeywordMap,
@@ -150,8 +152,35 @@ where
                 let Some(byte) = this.lexer.reader.read(0)? else {
                     break;
                 };
+                let kind = ByteKind::byte_kind(byte);
+                let Some(trailing_byte_count) = kind.trailing_byte_count() else {
+                    bail!("Unexpected start byte of UTF-8. byte: {}", byte);
+                };
+                if trailing_byte_count == 0 {
+                    if !is_ascii_xid_continue(byte) {
+                        break;
+                    }
+                } else {
+                    let mut buf = [0u8; 4];
+                    buf[0] = byte;
+                    debug_assert!(trailing_byte_count <= 3);
+                    for i in 1..=trailing_byte_count {
+                        let Some(trailing) = this.lexer.reader.read(i.try_into()?)? else {
+                            bail!("Unexpected EOF encountered instead of UTF-8 continuation.");
+                        };
+                        buf[i] = trailing;
+                    }
+                    let str = str::from_utf8(&buf[0..=trailing_byte_count])?;
+                    let Some(ch) = str.chars().next() else {
+                        bail!("Must exist character present");
+                    };
+                    if !is_xid_continue(ch) {
+                        break;
+                    }
+                }
+                this.advance_and_increase_column(1 + trailing_byte_count)?;
             }
-            todo!();
+            Ok(TokenKind::Name)
         })?;
         todo!();
     }

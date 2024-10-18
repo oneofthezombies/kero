@@ -21,7 +21,17 @@ pub(crate) mod unchecked {
             }
         }
 
-        pub(crate) fn trailing_byte_count(self) -> Option<usize> {
+        pub(crate) fn is_first_of_code_point(&self) -> bool {
+            match self {
+                ByteKind::Ascii
+                | ByteKind::FirstOf2ByteCodePoint
+                | ByteKind::FirstOf3ByteCodePoint
+                | ByteKind::FirstOf4ByteCodePoint => true,
+                ByteKind::Continuation | ByteKind::Unexpected => false,
+            }
+        }
+
+        pub(crate) fn trailing_byte_count(&self) -> Option<usize> {
             match self {
                 ByteKind::Ascii => Some(0),
                 ByteKind::FirstOf2ByteCodePoint => Some(1),
