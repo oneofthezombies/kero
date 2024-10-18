@@ -1,5 +1,3 @@
-use kero_trie::{Trie, TrieBuilder};
-
 #[derive(Clone, Debug, PartialEq)]
 pub enum TokenKind {
     Endmarker, // EOF
