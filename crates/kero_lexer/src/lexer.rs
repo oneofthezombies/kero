@@ -73,11 +73,12 @@ where
                 break;
             };
             match byte {
-                b'\r' | b'\n' => {
+                x if is_line_separator(x) => {
                     self.handle_line_separator(byte)?;
                     break;
                 }
                 b'#' => self.handle_sharp(byte)?,
+                x if is_ascii_xid_start(x) => self.handle_ascii_xid_start(byte)?,
                 _ => {
                     bail!("Unexpected byte pattern. byte: {}", byte);
                 }
@@ -141,6 +142,20 @@ where
         })
     }
 
+    fn handle_ascii_xid_start(&mut self, byte: u8) -> Result<()> {
+        debug_assert!(is_ascii_xid_start(byte));
+        self.scan_string(|this| {
+            this.advance_and_increase_column(1)?;
+            loop {
+                let Some(byte) = this.lexer.reader.read(0)? else {
+                    break;
+                };
+            }
+            todo!();
+        })?;
+        todo!();
+    }
+
     fn scan_string<F>(&mut self, string_scanner: F) -> Result<()>
     where
         F: FnOnce(&mut Self) -> Result<TokenKind>,
@@ -187,4 +202,19 @@ where
 
 fn is_line_separator(byte: u8) -> bool {
     byte == b'\r' || byte == b'\n'
+}
+
+fn is_ascii_xid_start(byte: u8) -> bool {
+    match byte {
+        b'A'..=b'Z' | b'a'..=b'z' | b'_' => true,
+        _ => false,
+    }
+}
+
+fn is_ascii_xid_continue(byte: u8) -> bool {
+    match byte {
+        b'0'..=b'9' => true,
+        x if is_ascii_xid_start(x) => true,
+        _ => false,
+    }
 }

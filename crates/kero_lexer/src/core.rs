@@ -8,6 +8,7 @@ pub enum TokenKind {
     Indent,
     Dedent,
     Comment, // #
+    Name,    // identifier
 }
 
 #[derive(Clone, Debug)]
@@ -20,12 +21,6 @@ pub struct ByteRange {
 pub struct Position {
     pub line: usize,
     pub column: usize,
-}
-
-impl Position {
-    pub(crate) fn new() -> Self {
-        Self { line: 1, column: 0 }
-    }
 }
 
 #[derive(Debug)]
