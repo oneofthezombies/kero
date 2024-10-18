@@ -77,6 +77,7 @@ where
                     self.handle_line_separator(byte)?;
                     break;
                 }
+                b'#' => self.handle_sharp(byte)?,
                 _ => {
                     bail!("Unexpected byte pattern. byte: {}", byte);
                 }
@@ -94,11 +95,12 @@ where
                 .rev()
                 .any(|t| t.kind == TokenKind::Nl || t.kind == TokenKind::Newline);
             if !has_line_separator {
-                self.scan_string_and_increase_line(|scanner| {
-                    scanner.column += 1;
+                self.scan_string_and_increase_line(|this| {
+                    this.column += 1;
                     // TODO(harry): change token kind logic with condition
                     Ok(TokenKind::Nl)
                 })?;
+                return Ok(());
             }
         }
         self.scan_string(|_| {
@@ -107,18 +109,35 @@ where
     }
 
     fn handle_line_separator(&mut self, byte: u8) -> Result<()> {
-        debug_assert!(byte == b'\r' || byte == b'\n');
-        self.scan_string_and_increase_line(|scanner| {
-            scanner.advance_and_increase_column(1)?;
+        debug_assert!(is_line_separator(byte));
+        self.scan_string_and_increase_line(|this| {
+            this.advance_and_increase_column(1)?;
             if byte == b'\r' {
-                if let Some(next) = scanner.lexer.reader.read(0)? {
+                if let Some(next) = this.lexer.reader.read(0)? {
                     if next == b'\n' {
-                        scanner.advance_and_increase_column(1)?;
+                        this.advance_and_increase_column(1)?;
                     }
                 }
             }
             // TODO(harry): change token kind logic with condition
             Ok(TokenKind::Nl)
+        })
+    }
+
+    fn handle_sharp(&mut self, byte: u8) -> Result<()> {
+        debug_assert!(byte == b'#');
+        self.scan_string(|this| {
+            this.advance_and_increase_column(1)?;
+            loop {
+                let Some(byte) = this.lexer.reader.read(0)? else {
+                    break;
+                };
+                if is_line_separator(byte) {
+                    break;
+                }
+                this.advance_and_increase_column(1)?
+            }
+            Ok(TokenKind::Comment)
         })
     }
 
@@ -155,12 +174,17 @@ where
     {
         self.scan_string(string_scanner)?;
         self.lexer.line += 1;
+        self.column = 0;
         Ok(())
     }
 
     fn advance_and_increase_column(&mut self, offset: usize) -> Result<()> {
         self.lexer.reader.advance(offset.try_into()?)?;
-        self.column += 1;
+        self.column += offset;
         Ok(())
     }
+}
+
+fn is_line_separator(byte: u8) -> bool {
+    byte == b'\r' || byte == b'\n'
 }
