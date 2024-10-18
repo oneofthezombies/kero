@@ -373,7 +373,7 @@ fn comment_carriage_return_line_feed() {
 }
 
 #[test]
-fn name_ascii_1() {
+fn name_ascii_a() {
     let builder = KeywordMapBuilder::new();
     let keyword_map = builder.build();
     let source = b"a";
@@ -420,7 +420,7 @@ fn name_ascii_1() {
 }
 
 #[test]
-fn name_ascii_2() {
+fn name_ascii_aa() {
     let builder = KeywordMapBuilder::new();
     let keyword_map = builder.build();
     let source = b"aa";
@@ -436,6 +436,32 @@ fn name_ascii_2() {
             position_range: ((1, 0), (1, 2)),
             line_range: (0, 2),
             line: b"aa",
+        });
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Newline,
+            string_range: (2, 2),
+            string: b"aa",
+            position_range: ((1, 2), (1, 3)),
+            line_range: (0, 2),
+            line: b"aa",
+        });
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Endmarker,
+            string_range: (2, 2),
+            string: b"",
+            position_range: ((2, 0), (2, 0)),
+            line_range: (2, 2),
+            line: b"",
         });
     }
 }
