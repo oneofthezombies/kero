@@ -1,159 +1,118 @@
 use crate::{
-    core::{Position, Scanner, TokenInfoPtr, TokenKind},
+    core::{ByteRange, KeywordMap, Position, PositionRange, Token, TokenInfoPtr, TokenKind},
     lookaround_buf_reader::LookaroundBufReader,
-    string_scanner::{AutoNlStringScanner, EndmarkerStringScanner, NlStringScanner, StringScanner},
-    Lexer, LexerContext,
 };
 use anyhow::{bail, Result};
 use std::{collections::VecDeque, io::Read};
 
-pub(crate) struct LineScannerContext<'le, 'ke, R> {
-    pub(crate) ctx: &'le mut LexerContext<'ke, R>,
-    pub(crate) line_start: usize,
-    pub(crate) info_start_index: usize,
-    pub(crate) column: usize,
-    pub(crate) is_processed_nl_or_newline: bool,
-    pub(crate) is_processed_name_or_string: bool,
+pub(crate) struct LineScanner<'a, R> {
+    keyword_map: &'a KeywordMap,
+    reader: &'a mut LookaroundBufReader<R>,
+    line_start: usize,
+    line: usize,
+    column: usize,
+    tokens: Vec<Token>,
 }
 
-pub(crate) struct LineScanner<'le, 'ke, R> {
-    ctx: LineScannerContext<'le, 'ke, R>,
-}
-
-impl<'le, 'ke, R> LineScanner<'le, 'ke, R>
+impl<'a, R> LineScanner<'a, R>
 where
     R: Read,
 {
-    pub(crate) fn new(ctx: &'le mut LexerContext<'ke, R>) -> Self {
-        let line_start = ctx.reader.total_offset();
-        let info_start_index = ctx.info_queue.len();
+    pub(crate) fn new(
+        keyword_map: &'a KeywordMap,
+        reader: &'a mut LookaroundBufReader<R>,
+        line: usize,
+    ) -> Self {
+        let line_start = reader.absolute_offset();
         return Self {
-            ctx: LineScannerContext {
-                ctx,
-                line_start,
-                info_start_index,
-                column: 0,
-                is_processed_nl_or_newline: false,
-                is_processed_name_or_string: false,
-            },
+            keyword_map,
+            reader,
+            line_start,
+            line,
+            column: 0,
+            tokens: vec![],
         };
     }
 
-    fn on_eof(&mut self) -> Result<()> {
-        debug_assert!(self.ctx.ctx.reader.read(0)?.is_none());
-
-        if self.ctx.info_start_index < self.ctx.ctx.info_queue.len() {
-            if !self.ctx.is_processed_nl_or_newline {
-                let is_processed_name_or_string = self.ctx.is_processed_name_or_string;
-                AutoNlStringScanner {
-                    inner: NlStringScanner {
-                        inner: StringScanner::new(&mut self.ctx),
-                        kind: if is_processed_name_or_string {
-                            TokenKind::Nl
-                        } else {
-                            TokenKind::Newline
-                        },
-                    },
-                }
-                .scan()?;
-            }
-        }
-
-        EndmarkerStringScanner {
-            inner: StringScanner::new(&mut self.ctx),
-        }
-        .scan()?;
-        Ok(())
-    }
-
-    // fn on_carriage_return_or_line_feed(&mut self, byte: u8) -> Result<()> {
-    //     debug_assert!(byte == b'\r' || byte == b'\n');
-
-    //     let str_ctx = self.create_string_context(line_ctx);
-    //     let Some(current) = self.reader.read(0)? else {
-    //         bail!("Must have a byte present");
-    //     };
-
-    //     self.advance(line_ctx, 1)?;
-
-    //     if current == b'\r' {
-    //         if let Some(next) = self.reader.read(0)? {
-    //             if next == b'\n' {
-    //                 self.advance(line_ctx, 1)?;
-    //             }
-    //         }
-    //     }
-
-    //     self.push_info_nl_or_newline(
-    //         line_ctx,
-    //         &str_ctx,
-    //         if line_ctx.is_processed_name_or_string {
-    //             TokenKind::Newline
-    //         } else {
-    //             TokenKind::Nl
-    //         },
-    //     );
-    //     Ok(())
-    // }
-
-    // fn on_sharp(&mut self, byte: u8) -> Result<()> {
-    //     debug_assert!(byte == b'#');
-
-    //     let str_ctx = self.create_string_context(line_ctx);
-    //     self.advance(line_ctx, 1)?;
-
-    //     loop {
-    //         if self.is_eof()? {
-    //             break;
-    //         }
-
-    //         if self.is_line_separator()? {
-    //             break;
-    //         }
-
-    //         self.advance(line_ctx, 1)?;
-    //     }
-
-    //     self.push_info(&line_ctx, &str_ctx, TokenKind::Comment);
-    //     Ok(())
-    // }
-
-    fn update_line_end(&mut self) -> Result<()> {
-        for i in self.ctx.info_start_index..self.ctx.ctx.info_queue.len() {
-            let Some(info) = self.ctx.ctx.info_queue.get_mut(i) else {
-                bail!("Must have a info present");
-            };
-
-            info.line_range.end = self.ctx.ctx.reader.total_offset();
-        }
-        Ok(())
-    }
-}
-
-impl<'l, 'k, R> Scanner for LineScanner<'l, 'k, R>
-where
-    R: Read,
-{
-    fn scan(&mut self) -> Result<()> {
+    pub(crate) fn scan(&mut self, token_info_queue: &mut VecDeque<TokenInfoPtr>) -> Result<()> {
         loop {
-            let Some(byte) = self.ctx.ctx.reader.read(0)? else {
-                self.on_eof()?;
+            let Some(byte) = self.reader.read(0)? else {
+                self.handle_eof()?;
                 break;
             };
             match byte {
-                // b'\r' | b'\n' => {
-                //     self.on_carriage_return_or_line_feed(byte)?;
-                //     break;
-                // }
-                // b'#' => {
-                //     self.on_sharp(byte)?;
-                // }
+                b'\r' | b'\n' => {
+                    self.handle_line_separator()?;
+                    break;
+                }
                 _ => {
-                    bail!("Unexpected pattern");
+                    bail!("Unexpected byte pattern. byte: {}", byte);
                 }
             }
         }
-        self.update_line_end()?;
+        // tokens to token_info_queue
+        let line_end = 
+        let line_range = ByteRange {
+            start: self.line_start,
+            end: self.reader.absolute_offset();
+        }
+        token_info_queue.reserve(self.tokens.len());
+        token_info_queue.extend(tokens.into_iter().map(|t| {
+            TokenInfo {
+                token,
+                line_range
+            }
+        }));
+        Ok(())
+    }
+
+    fn handle_eof(&mut self) -> Result<()> {
+        debug_assert!(self.reader.read(0)?.is_none());
+        if !self.tokens.is_empty() {
+            let has_line_separator = self
+                .tokens
+                .iter()
+                .rev()
+                .any(|t| t.kind == TokenKind::Nl || t.kind == TokenKind::Newline);
+            if !has_line_separator {
+                self.scan_string(|ctx| {
+                    ctx.column += 1;
+                    // TODO(harry): change token kind logic with condition
+                    Ok(TokenKind::Nl)
+                })?;
+            }
+        }
+        todo!();
+    }
+
+    fn handle_line_separator(&mut self) -> Result<()> {
+        todo!();
+    }
+
+    fn scan_string<F>(&mut self, string_scanner: F) -> Result<()>
+    where
+        F: FnOnce(&mut Self) -> Result<TokenKind>,
+    {
+        let string_start = self.reader.absolute_offset();
+        let position_start = Position {
+            line: self.line,
+            column: self.column,
+        };
+        let kind = string_scanner(self)?;
+        self.tokens.push(Token {
+            kind,
+            string_range: ByteRange {
+                start: string_start,
+                end: self.reader.absolute_offset(),
+            },
+            position_range: PositionRange {
+                start: position_start,
+                end: Position {
+                    line: self.line,
+                    column: self.column,
+                },
+            },
+        });
         Ok(())
     }
 }

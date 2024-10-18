@@ -1,4 +1,4 @@
-use anyhow::Result;
+use kero_trie::Trie;
 
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) enum TokenKind {
@@ -35,15 +35,17 @@ pub(crate) struct PositionRange {
 }
 
 #[derive(Debug)]
-pub(crate) struct TokenInfo {
+pub(crate) struct Token {
     pub(crate) kind: TokenKind,
     pub(crate) string_range: ByteRange,
     pub(crate) position_range: PositionRange,
+}
+
+#[derive(Debug)]
+pub(crate) struct TokenInfo {
+    pub(crate) token: Token,
     pub(crate) line_range: ByteRange,
 }
 
 pub(crate) type TokenInfoPtr = Box<TokenInfo>;
-
-pub(crate) trait Scanner {
-    fn scan(&mut self) -> Result<()>;
-}
+pub(crate) type KeywordMap = Trie<u8>;

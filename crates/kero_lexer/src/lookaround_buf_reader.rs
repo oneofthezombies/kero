@@ -6,7 +6,7 @@ const DEFAULT_LOOKBEHIND_CAPACITY: usize = 0;
 pub struct LookaroundBufReader<R> {
     inner: R,
     buf: VecDeque<u8>,
-    total_offset: usize,
+    absolute_offset: usize,
     lookbehind_capacity: usize,
     lookbehind_length: usize,
     is_eof: bool,
@@ -24,15 +24,15 @@ where
         Self {
             inner,
             buf: VecDeque::<u8>::new(),
-            total_offset: 0,
+            absolute_offset: 0,
             lookbehind_capacity,
             lookbehind_length: 0,
             is_eof: false,
         }
     }
 
-    pub fn read(&mut self, offset: isize) -> Result<Option<u8>> {
-        let index = self.parse_offset(offset)?;
+    pub fn read(&mut self, relative_offset: isize) -> Result<Option<u8>> {
+        let index = self.parse_relative_offset(relative_offset)?;
         loop {
             if let Some(v) = self.buf.get(index) {
                 return Ok(Some(v.clone()));
@@ -70,7 +70,7 @@ where
                     self.lookbehind_length += 1;
                 }
 
-                self.total_offset += 1;
+                self.absolute_offset += 1;
             }
         } else {
             let amount = offset.abs() as usize;
@@ -80,27 +80,27 @@ where
 
             for _ in 0..amount {
                 self.lookbehind_length -= 1;
-                self.total_offset -= 1;
+                self.absolute_offset -= 1;
             }
         }
 
         Ok(())
     }
 
-    fn parse_offset(&self, offset: isize) -> Result<usize> {
-        let Some(v) = self.lookbehind_length.checked_add_signed(offset) else {
+    fn parse_relative_offset(&self, relative_offset: isize) -> Result<usize> {
+        let Some(v) = self.lookbehind_length.checked_add_signed(relative_offset) else {
             bail!(
-                "Overflow occurred. lookbehind_length: {} offset: {}",
+                "Overflow occurred. lookbehind_length: {} relative_offset: {}",
                 self.lookbehind_length,
-                offset
+                relative_offset
             );
         };
 
         Ok(v)
     }
 
-    pub fn total_offset(&self) -> usize {
-        self.total_offset
+    pub fn absolute_offset(&self) -> usize {
+        self.absolute_offset
     }
 
     pub fn lookbehind_length(&self) -> usize {
@@ -134,7 +134,7 @@ mod tests {
         assert!(reader.lookahead_length() == 0);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -147,7 +147,7 @@ mod tests {
         assert!(reader.lookahead_length() == 0);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -166,7 +166,7 @@ mod tests {
         assert!(reader.lookahead_length() == 0);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -179,7 +179,7 @@ mod tests {
         assert!(reader.lookahead_length() == 1);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -198,7 +198,7 @@ mod tests {
         assert!(reader.lookahead_length() == 1);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -211,7 +211,7 @@ mod tests {
         assert!(reader.lookahead_length() == 1);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -224,7 +224,7 @@ mod tests {
         assert!(reader.lookahead_length() == 1);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -243,7 +243,7 @@ mod tests {
         assert!(reader.lookahead_length() == 1);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -266,7 +266,7 @@ mod tests {
         assert!(reader.lookahead_length() == 0);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 1);
+        assert!(reader.absolute_offset() == 1);
     }
 
     #[test]
@@ -285,7 +285,7 @@ mod tests {
         assert!(reader.lookahead_length() == 1);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -304,7 +304,7 @@ mod tests {
         assert!(reader.lookahead_length() == 1);
         assert!(reader.lookbehind_capacity() == 0);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
@@ -323,7 +323,7 @@ mod tests {
         assert!(reader.lookahead_length() == 0);
         assert!(reader.lookbehind_capacity() == 1);
         assert!(reader.lookbehind_length() == 1);
-        assert!(reader.total_offset() == 1);
+        assert!(reader.absolute_offset() == 1);
     }
 
     #[test]
@@ -346,6 +346,6 @@ mod tests {
         assert!(reader.lookahead_length() == 1);
         assert!(reader.lookbehind_capacity() == 1);
         assert!(reader.lookbehind_length() == 0);
-        assert!(reader.total_offset() == 0);
+        assert!(reader.absolute_offset() == 0);
     }
 }
