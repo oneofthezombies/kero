@@ -10,17 +10,18 @@ def print_example(source: bytes):
         print(token)
 
 
-print_example(b"")
-print_example(b"\r")
-print_example(b"\n")
-print_example(b"\r\n")
-print_example(b"#")
-print_example(b"#\n")
-print_example(b"\\\na")
-print_example(b"\\\na#")
-print_example(
-    b"""'''
+# print_example(b"")
+# print_example(b"\r")
+# print_example(b"\n")
+# print_example(b"\r\n")
+# print_example(b"#")
+# print_example(b"#\n")
+# print_example(b"\\\na")
+# print_example(b"\\\na#")
+# print_example(
+#     b"""'''
 
-''' # a
-#"""
-)
+# ''' # a
+# #"""
+# )
+print_example(b"a")

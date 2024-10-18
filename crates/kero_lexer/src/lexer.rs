@@ -181,8 +181,7 @@ where
                 this.advance_and_increase_column(1 + trailing_byte_count)?;
             }
             Ok(TokenKind::Name)
-        })?;
-        todo!();
+        })
     }
 
     fn scan_string<F>(&mut self, string_scanner: F) -> Result<()>

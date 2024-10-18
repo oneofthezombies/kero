@@ -79,9 +79,9 @@ fn check_info(check_info: CheckInfo) {
 #[test]
 fn endmarker() {
     let builder = KeywordMapBuilder::new();
-    let keywords = builder.build();
+    let keyword_map = builder.build();
     let source = b"";
-    let mut lexer = Lexer::new(&keywords, source.as_slice());
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
     let info = lexer.next().unwrap();
     check_info(CheckInfo {
         source,
@@ -98,9 +98,9 @@ fn endmarker() {
 #[test]
 fn nl_carriage_return() {
     let builder = KeywordMapBuilder::new();
-    let keywords = builder.build();
+    let keyword_map = builder.build();
     let source = b"\r";
-    let mut lexer = Lexer::new(&keywords, source.as_slice());
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -132,9 +132,9 @@ fn nl_carriage_return() {
 #[test]
 fn nl_line_feed() {
     let builder = KeywordMapBuilder::new();
-    let keywords = builder.build();
+    let keyword_map = builder.build();
     let source = b"\n";
-    let mut lexer = Lexer::new(&keywords, source.as_slice());
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -166,9 +166,9 @@ fn nl_line_feed() {
 #[test]
 fn nl_carriage_return_line_feed() {
     let builder = KeywordMapBuilder::new();
-    let keywords = builder.build();
+    let keyword_map = builder.build();
     let source = b"\r\n";
-    let mut lexer = Lexer::new(&keywords, source.as_slice());
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -187,9 +187,9 @@ fn nl_carriage_return_line_feed() {
 #[test]
 fn comment() {
     let builder = KeywordMapBuilder::new();
-    let keywords = builder.build();
+    let keyword_map = builder.build();
     let source = b"#";
-    let mut lexer = Lexer::new(&keywords, source.as_slice());
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -234,9 +234,9 @@ fn comment() {
 #[test]
 fn comment_carriage_return() {
     let builder = KeywordMapBuilder::new();
-    let keywords = builder.build();
+    let keyword_map = builder.build();
     let source = b"#\r";
-    let mut lexer = Lexer::new(&keywords, source.as_slice());
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -281,9 +281,9 @@ fn comment_carriage_return() {
 #[test]
 fn comment_line_feed() {
     let builder = KeywordMapBuilder::new();
-    let keywords = builder.build();
+    let keyword_map = builder.build();
     let source = b"#\n";
-    let mut lexer = Lexer::new(&keywords, source.as_slice());
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -328,9 +328,9 @@ fn comment_line_feed() {
 #[test]
 fn comment_carriage_return_line_feed() {
     let builder = KeywordMapBuilder::new();
-    let keywords = builder.build();
+    let keyword_map = builder.build();
     let source = b"#\r\n";
-    let mut lexer = Lexer::new(&keywords, source.as_slice());
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -368,6 +368,74 @@ fn comment_carriage_return_line_feed() {
             position_range: ((2, 0), (2, 0)),
             line_range: (3, 3),
             line: b"",
+        });
+    }
+}
+
+#[test]
+fn name_ascii_1() {
+    let builder = KeywordMapBuilder::new();
+    let keyword_map = builder.build();
+    let source = b"a";
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Name,
+            string_range: (0, 1),
+            string: b"a",
+            position_range: ((1, 0), (1, 1)),
+            line_range: (0, 1),
+            line: b"a",
+        });
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Newline,
+            string_range: (1, 1),
+            string: b"",
+            position_range: ((1, 1), (1, 2)),
+            line_range: (0, 1),
+            line: b"a",
+        });
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Endmarker,
+            string_range: (1, 1),
+            string: b"",
+            position_range: ((2, 0), (2, 0)),
+            line_range: (1, 1),
+            line: b"",
+        });
+    }
+}
+
+#[test]
+fn name_ascii_2() {
+    let builder = KeywordMapBuilder::new();
+    let keyword_map = builder.build();
+    let source = b"aa";
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Name,
+            string_range: (0, 2),
+            string: b"aa",
+            position_range: ((1, 0), (1, 2)),
+            line_range: (0, 2),
+            line: b"aa",
         });
     }
 }
