@@ -1,7 +1,7 @@
-use kero_trie::Trie;
+use kero_trie::{Trie, TrieBuilder};
 
 #[derive(Clone, Debug, PartialEq)]
-pub(crate) enum TokenKind {
+pub enum TokenKind {
     Endmarker, // EOF
     Newline,
     Nl,
@@ -11,15 +11,15 @@ pub(crate) enum TokenKind {
 }
 
 #[derive(Clone, Debug)]
-pub(crate) struct ByteRange {
-    pub(crate) start: usize, // inclusive
-    pub(crate) end: usize,   // exclusive
+pub struct ByteRange {
+    pub start: usize, // inclusive
+    pub end: usize,   // exclusive
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub(crate) struct Position {
-    pub(crate) line: usize,
-    pub(crate) column: usize,
+pub struct Position {
+    pub line: usize,
+    pub column: usize,
 }
 
 impl Position {
@@ -29,22 +29,23 @@ impl Position {
 }
 
 #[derive(Debug)]
-pub(crate) struct PositionRange {
-    pub(crate) start: Position, // inclusive
-    pub(crate) end: Position,   // exclusive
+pub struct PositionRange {
+    pub start: Position, // inclusive
+    pub end: Position,   // exclusive
 }
 
 #[derive(Debug)]
-pub(crate) struct Token {
-    pub(crate) kind: TokenKind,
-    pub(crate) string_range: ByteRange,
-    pub(crate) position_range: PositionRange,
+pub struct Token {
+    pub kind: TokenKind,
+    pub string_range: ByteRange,
+    pub position_range: PositionRange,
 }
 
 #[derive(Debug)]
-pub(crate) struct TokenInfo {
-    pub(crate) token: Token,
-    pub(crate) line_range: ByteRange,
+pub struct TokenInfo {
+    pub token: Token,
+    pub line_range: ByteRange,
 }
 
-pub(crate) type KeywordMap = Trie<u8>;
+pub type KeywordMap = Trie<u8>;
+pub type KeywordMapBuilder = TrieBuilder<u8>;

@@ -16,10 +16,10 @@ impl<'a, R> Lexer<'a, R>
 where
     R: Read,
 {
-    pub fn new(keyword_map: &'a KeywordMap, reader: LookaroundBufReader<R>) -> Self {
+    pub fn new(keyword_map: &'a KeywordMap, reader: R) -> Self {
         Self {
             keyword_map,
-            reader,
+            reader: LookaroundBufReader::new(reader),
             token_info_queue: VecDeque::new(),
             line: 1,
         }
