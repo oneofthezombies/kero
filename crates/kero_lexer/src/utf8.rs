@@ -1,3 +1,5 @@
+use crate::utf8::unchecked::ByteKind;
+
 pub(crate) mod unchecked {
     #[derive(Debug)]
     pub(crate) enum ByteKind {
@@ -10,7 +12,7 @@ pub(crate) mod unchecked {
     }
 
     impl ByteKind {
-        pub(crate) fn byte_kind(byte: u8) -> ByteKind {
+        pub(crate) fn from(byte: u8) -> ByteKind {
             match byte {
                 0x00..=0x7F => ByteKind::Ascii,
                 0x80..=0xBF => ByteKind::Continuation,
@@ -21,13 +23,12 @@ pub(crate) mod unchecked {
             }
         }
 
-        pub(crate) fn is_first_of_code_point(&self) -> bool {
+        pub(crate) fn is_first_of_multi_byte_code_point(&self) -> bool {
             match self {
-                ByteKind::Ascii
-                | ByteKind::FirstOf2ByteCodePoint
+                ByteKind::FirstOf2ByteCodePoint
                 | ByteKind::FirstOf3ByteCodePoint
                 | ByteKind::FirstOf4ByteCodePoint => true,
-                ByteKind::Continuation | ByteKind::Unexpected => false,
+                ByteKind::Ascii | ByteKind::Continuation | ByteKind::Unexpected => false,
             }
         }
 
@@ -40,5 +41,11 @@ pub(crate) mod unchecked {
                 ByteKind::Continuation | ByteKind::Unexpected => None,
             }
         }
+    }
+}
+
+impl From<u8> for ByteKind {
+    fn from(byte: u8) -> Self {
+        ByteKind::from(byte)
     }
 }

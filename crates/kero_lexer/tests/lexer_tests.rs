@@ -415,7 +415,7 @@ fn comment_carriage_return_line_feed() {
 }
 
 #[test]
-fn name_ascii_a() {
+fn name_ascii_start() {
     let builder = KeywordMapBuilder::new();
     let keyword_map = builder.build();
     let source = b"a";
@@ -465,57 +465,7 @@ fn name_ascii_a() {
 }
 
 #[test]
-fn name_ascii_aa() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
-    let source = b"aa";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
-    {
-        let info = lexer.next().unwrap();
-        check_info(CheckInfo {
-            source,
-            info: &info,
-            kind: TokenKind::Name,
-            string_range: (0, 2),
-            string: b"aa",
-            position_range: ((1, 0), (1, 2)),
-            line_range: (0, 2),
-            line: b"aa",
-        })
-        .unwrap();
-    }
-    {
-        let info = lexer.next().unwrap();
-        check_info(CheckInfo {
-            source,
-            info: &info,
-            kind: TokenKind::Newline,
-            string_range: (2, 2),
-            string: b"",
-            position_range: ((1, 2), (1, 3)),
-            line_range: (0, 2),
-            line: b"aa",
-        })
-        .unwrap();
-    }
-    {
-        let info = lexer.next().unwrap();
-        check_info(CheckInfo {
-            source,
-            info: &info,
-            kind: TokenKind::Endmarker,
-            string_range: (2, 2),
-            string: b"",
-            position_range: ((2, 0), (2, 0)),
-            line_range: (2, 2),
-            line: b"",
-        })
-        .unwrap();
-    }
-}
-
-#[test]
-fn name_ascii_a1() {
+fn name_ascii_continue_ascii() {
     let builder = KeywordMapBuilder::new();
     let keyword_map = builder.build();
     let source = b"a1";
@@ -558,6 +508,210 @@ fn name_ascii_a1() {
             string: b"",
             position_range: ((2, 0), (2, 0)),
             line_range: (2, 2),
+            line: b"",
+        })
+        .unwrap();
+    }
+}
+
+#[test]
+fn name_ascii_continue_multi_byte_code_point() {
+    let builder = KeywordMapBuilder::new();
+    let keyword_map = builder.build();
+    let source_str = "a가";
+    let source = source_str.as_bytes();
+    let mut lexer = Lexer::new(&keyword_map, source);
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Name,
+            string_range: (0, 4),
+            string: "a가".as_bytes(),
+            position_range: ((1, 0), (1, 4)),
+            line_range: (0, 4),
+            line: "a가".as_bytes(),
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Newline,
+            string_range: (4, 4),
+            string: b"",
+            position_range: ((1, 4), (1, 5)),
+            line_range: (0, 4),
+            line: "a가".as_bytes(),
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Endmarker,
+            string_range: (4, 4),
+            string: b"",
+            position_range: ((2, 0), (2, 0)),
+            line_range: (4, 4),
+            line: b"",
+        })
+        .unwrap();
+    }
+}
+
+#[test]
+fn name_utf8_multi_byte_code_point_start() {
+    let builder = KeywordMapBuilder::new();
+    let keyword_map = builder.build();
+    let source_str = "가";
+    let source = source_str.as_bytes();
+    let mut lexer = Lexer::new(&keyword_map, source);
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Name,
+            string_range: (0, 3),
+            string: "가".as_bytes(),
+            position_range: ((1, 0), (1, 3)),
+            line_range: (0, 3),
+            line: "가".as_bytes(),
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Newline,
+            string_range: (3, 3),
+            string: b"",
+            position_range: ((1, 3), (1, 4)),
+            line_range: (0, 3),
+            line: "가".as_bytes(),
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Endmarker,
+            string_range: (3, 3),
+            string: b"",
+            position_range: ((2, 0), (2, 0)),
+            line_range: (3, 3),
+            line: b"",
+        })
+        .unwrap();
+    }
+}
+
+#[test]
+fn name_utf8_multi_byte_code_point_continue_ascii() {
+    let builder = KeywordMapBuilder::new();
+    let keyword_map = builder.build();
+    let source_str = "가1";
+    let source = source_str.as_bytes();
+    let mut lexer = Lexer::new(&keyword_map, source);
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Name,
+            string_range: (0, 4),
+            string: "가1".as_bytes(),
+            position_range: ((1, 0), (1, 4)),
+            line_range: (0, 4),
+            line: "가1".as_bytes(),
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Newline,
+            string_range: (4, 4),
+            string: b"",
+            position_range: ((1, 4), (1, 5)),
+            line_range: (0, 4),
+            line: "가1".as_bytes(),
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Endmarker,
+            string_range: (4, 4),
+            string: b"",
+            position_range: ((2, 0), (2, 0)),
+            line_range: (4, 4),
+            line: b"",
+        })
+        .unwrap();
+    }
+}
+
+#[test]
+fn name_utf8_multi_byte_code_point_continue_multi_byte_code_point() {
+    let builder = KeywordMapBuilder::new();
+    let keyword_map = builder.build();
+    let source_str = "가나";
+    let source = source_str.as_bytes();
+    let mut lexer = Lexer::new(&keyword_map, source);
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Name,
+            string_range: (0, 6),
+            string: "가나".as_bytes(),
+            position_range: ((1, 0), (1, 6)),
+            line_range: (0, 6),
+            line: "가나".as_bytes(),
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Newline,
+            string_range: (6, 6),
+            string: b"",
+            position_range: ((1, 6), (1, 7)),
+            line_range: (0, 6),
+            line: "가나".as_bytes(),
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Endmarker,
+            string_range: (6, 6),
+            string: b"",
+            position_range: ((2, 0), (2, 0)),
+            line_range: (6, 6),
             line: b"",
         })
         .unwrap();

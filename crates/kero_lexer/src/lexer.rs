@@ -5,7 +5,7 @@ use crate::{
 };
 use anyhow::{bail, Result};
 use std::{collections::VecDeque, io::Read, str};
-use unicode_ident::is_xid_continue;
+use unicode_ident::{is_xid_continue, is_xid_start};
 
 pub struct Lexer<'a, R> {
     keyword_map: &'a KeywordMap,
@@ -82,7 +82,12 @@ where
                     self.handle_line_separator(byte)?;
                     break;
                 }
-                x if is_ascii_xid_start(x) => self.handle_ascii_xid_start(byte)?,
+                x if is_ascii_xid_start(x) => {
+                    self.handle_ascii_xid_start(byte)?;
+                }
+                x if ByteKind::from(x).is_first_of_multi_byte_code_point() => {
+                    self.handle_first_of_multi_byte_code_point(byte)?
+                }
                 _ => {
                     bail!("Unexpected byte pattern. byte: {}", byte);
                 }
@@ -150,40 +155,45 @@ where
         debug_assert!(is_ascii_xid_start(byte));
         self.scan_string(|this| {
             this.advance_and_increase_column(1)?;
-            loop {
-                let Some(byte) = this.lexer.reader.read(0)? else {
-                    break;
-                };
-                let kind = ByteKind::byte_kind(byte);
-                let Some(trailing_byte_count) = kind.trailing_byte_count() else {
-                    bail!("Unexpected start byte of UTF-8. byte: {}", byte);
-                };
-                if trailing_byte_count == 0 {
-                    if !is_ascii_xid_continue(byte) {
-                        break;
-                    }
-                } else {
-                    let mut buf = [0u8; 4];
-                    buf[0] = byte;
-                    debug_assert!(trailing_byte_count <= 3);
-                    for i in 1..=trailing_byte_count {
-                        let Some(trailing) = this.lexer.reader.read(i.try_into()?)? else {
-                            bail!("Unexpected EOF encountered instead of UTF-8 continuation.");
-                        };
-                        buf[i] = trailing;
-                    }
-                    let str = str::from_utf8(&buf[0..=trailing_byte_count])?;
-                    let Some(ch) = str.chars().next() else {
-                        bail!("Must exist character present");
-                    };
-                    if !is_xid_continue(ch) {
-                        break;
-                    }
-                }
-                this.advance_and_increase_column(1 + trailing_byte_count)?;
-            }
-            Ok(TokenKind::Name)
+            this.process_name_continue()
         })
+    }
+
+    fn handle_first_of_multi_byte_code_point(&mut self, byte: u8) -> Result<()> {
+        let kind: ByteKind = byte.into();
+        debug_assert!(kind.is_first_of_multi_byte_code_point());
+        let ch = self.read_char(byte)?;
+        if !is_xid_start(ch) {
+            bail!("It is not UTF-8 XID_START.");
+        }
+        self.scan_string(|this| {
+            this.advance_and_increase_column(ch.len_utf8())?;
+            this.process_name_continue()
+        })
+    }
+
+    fn process_name_continue(&mut self) -> Result<TokenKind> {
+        loop {
+            let Some(byte) = self.lexer.reader.read(0)? else {
+                break;
+            };
+            let kind: ByteKind = byte.into();
+            let Some(trailing_byte_count) = kind.trailing_byte_count() else {
+                bail!("Unexpected start byte of UTF-8. byte: {}", byte);
+            };
+            if trailing_byte_count == 0 {
+                if !is_ascii_xid_continue(byte) {
+                    break;
+                }
+            } else {
+                let ch = self.read_char(byte)?;
+                if !is_xid_continue(ch) {
+                    break;
+                }
+            }
+            self.advance_and_increase_column(1 + trailing_byte_count)?;
+        }
+        Ok(TokenKind::Name)
     }
 
     fn scan_string<F>(&mut self, string_scanner: F) -> Result<()>
@@ -240,6 +250,29 @@ where
         } else {
             TokenKind::Nl
         }
+    }
+
+    fn read_char(&mut self, byte: u8) -> Result<char> {
+        debug_assert!(byte == self.lexer.reader.read(0)?.unwrap());
+        let kind: ByteKind = byte.into();
+        debug_assert!(kind.is_first_of_multi_byte_code_point());
+        let Some(trailing_byte_count) = kind.trailing_byte_count() else {
+            bail!("Must exist trailing byte count");
+        };
+        debug_assert!(0 < trailing_byte_count && trailing_byte_count < 4);
+        let mut buf = [0u8; 4];
+        buf[0] = byte;
+        for i in 1..=trailing_byte_count {
+            let Some(trailing) = self.lexer.reader.read(i.try_into()?)? else {
+                bail!("Unexpected EOF encountered instead of UTF-8 continuation.");
+            };
+            buf[i] = trailing;
+        }
+        let str = str::from_utf8(&buf[0..=trailing_byte_count])?;
+        let Some(ch) = str.chars().next() else {
+            bail!("Must exist character present");
+        };
+        Ok(ch)
     }
 }
 
