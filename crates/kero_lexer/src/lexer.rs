@@ -43,6 +43,7 @@ where
             lexer: self,
             tokens: vec![],
             column: 0,
+            is_newline_needed: false,
         };
         scanner.scan()?;
         let line_range = ByteRange {
@@ -62,6 +63,7 @@ struct LineScanner<'b, 'a, R> {
     lexer: &'b mut Lexer<'a, R>,
     tokens: Vec<Token>,
     column: usize,
+    is_newline_needed: bool,
 }
 
 impl<'b, 'a, R> LineScanner<'b, 'a, R>
@@ -100,8 +102,8 @@ where
             if !has_line_separator {
                 self.scan_string_and_increase_line(|this| {
                     this.column += 1;
-                    // TODO(harry): change token kind logic with condition
-                    Ok(TokenKind::Nl)
+                    let kind = this.nl_or_newline();
+                    Ok(kind)
                 })?;
                 return Ok(());
             }
@@ -122,8 +124,8 @@ where
                     }
                 }
             }
-            // TODO(harry): change token kind logic with condition
-            Ok(TokenKind::Nl)
+            let kind = this.nl_or_newline();
+            Ok(kind)
         })
     }
 
@@ -194,6 +196,11 @@ where
             column: self.column,
         };
         let kind = string_scanner(self)?;
+        if !self.is_newline_needed {
+            if kind == TokenKind::Name {
+                self.is_newline_needed = true;
+            }
+        }
         self.tokens.push(Token {
             kind,
             string_range: ByteRange {
@@ -225,6 +232,14 @@ where
         self.lexer.reader.advance(offset.try_into()?)?;
         self.column += offset;
         Ok(())
+    }
+
+    fn nl_or_newline(&self) -> TokenKind {
+        if self.is_newline_needed {
+            TokenKind::Newline
+        } else {
+            TokenKind::Nl
+        }
     }
 }
 

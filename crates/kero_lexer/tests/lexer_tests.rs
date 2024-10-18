@@ -1,3 +1,5 @@
+use anyhow::{bail, Result};
+use core::str;
 use kero_lexer::{
     core::{KeywordMapBuilder, TokenInfo, TokenKind},
     lexer::Lexer,
@@ -14,66 +16,88 @@ struct CheckInfo<'a> {
     line: &'a [u8],
 }
 
-fn check_info(check_info: CheckInfo) {
-    assert_eq!(
-        check_info.info.token.kind, check_info.kind,
-        "kind real: {:?} expected: {:?}",
-        check_info.info.token.kind, check_info.kind
-    );
-    assert_eq!(
-        check_info.info.token.string_range.start, check_info.string_range.0,
-        "string_range.start real: {} expected: {}",
-        check_info.info.token.string_range.start, check_info.string_range.0,
-    );
-    assert_eq!(
-        check_info.info.token.string_range.end, check_info.string_range.1,
-        "string_range.end real: {} expected: {}",
-        check_info.info.token.string_range.end, check_info.string_range.1,
-    );
-    assert_eq!(
-        &check_info.source[check_info.string_range.0..check_info.string_range.1],
-        check_info.string,
-        "string real: {:?} expected: {:?}",
-        &check_info.source[check_info.string_range.0..check_info.string_range.1],
-        check_info.string,
-    );
-    assert_eq!(
-        check_info.info.token.position_range.start.line, check_info.position_range.0 .0,
-        "position_range.start.line real: {} expected: {}",
-        check_info.info.token.position_range.start.line, check_info.position_range.0 .0,
-    );
-    assert_eq!(
-        check_info.info.token.position_range.start.column, check_info.position_range.0 .1,
-        "position_range.start.column real: {} expected: {}",
-        check_info.info.token.position_range.start.column, check_info.position_range.0 .1,
-    );
-    assert_eq!(
-        check_info.info.token.position_range.end.line, check_info.position_range.1 .0,
-        "position_range.end.line real: {} expected: {}",
-        check_info.info.token.position_range.end.line, check_info.position_range.1 .0,
-    );
-    assert_eq!(
-        check_info.info.token.position_range.end.column, check_info.position_range.1 .1,
-        "position_range.end.line real: {} expected: {}",
-        check_info.info.token.position_range.end.column, check_info.position_range.1 .1,
-    );
-    assert_eq!(
-        check_info.info.line_range.start, check_info.line_range.0,
-        "line_range.start real: {} expected: {}",
-        check_info.info.line_range.start, check_info.line_range.0,
-    );
-    assert_eq!(
-        check_info.info.line_range.end, check_info.line_range.1,
-        "line_range.end real: {} expected: {}",
-        check_info.info.line_range.end, check_info.line_range.1,
-    );
-    assert_eq!(
-        &check_info.source[check_info.line_range.0..check_info.line_range.1],
-        check_info.line,
-        "line real: {:?} expected: {:?}",
-        &check_info.source[check_info.line_range.0..check_info.line_range.1],
-        check_info.line,
-    );
+fn check_info(check_info: CheckInfo) -> Result<()> {
+    if check_info.info.token.kind != check_info.kind {
+        bail!(
+            "kind real: {:?} expected: {:?}",
+            check_info.info.token.kind,
+            check_info.kind
+        );
+    }
+    if check_info.info.token.string_range.start != check_info.string_range.0 {
+        bail!(
+            "string_range.start real: {} expected: {}",
+            check_info.info.token.string_range.start,
+            check_info.string_range.0,
+        );
+    }
+    if check_info.info.token.string_range.end != check_info.string_range.1 {
+        bail!(
+            "string_range.end real: {} expected: {}",
+            check_info.info.token.string_range.end,
+            check_info.string_range.1,
+        );
+    }
+    if &check_info.source[check_info.string_range.0..check_info.string_range.1] != check_info.string
+    {
+        bail!(
+            "string real: {} expected: {}",
+            str::from_utf8(
+                &check_info.source[check_info.string_range.0..check_info.string_range.1],
+            )?,
+            str::from_utf8(check_info.string)?,
+        );
+    }
+    if check_info.info.token.position_range.start.line != check_info.position_range.0 .0 {
+        bail!(
+            "position_range.start.line real: {} expected: {}",
+            check_info.info.token.position_range.start.line,
+            check_info.position_range.0 .0,
+        );
+    }
+    if check_info.info.token.position_range.start.column != check_info.position_range.0 .1 {
+        bail!(
+            "position_range.start.column real: {} expected: {}",
+            check_info.info.token.position_range.start.column,
+            check_info.position_range.0 .1,
+        );
+    }
+    if check_info.info.token.position_range.end.line != check_info.position_range.1 .0 {
+        bail!(
+            "position_range.end.line real: {} expected: {}",
+            check_info.info.token.position_range.end.line,
+            check_info.position_range.1 .0,
+        );
+    }
+    if check_info.info.token.position_range.end.column != check_info.position_range.1 .1 {
+        bail!(
+            "position_range.end.line real: {} expected: {}",
+            check_info.info.token.position_range.end.column,
+            check_info.position_range.1 .1,
+        );
+    }
+    if check_info.info.line_range.start != check_info.line_range.0 {
+        bail!(
+            "line_range.start real: {} expected: {}",
+            check_info.info.line_range.start,
+            check_info.line_range.0,
+        );
+    }
+    if check_info.info.line_range.end != check_info.line_range.1 {
+        bail!(
+            "line_range.end real: {} expected: {}",
+            check_info.info.line_range.end,
+            check_info.line_range.1,
+        );
+    }
+    if &check_info.source[check_info.line_range.0..check_info.line_range.1] != check_info.line {
+        bail!(
+            "line real: {} expected: {}",
+            str::from_utf8(&check_info.source[check_info.line_range.0..check_info.line_range.1])?,
+            str::from_utf8(check_info.line)?,
+        );
+    }
+    Ok(())
 }
 
 #[test]
@@ -92,7 +116,8 @@ fn endmarker() {
         position_range: ((1, 0), (1, 0)),
         line_range: (0, 0),
         line: b"",
-    });
+    })
+    .unwrap();
 }
 
 #[test]
@@ -112,7 +137,8 @@ fn nl_carriage_return() {
             position_range: ((1, 0), (1, 1)),
             line_range: (0, 1),
             line: b"\r",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -125,7 +151,8 @@ fn nl_carriage_return() {
             position_range: ((2, 0), (2, 0)),
             line_range: (1, 1),
             line: b"",
-        });
+        })
+        .unwrap();
     }
 }
 
@@ -146,7 +173,8 @@ fn nl_line_feed() {
             position_range: ((1, 0), (1, 1)),
             line_range: (0, 1),
             line: b"\n",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -159,7 +187,8 @@ fn nl_line_feed() {
             position_range: ((2, 0), (2, 0)),
             line_range: (1, 1),
             line: b"",
-        });
+        })
+        .unwrap();
     }
 }
 
@@ -180,7 +209,8 @@ fn nl_carriage_return_line_feed() {
             position_range: ((1, 0), (1, 2)),
             line_range: (0, 2),
             line: b"\r\n",
-        });
+        })
+        .unwrap();
     }
 }
 
@@ -201,7 +231,8 @@ fn comment() {
             position_range: ((1, 0), (1, 1)),
             line_range: (0, 1),
             line: b"#",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -214,7 +245,8 @@ fn comment() {
             position_range: ((1, 1), (1, 2)),
             line_range: (0, 1),
             line: b"#",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -227,7 +259,8 @@ fn comment() {
             position_range: ((2, 0), (2, 0)),
             line_range: (1, 1),
             line: b"",
-        });
+        })
+        .unwrap();
     }
 }
 
@@ -248,7 +281,8 @@ fn comment_carriage_return() {
             position_range: ((1, 0), (1, 1)),
             line_range: (0, 2),
             line: b"#\r",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -261,7 +295,8 @@ fn comment_carriage_return() {
             position_range: ((1, 1), (1, 2)),
             line_range: (0, 2),
             line: b"#\r",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -274,7 +309,8 @@ fn comment_carriage_return() {
             position_range: ((2, 0), (2, 0)),
             line_range: (2, 2),
             line: b"",
-        });
+        })
+        .unwrap();
     }
 }
 
@@ -295,7 +331,8 @@ fn comment_line_feed() {
             position_range: ((1, 0), (1, 1)),
             line_range: (0, 2),
             line: b"#\n",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -308,7 +345,8 @@ fn comment_line_feed() {
             position_range: ((1, 1), (1, 2)),
             line_range: (0, 2),
             line: b"#\n",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -321,7 +359,8 @@ fn comment_line_feed() {
             position_range: ((2, 0), (2, 0)),
             line_range: (2, 2),
             line: b"",
-        });
+        })
+        .unwrap();
     }
 }
 
@@ -342,7 +381,8 @@ fn comment_carriage_return_line_feed() {
             position_range: ((1, 0), (1, 1)),
             line_range: (0, 3),
             line: b"#\r\n",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -355,7 +395,8 @@ fn comment_carriage_return_line_feed() {
             position_range: ((1, 1), (1, 3)),
             line_range: (0, 3),
             line: b"#\r\n",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -368,7 +409,8 @@ fn comment_carriage_return_line_feed() {
             position_range: ((2, 0), (2, 0)),
             line_range: (3, 3),
             line: b"",
-        });
+        })
+        .unwrap();
     }
 }
 
@@ -389,7 +431,8 @@ fn name_ascii_a() {
             position_range: ((1, 0), (1, 1)),
             line_range: (0, 1),
             line: b"a",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -402,7 +445,8 @@ fn name_ascii_a() {
             position_range: ((1, 1), (1, 2)),
             line_range: (0, 1),
             line: b"a",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -415,7 +459,8 @@ fn name_ascii_a() {
             position_range: ((2, 0), (2, 0)),
             line_range: (1, 1),
             line: b"",
-        });
+        })
+        .unwrap();
     }
 }
 
@@ -436,7 +481,8 @@ fn name_ascii_aa() {
             position_range: ((1, 0), (1, 2)),
             line_range: (0, 2),
             line: b"aa",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -445,11 +491,12 @@ fn name_ascii_aa() {
             info: &info,
             kind: TokenKind::Newline,
             string_range: (2, 2),
-            string: b"aa",
+            string: b"",
             position_range: ((1, 2), (1, 3)),
             line_range: (0, 2),
             line: b"aa",
-        });
+        })
+        .unwrap();
     }
     {
         let info = lexer.next().unwrap();
@@ -462,6 +509,57 @@ fn name_ascii_aa() {
             position_range: ((2, 0), (2, 0)),
             line_range: (2, 2),
             line: b"",
-        });
+        })
+        .unwrap();
+    }
+}
+
+#[test]
+fn name_ascii_a1() {
+    let builder = KeywordMapBuilder::new();
+    let keyword_map = builder.build();
+    let source = b"a1";
+    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Name,
+            string_range: (0, 2),
+            string: b"a1",
+            position_range: ((1, 0), (1, 2)),
+            line_range: (0, 2),
+            line: b"a1",
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Newline,
+            string_range: (2, 2),
+            string: b"",
+            position_range: ((1, 2), (1, 3)),
+            line_range: (0, 2),
+            line: b"a1",
+        })
+        .unwrap();
+    }
+    {
+        let info = lexer.next().unwrap();
+        check_info(CheckInfo {
+            source,
+            info: &info,
+            kind: TokenKind::Endmarker,
+            string_range: (2, 2),
+            string: b"",
+            position_range: ((2, 0), (2, 0)),
+            line_range: (2, 2),
+            line: b"",
+        })
+        .unwrap();
     }
 }
