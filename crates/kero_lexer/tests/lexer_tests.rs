@@ -1,7 +1,7 @@
 use anyhow::{bail, Result};
 use core::str;
 use kero_lexer::{
-    core::{KeywordMapBuilder, TokenInfo, TokenKind},
+    core::{TokenInfo, TokenKind},
     lexer::Lexer,
 };
 
@@ -102,10 +102,8 @@ fn check_info(check_info: CheckInfo) -> Result<()> {
 
 #[test]
 fn endmarker() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     let info = lexer.next().unwrap();
     check_info(CheckInfo {
         source,
@@ -122,10 +120,8 @@ fn endmarker() {
 
 #[test]
 fn nl_carriage_return() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"\r";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -158,10 +154,8 @@ fn nl_carriage_return() {
 
 #[test]
 fn nl_line_feed() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"\n";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -194,10 +188,8 @@ fn nl_line_feed() {
 
 #[test]
 fn nl_carriage_return_line_feed() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"\r\n";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -216,10 +208,8 @@ fn nl_carriage_return_line_feed() {
 
 #[test]
 fn comment() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"#";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -266,10 +256,8 @@ fn comment() {
 
 #[test]
 fn comment_carriage_return() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"#\r";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -316,10 +304,8 @@ fn comment_carriage_return() {
 
 #[test]
 fn comment_line_feed() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"#\n";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -366,10 +352,8 @@ fn comment_line_feed() {
 
 #[test]
 fn comment_carriage_return_line_feed() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"#\r\n";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -416,10 +400,8 @@ fn comment_carriage_return_line_feed() {
 
 #[test]
 fn name_ascii_start() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"a";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -466,10 +448,8 @@ fn name_ascii_start() {
 
 #[test]
 fn name_ascii_continue_ascii() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source = b"a1";
-    let mut lexer = Lexer::new(&keyword_map, source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice());
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -516,11 +496,9 @@ fn name_ascii_continue_ascii() {
 
 #[test]
 fn name_ascii_continue_multi_byte_code_point() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source_str = "a가";
     let source = source_str.as_bytes();
-    let mut lexer = Lexer::new(&keyword_map, source);
+    let mut lexer = Lexer::new(source);
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -567,11 +545,9 @@ fn name_ascii_continue_multi_byte_code_point() {
 
 #[test]
 fn name_utf8_multi_byte_code_point_start() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source_str = "가";
     let source = source_str.as_bytes();
-    let mut lexer = Lexer::new(&keyword_map, source);
+    let mut lexer = Lexer::new(source);
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -618,11 +594,9 @@ fn name_utf8_multi_byte_code_point_start() {
 
 #[test]
 fn name_utf8_multi_byte_code_point_continue_ascii() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source_str = "가1";
     let source = source_str.as_bytes();
-    let mut lexer = Lexer::new(&keyword_map, source);
+    let mut lexer = Lexer::new(source);
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -669,11 +643,9 @@ fn name_utf8_multi_byte_code_point_continue_ascii() {
 
 #[test]
 fn name_utf8_multi_byte_code_point_continue_multi_byte_code_point() {
-    let builder = KeywordMapBuilder::new();
-    let keyword_map = builder.build();
     let source_str = "가나";
     let source = source_str.as_bytes();
-    let mut lexer = Lexer::new(&keyword_map, source);
+    let mut lexer = Lexer::new(source);
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {

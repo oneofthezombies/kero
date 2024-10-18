@@ -1,5 +1,5 @@
 use crate::{
-    core::{ByteRange, KeywordMap, Position, PositionRange, Token, TokenInfo, TokenKind},
+    core::{ByteRange, Position, PositionRange, Token, TokenInfo, TokenKind},
     lookaround_buf_reader::LookaroundBufReader,
     utf8::unchecked::ByteKind,
 };
@@ -7,20 +7,18 @@ use anyhow::{bail, Result};
 use std::{collections::VecDeque, io::Read, str};
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-pub struct Lexer<'a, R> {
-    keyword_map: &'a KeywordMap,
+pub struct Lexer<R> {
     reader: LookaroundBufReader<R>,
     token_info_queue: VecDeque<TokenInfo>,
     line: usize,
 }
 
-impl<'a, R> Lexer<'a, R>
+impl<R> Lexer<R>
 where
     R: Read,
 {
-    pub fn new(keyword_map: &'a KeywordMap, reader: R) -> Self {
+    pub fn new(reader: R) -> Self {
         Self {
-            keyword_map,
             reader: LookaroundBufReader::new(reader),
             token_info_queue: VecDeque::new(),
             line: 1,
@@ -59,14 +57,14 @@ where
     }
 }
 
-struct LineScanner<'b, 'a, R> {
-    lexer: &'b mut Lexer<'a, R>,
+struct LineScanner<'a, R> {
+    lexer: &'a mut Lexer<R>,
     tokens: Vec<Token>,
     column: usize,
     is_newline_needed: bool,
 }
 
-impl<'b, 'a, R> LineScanner<'b, 'a, R>
+impl<'a, R> LineScanner<'a, R>
 where
     R: Read,
 {

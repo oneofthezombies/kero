@@ -41,6 +41,3 @@ pub struct TokenInfo {
     pub token: Token,
     pub line_range: ByteRange,
 }
-
-pub type KeywordMap = Trie<u8>;
-pub type KeywordMapBuilder = TrieBuilder<u8>;
