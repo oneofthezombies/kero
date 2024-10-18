@@ -75,11 +75,11 @@ where
                 break;
             };
             match byte {
+                b'#' => self.handle_sharp(byte)?,
                 x if is_line_separator(x) => {
                     self.handle_line_separator(byte)?;
                     break;
                 }
-                b'#' => self.handle_sharp(byte)?,
                 x if is_ascii_xid_start(x) => self.handle_ascii_xid_start(byte)?,
                 _ => {
                     bail!("Unexpected byte pattern. byte: {}", byte);
