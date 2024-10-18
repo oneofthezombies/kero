@@ -82,9 +82,7 @@ where
                     self.handle_line_separator(byte)?;
                     break;
                 }
-                x if is_ascii_xid_start(x) => {
-                    self.handle_ascii_xid_start(byte)?;
-                }
+                x if is_ascii_xid_start(x) => self.handle_ascii_xid_start(byte)?,
                 x if ByteKind::from(x).is_first_of_multi_byte_code_point() => {
                     self.handle_first_of_multi_byte_code_point(byte)?
                 }
@@ -280,9 +278,17 @@ fn is_line_separator(byte: u8) -> bool {
     byte == b'\r' || byte == b'\n'
 }
 
+fn is_ascii_alphabetic(byte: u8) -> bool {
+    match byte {
+        b'A'..=b'Z' | b'a'..=b'z' => true,
+        _ => false,
+    }
+}
+
 fn is_ascii_xid_start(byte: u8) -> bool {
     match byte {
-        b'A'..=b'Z' | b'a'..=b'z' | b'_' => true,
+        b'_' => true,
+        x if is_ascii_alphabetic(x) => true,
         _ => false,
     }
 }
