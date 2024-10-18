@@ -74,7 +74,7 @@ where
             };
             match byte {
                 b'\r' | b'\n' => {
-                    self.handle_line_separator()?;
+                    self.handle_line_separator(byte)?;
                     break;
                 }
                 _ => {
@@ -94,18 +94,32 @@ where
                 .rev()
                 .any(|t| t.kind == TokenKind::Nl || t.kind == TokenKind::Newline);
             if !has_line_separator {
-                self.scan_string(|scanner| {
+                self.scan_string_and_increase_line(|scanner| {
                     scanner.column += 1;
                     // TODO(harry): change token kind logic with condition
                     Ok(TokenKind::Nl)
                 })?;
             }
         }
-        todo!();
+        self.scan_string(|_| {
+            return Ok(TokenKind::Endmarker);
+        })
     }
 
-    fn handle_line_separator(&mut self) -> Result<()> {
-        todo!();
+    fn handle_line_separator(&mut self, byte: u8) -> Result<()> {
+        debug_assert!(byte == b'\r' || byte == b'\n');
+        self.scan_string_and_increase_line(|scanner| {
+            scanner.advance_and_increase_column(1)?;
+            if byte == b'\r' {
+                if let Some(next) = scanner.lexer.reader.read(0)? {
+                    if next == b'\n' {
+                        scanner.advance_and_increase_column(1)?;
+                    }
+                }
+            }
+            // TODO(harry): change token kind logic with condition
+            Ok(TokenKind::Nl)
+        })
     }
 
     fn scan_string<F>(&mut self, string_scanner: F) -> Result<()>
@@ -132,6 +146,21 @@ where
                 },
             },
         });
+        Ok(())
+    }
+
+    fn scan_string_and_increase_line<F>(&mut self, string_scanner: F) -> Result<()>
+    where
+        F: FnOnce(&mut Self) -> Result<TokenKind>,
+    {
+        self.scan_string(string_scanner)?;
+        self.lexer.line += 1;
+        Ok(())
+    }
+
+    fn advance_and_increase_column(&mut self, offset: usize) -> Result<()> {
+        self.lexer.reader.advance(offset.try_into()?)?;
+        self.column += 1;
         Ok(())
     }
 }
