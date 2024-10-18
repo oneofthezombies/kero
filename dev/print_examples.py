@@ -24,4 +24,9 @@ def print_example(source: bytes):
 # ''' # a
 # #"""
 # )
-print_example(b"a")
+# print_example(b"a")
+print_example(b'""')
+print_example(b"''")
+print_example(b'""""""')
+print_example(b"''''''")
+print_example(b"'''\n'''")
