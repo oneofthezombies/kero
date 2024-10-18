@@ -10,7 +10,7 @@ pub(crate) enum TokenKind {
     Comment, // #
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub(crate) struct ByteRange {
     pub(crate) start: usize, // inclusive
     pub(crate) end: usize,   // exclusive
@@ -47,5 +47,4 @@ pub(crate) struct TokenInfo {
     pub(crate) line_range: ByteRange,
 }
 
-pub(crate) type TokenInfoPtr = Box<TokenInfo>;
 pub(crate) type KeywordMap = Trie<u8>;
