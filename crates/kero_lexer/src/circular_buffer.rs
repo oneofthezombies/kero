@@ -1,14 +1,14 @@
 use anyhow::{bail, Result};
 use std::{mem::MaybeUninit, usize};
 
-pub(crate) struct StackCircularBuffer<const N: usize, T> {
+pub(crate) struct CircularBuffer<const N: usize, T> {
     buf: [MaybeUninit<T>; N],
     head: usize,
     tail: usize,
     is_full: bool,
 }
 
-impl<const N: usize, T> StackCircularBuffer<N, T> {
+impl<const N: usize, T> CircularBuffer<N, T> {
     pub(crate) fn try_new() -> Result<Self> {
         if N == 0 {
             bail!("Buffer size must be greater than 0.");
@@ -144,46 +144,46 @@ mod tests {
 
     #[test]
     fn n_0() {
-        let result = StackCircularBuffer::<0, i32>::try_new();
+        let result = CircularBuffer::<0, i32>::try_new();
         assert_eq!(result.is_err(), true);
     }
 
     #[test]
     fn n_1() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         assert_eq!(result.is_ok(), true);
     }
 
     #[test]
     fn n_2() {
-        let result = StackCircularBuffer::<2, i32>::try_new();
+        let result = CircularBuffer::<2, i32>::try_new();
         assert_eq!(result.is_ok(), true);
     }
 
     #[test]
     fn capacity_1() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let buf = result.unwrap();
         assert_eq!(buf.capacity(), 1);
     }
 
     #[test]
     fn capacity_2() {
-        let result = StackCircularBuffer::<2, i32>::try_new();
+        let result = CircularBuffer::<2, i32>::try_new();
         let buf = result.unwrap();
         assert_eq!(buf.capacity(), 2);
     }
 
     #[test]
     fn len_empty() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let buf = result.unwrap();
         assert_eq!(buf.len(), 0);
     }
 
     #[test]
     fn len_full() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.push_back(0), true);
         assert_eq!(buf.len(), 1);
@@ -191,7 +191,7 @@ mod tests {
 
     #[test]
     fn len_head_smaller_than_tail() {
-        let result = StackCircularBuffer::<2, i32>::try_new();
+        let result = CircularBuffer::<2, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.push_back(0), true);
         assert_eq!(buf.len(), 1);
@@ -199,7 +199,7 @@ mod tests {
 
     #[test]
     fn len_tail_smaller_than_head() {
-        let result = StackCircularBuffer::<2, i32>::try_new();
+        let result = CircularBuffer::<2, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.push_back(0), true);
         assert_eq!(buf.push_back(1), true);
@@ -209,14 +209,14 @@ mod tests {
 
     #[test]
     fn is_empty() {
-        let result = StackCircularBuffer::<2, i32>::try_new();
+        let result = CircularBuffer::<2, i32>::try_new();
         let buf = result.unwrap();
         assert_eq!(buf.is_empty(), true);
     }
 
     #[test]
     fn get_0() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.get(0), None);
         assert_eq!(buf.push_back(0), true);
@@ -225,7 +225,7 @@ mod tests {
 
     #[test]
     fn get_mut() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.get_mut(0), None);
         assert_eq!(buf.push_back(0), true);
@@ -234,7 +234,7 @@ mod tests {
 
     #[test]
     fn front() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.front(), None);
         assert_eq!(buf.push_back(0), true);
@@ -243,7 +243,7 @@ mod tests {
 
     #[test]
     fn front_mut() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.front_mut(), None);
         assert_eq!(buf.push_back(0), true);
@@ -252,7 +252,7 @@ mod tests {
 
     #[test]
     fn back() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.back(), None);
         assert_eq!(buf.push_back(0), true);
@@ -261,7 +261,7 @@ mod tests {
 
     #[test]
     fn back_mut() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.back_mut(), None);
         assert_eq!(buf.push_back(0), true);
@@ -270,7 +270,7 @@ mod tests {
 
     #[test]
     fn pop_front() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.pop_front(), None);
         assert_eq!(buf.push_back(0), true);
@@ -280,7 +280,7 @@ mod tests {
 
     #[test]
     fn push_back() {
-        let result = StackCircularBuffer::<1, i32>::try_new();
+        let result = CircularBuffer::<1, i32>::try_new();
         let mut buf = result.unwrap();
         assert_eq!(buf.is_empty(), true);
         assert_eq!(buf.push_back(0), true);
