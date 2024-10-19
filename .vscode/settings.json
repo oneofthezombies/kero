@@ -25,6 +25,7 @@
     "Endmarker",
     "lookaround",
     "oneofthezombies",
+    "Uninit",
     "webp"
   ]
 }

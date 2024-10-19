@@ -1,55 +1,73 @@
-use std::usize;
+use std::{mem::MaybeUninit, usize};
 
-struct StackCircularBuffer<const N: usize, T> {
-    buf: [T; N],
+pub(crate) struct StackCircularBuffer<const N: usize, T> {
+    buf: [MaybeUninit<T>; N],
+    head: usize,
+    tail: usize,
+    is_full: bool,
 }
 
 impl<const N: usize, T> StackCircularBuffer<N, T> {
-    fn new() -> Self {
-        todo!();
+    pub(crate) fn new() -> Self {
+        Self {
+            buf: unsafe { MaybeUninit::uninit().assume_init() },
+            head: 0,
+            tail: 0,
+            is_full: false,
+        }
     }
 
-    fn capacity(&self) -> usize {
+    pub(crate) fn capacity(&self) -> usize {
         N
     }
 
-    fn len(&self) -> usize {
+    pub(crate) fn len(&self) -> usize {
+        if self.head > self.tail {
+            self.head - self.tail
+        } else {
+            self.tail - self.head
+        }
+    }
+
+    pub(crate) fn is_empty(&self) -> bool {
+        self.head == self.tail && !self.is_full
+    }
+
+    pub(crate) fn get(&self, index: usize) -> Option<&T> {
+        debug_assert!(self.head < N);
+        debug_assert!(self.tail < N);
         todo!();
     }
 
-    fn is_empty(&self) -> usize {
+    pub(crate) fn get_mut(&mut self, index: usize) -> Option<&mut T> {
+        debug_assert!(self.head < N);
+        debug_assert!(self.tail < N);
+
         todo!();
     }
 
-    fn get(&self, index: usize) -> Option<&T> {
+    pub(crate) fn front(&self) -> Option<&T> {
+        self.get(self.head)
+    }
+
+    pub(crate) fn front_mut(&mut self) -> Option<&mut T> {
+        self.get_mut(self.head)
+    }
+
+    pub(crate) fn back(&self) -> Option<&T> {
+        let index = if self.tail > 0 { self.tail - 1 } else { N - 1 };
+        self.get(index)
+    }
+
+    pub(crate) fn back_mut(&mut self) -> Option<&mut T> {
         todo!();
     }
 
-    fn get_mut(&mut self, index: usize) -> Option<&mut T> {
+    pub(crate) fn pop_front(&mut self) -> Option<T> {
         todo!();
     }
 
-    fn front(&self) -> Option<&T> {
-        todo!();
-    }
-
-    fn front_mut(&mut self) -> Option<&mut T> {
-        todo!();
-    }
-
-    fn back(&self) -> Option<&T> {
-        todo!();
-    }
-
-    fn back_mut(&mut self) -> Option<&mut T> {
-        todo!();
-    }
-
-    fn pop_front(&mut self) -> Option<T> {
-        todo!();
-    }
-
-    fn push_back(&mut self, value: T) {
+    pub(crate) fn push_back(&mut self, value: T) {
         todo!();
     }
 }
