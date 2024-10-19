@@ -207,29 +207,84 @@ mod tests {
     }
 
     #[test]
-    fn is_empty() {}
+    fn is_empty() {
+        let result = StackCircularBuffer::<2, i32>::try_new();
+        let buf = result.unwrap();
+        assert_eq!(buf.is_empty(), true);
+    }
 
     #[test]
-    fn get() {}
+    fn get_0() {
+        let result = StackCircularBuffer::<1, i32>::try_new();
+        let mut buf = result.unwrap();
+        assert_eq!(buf.get(0), None);
+        assert_eq!(buf.push_back(0), true);
+        assert_eq!(buf.get(0), Some(0).as_ref());
+    }
 
     #[test]
-    fn get_mut() {}
+    fn get_mut() {
+        let result = StackCircularBuffer::<1, i32>::try_new();
+        let mut buf = result.unwrap();
+        assert_eq!(buf.get_mut(0), None);
+        assert_eq!(buf.push_back(0), true);
+        assert_eq!(buf.get_mut(0), Some(0).as_mut());
+    }
 
     #[test]
-    fn front() {}
+    fn front() {
+        let result = StackCircularBuffer::<1, i32>::try_new();
+        let mut buf = result.unwrap();
+        assert_eq!(buf.front(), None);
+        assert_eq!(buf.push_back(0), true);
+        assert_eq!(buf.front(), Some(0).as_ref());
+    }
 
     #[test]
-    fn front_mut() {}
+    fn front_mut() {
+        let result = StackCircularBuffer::<1, i32>::try_new();
+        let mut buf = result.unwrap();
+        assert_eq!(buf.front_mut(), None);
+        assert_eq!(buf.push_back(0), true);
+        assert_eq!(buf.front_mut(), Some(0).as_mut());
+    }
 
     #[test]
-    fn back() {}
+    fn back() {
+        let result = StackCircularBuffer::<1, i32>::try_new();
+        let mut buf = result.unwrap();
+        assert_eq!(buf.back(), None);
+        assert_eq!(buf.push_back(0), true);
+        assert_eq!(buf.back(), Some(0).as_ref());
+    }
 
     #[test]
-    fn back_mut() {}
+    fn back_mut() {
+        let result = StackCircularBuffer::<1, i32>::try_new();
+        let mut buf = result.unwrap();
+        assert_eq!(buf.back_mut(), None);
+        assert_eq!(buf.push_back(0), true);
+        assert_eq!(buf.back_mut(), Some(0).as_mut());
+    }
 
     #[test]
-    fn pop_front() {}
+    fn pop_front() {
+        let result = StackCircularBuffer::<1, i32>::try_new();
+        let mut buf = result.unwrap();
+        assert_eq!(buf.pop_front(), None);
+        assert_eq!(buf.push_back(0), true);
+        assert_eq!(buf.pop_front(), Some(0));
+        assert_eq!(buf.pop_front(), None);
+    }
 
     #[test]
-    fn push_back() {}
+    fn push_back() {
+        let result = StackCircularBuffer::<1, i32>::try_new();
+        let mut buf = result.unwrap();
+        assert_eq!(buf.is_empty(), true);
+        assert_eq!(buf.push_back(0), true);
+        assert_eq!(buf.front(), Some(0).as_ref());
+        assert_eq!(buf.back(), Some(0).as_ref());
+        assert_eq!(buf.is_empty(), false);
+    }
 }
