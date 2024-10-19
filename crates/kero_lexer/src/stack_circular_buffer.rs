@@ -84,6 +84,7 @@ impl<const N: usize, T> StackCircularBuffer<N, T> {
         Some(value)
     }
 
+    #[must_use]
     pub(crate) fn push_back(&mut self, value: T) -> bool {
         if self.is_full {
             return false;
