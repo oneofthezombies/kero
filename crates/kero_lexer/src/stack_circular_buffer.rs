@@ -9,6 +9,7 @@ pub(crate) struct StackCircularBuffer<const N: usize, T> {
 
 impl<const N: usize, T> StackCircularBuffer<N, T> {
     pub(crate) fn new() -> Self {
+        debug_assert!(N > 0);
         Self {
             buf: unsafe { MaybeUninit::uninit().assume_init() },
             head: 0,
@@ -22,10 +23,14 @@ impl<const N: usize, T> StackCircularBuffer<N, T> {
     }
 
     pub(crate) fn len(&self) -> usize {
-        if self.head > self.tail {
-            self.head - self.tail
+        if self.is_full {
+            N
         } else {
-            self.tail - self.head
+            if self.tail > self.head {
+                self.tail - self.head
+            } else {
+                N - self.head + self.tail
+            }
         }
     }
 
@@ -34,33 +39,32 @@ impl<const N: usize, T> StackCircularBuffer<N, T> {
     }
 
     pub(crate) fn get(&self, index: usize) -> Option<&T> {
-        debug_assert!(self.head < N);
-        debug_assert!(self.tail < N);
-        todo!();
+        self.buf
+            .get(self.buf_index(index))
+            .map(|v| unsafe { v.assume_init_ref() })
     }
 
     pub(crate) fn get_mut(&mut self, index: usize) -> Option<&mut T> {
-        debug_assert!(self.head < N);
-        debug_assert!(self.tail < N);
-
-        todo!();
+        let buf_index = self.buf_index(index);
+        self.buf
+            .get_mut(buf_index)
+            .map(|v| unsafe { v.assume_init_mut() })
     }
 
     pub(crate) fn front(&self) -> Option<&T> {
-        self.get(self.head)
+        self.get(0)
     }
 
     pub(crate) fn front_mut(&mut self) -> Option<&mut T> {
-        self.get_mut(self.head)
+        self.get_mut(0)
     }
 
     pub(crate) fn back(&self) -> Option<&T> {
-        let index = if self.tail > 0 { self.tail - 1 } else { N - 1 };
-        self.get(index)
+        self.get(N - 1)
     }
 
     pub(crate) fn back_mut(&mut self) -> Option<&mut T> {
-        todo!();
+        self.get_mut(N - 1)
     }
 
     pub(crate) fn pop_front(&mut self) -> Option<T> {
@@ -68,6 +72,10 @@ impl<const N: usize, T> StackCircularBuffer<N, T> {
     }
 
     pub(crate) fn push_back(&mut self, value: T) {
+        todo!();
+    }
+
+    fn buf_index(&self, index: usize) -> usize {
         todo!();
     }
 }
