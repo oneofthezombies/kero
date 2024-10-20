@@ -23,16 +23,20 @@ where
     }
 
     pub fn with_lookbehind_capacity(inner: R, lookbehind_capacity: usize) -> Result<Self> {
-        if lookbehind_capacity >= N {
+        let buf = CircularBuffer::<u8, N>::try_new()?;
+        let current_capacity = 1;
+        let min_lookahead_capacity = current_capacity;
+        let min_need_capacity = lookbehind_capacity + min_lookahead_capacity;
+        if min_need_capacity > N {
             bail!(
-                "lookbehind_capacity must be less than N lookbehind_capacity: {} N: {}",
+                "lookbehind_capacity must be less than N. lookbehind_capacity: {} N: {}",
                 lookbehind_capacity,
                 N
             );
         }
         Ok(Self {
             inner,
-            buf: CircularBuffer::<u8, N>::try_new()?,
+            buf,
             absolute_offset: 0,
             lookbehind_capacity,
             lookbehind_length: 0,
