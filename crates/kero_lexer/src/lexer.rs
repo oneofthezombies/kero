@@ -8,7 +8,7 @@ use std::{collections::VecDeque, io::Read, str};
 use unicode_ident::{is_xid_continue, is_xid_start};
 
 pub struct Lexer<R> {
-    reader: LookaroundBufReader<R>,
+    reader: LookaroundBufReader<R, 5>,
     token_info_queue: VecDeque<TokenInfo>,
     line: usize,
 }
