@@ -47,14 +47,14 @@ impl<T, const N: usize> CircularBuffer<T, N> {
 
     pub(crate) fn get(&self, index: usize) -> Option<&T> {
         self.buf
-            .get(self.parse_index(index)?)
+            .get(self.parse_index_to_position(index)?)
             .map(|v| unsafe { v.assume_init_ref() })
     }
 
     pub(crate) fn get_mut(&mut self, index: usize) -> Option<&mut T> {
-        let index = self.parse_index(index)?;
+        let position = self.parse_index_to_position(index)?;
         self.buf
-            .get_mut(index)
+            .get_mut(position)
             .map(|v| unsafe { v.assume_init_mut() })
     }
 
@@ -99,29 +99,29 @@ impl<T, const N: usize> CircularBuffer<T, N> {
         true
     }
 
-    fn parse_index(&self, index: usize) -> Option<usize> {
+    fn parse_index_to_position(&self, index: usize) -> Option<usize> {
         debug_assert!(N != 0);
-        let index = self.head.wrapping_add(index) % N;
+        let position = self.head.wrapping_add(index) % N;
         if self.head == self.tail {
             if self.is_full {
-                Some(index)
+                Some(position)
             } else {
                 None
             }
         } else if self.head < self.tail {
-            if self.head <= index && index < self.tail {
-                Some(index)
+            if self.head <= position && position < self.tail {
+                Some(position)
             } else {
                 None
             }
         } else
         /* tail < head */
         {
-            if self.head <= index && index < N {
-                Some(index)
+            if self.head <= position && position < N {
+                Some(position)
             } else {
-                if index < self.tail {
-                    Some(index)
+                if position < self.tail {
+                    Some(position)
                 } else {
                     None
                 }
