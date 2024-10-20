@@ -34,8 +34,9 @@ impl<T, const N: usize> CircularBuffer<T, N> {
             }
         } else if self.head < self.tail {
             self.tail - self.head
-        } else {
-            // tail < head
+        } else
+        /* tail < head */
+        {
             N - self.head + self.tail
         }
     }
@@ -113,8 +114,9 @@ impl<T, const N: usize> CircularBuffer<T, N> {
             } else {
                 None
             }
-        } else {
-            // tail < head
+        } else
+        /* tail < head */
+        {
             if self.head <= index && index < N {
                 Some(index)
             } else {
@@ -133,15 +135,19 @@ mod tests {
     use super::*;
     use core::fmt;
 
-    struct Check<T> {
+    struct Check<T, const N: usize> {
         capacity: usize,
         len: usize,
         is_empty: bool,
         front: Option<T>,
         back: Option<T>,
+        values: [Option<T>; N],
     }
 
-    fn check<T, const N: usize>(buf: &mut CircularBuffer<T, N>, mut check: Check<T>) -> Result<()>
+    fn check<T, const N: usize>(
+        buf: &mut CircularBuffer<T, N>,
+        mut check: Check<T, N>,
+    ) -> Result<()>
     where
         T: fmt::Debug + PartialEq,
     {
@@ -190,6 +196,24 @@ mod tests {
                 check.back.as_mut()
             )
         }
+        for i in 0..check.capacity {
+            if buf.get(i) != check.values.get(i).unwrap().as_ref() {
+                bail!(
+                    "get({}) real: {:?} expect: {:?}",
+                    i,
+                    buf.get(i),
+                    check.values.get(i)
+                );
+            }
+            if buf.get_mut(i) != check.values.get_mut(i).unwrap().as_mut() {
+                bail!(
+                    "get_mut({}) real: {:?} expect: {:?}",
+                    i,
+                    buf.get_mut(i),
+                    check.values.get_mut(i)
+                );
+            }
+        }
         Ok(())
     }
 
@@ -226,6 +250,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None]
             }
         );
     }
@@ -241,6 +266,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -252,6 +278,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0)]
             }
         );
     }
@@ -267,6 +294,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -278,6 +306,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0)]
             }
         );
         assert_eq!(buf.push_back(1), false);
@@ -289,6 +318,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0)]
             }
         );
     }
@@ -304,6 +334,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -315,6 +346,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0)]
             }
         );
         assert_eq!(buf.pop_front(), Some(0));
@@ -326,6 +358,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None]
             }
         );
     }
@@ -341,6 +374,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -352,6 +386,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0)]
             }
         );
         assert_eq!(buf.pop_front(), Some(0));
@@ -363,6 +398,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None]
             }
         );
         assert_eq!(buf.pop_front(), None);
@@ -374,6 +410,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None]
             }
         );
     }
@@ -389,6 +426,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         )
     }
@@ -404,6 +442,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -415,6 +454,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0), None]
             }
         );
     }
@@ -430,6 +470,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -441,6 +482,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0), None]
             }
         );
         assert_eq!(buf.push_back(1), true);
@@ -452,6 +494,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(1),
+                values: [Some(0), Some(1)]
             }
         );
     }
@@ -467,6 +510,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -478,6 +522,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0), None]
             }
         );
         assert_eq!(buf.pop_front(), Some(0));
@@ -489,6 +534,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
     }
@@ -504,6 +550,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -515,6 +562,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0), None]
             }
         );
         assert_eq!(buf.pop_front(), Some(0));
@@ -526,6 +574,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.pop_front(), None);
@@ -537,6 +586,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
     }
@@ -552,6 +602,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -563,6 +614,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0), None]
             }
         );
         assert_eq!(buf.push_back(1), true);
@@ -574,6 +626,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(1),
+                values: [Some(0), Some(1)]
             }
         );
         assert_eq!(buf.push_back(2), false);
@@ -585,6 +638,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(1),
+                values: [Some(0), Some(1)]
             }
         );
     }
@@ -600,6 +654,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -611,6 +666,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0), None]
             }
         );
         assert_eq!(buf.push_back(1), true);
@@ -622,6 +678,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(1),
+                values: [Some(0), Some(1)]
             }
         );
         assert_eq!(buf.pop_front(), Some(0));
@@ -633,6 +690,7 @@ mod tests {
                 is_empty: false,
                 front: Some(1),
                 back: Some(1),
+                values: [Some(1), None]
             }
         );
     }
@@ -648,6 +706,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -659,6 +718,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0), None]
             }
         );
         assert_eq!(buf.push_back(1), true);
@@ -670,6 +730,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(1),
+                values: [Some(0), Some(1)]
             }
         );
         assert_eq!(buf.pop_front(), Some(0));
@@ -681,6 +742,7 @@ mod tests {
                 is_empty: false,
                 front: Some(1),
                 back: Some(1),
+                values: [Some(1), None]
             }
         );
         assert_eq!(buf.pop_front(), Some(1));
@@ -692,6 +754,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
     }
@@ -707,6 +770,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.push_back(0), true);
@@ -718,6 +782,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(0),
+                values: [Some(0), None]
             }
         );
         assert_eq!(buf.push_back(1), true);
@@ -729,6 +794,7 @@ mod tests {
                 is_empty: false,
                 front: Some(0),
                 back: Some(1),
+                values: [Some(0), Some(1)]
             }
         );
         assert_eq!(buf.pop_front(), Some(0));
@@ -740,6 +806,7 @@ mod tests {
                 is_empty: false,
                 front: Some(1),
                 back: Some(1),
+                values: [Some(1), None]
             }
         );
         assert_eq!(buf.pop_front(), Some(1));
@@ -751,6 +818,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
         assert_eq!(buf.pop_front(), None);
@@ -762,6 +830,7 @@ mod tests {
                 is_empty: true,
                 front: None,
                 back: None,
+                values: [None, None]
             }
         );
     }
