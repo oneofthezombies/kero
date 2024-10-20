@@ -44,17 +44,19 @@ where
                 return Ok(None);
             }
 
+            let mut buf = [0u8; 4];
             let need_count = index + 1 - self.buf.len();
-            let mut buffer = vec![0u8; need_count];
-            let read_count = self.inner.read(&mut buffer)?;
+            if need_count > 4 {
+                bail!("read buffer out of range");
+            }
+            let read_count = self.inner.read(&mut buf[0..need_count])?;
             if read_count == 0 {
                 self.is_eof = true;
                 return Ok(None);
             }
 
-            buffer.truncate(read_count);
-            for b in buffer {
-                if !self.buf.push_back(b) {
+            for i in 0..read_count {
+                if !self.buf.push_back(buf[i]) {
                     bail!("circular buffer out of range");
                 }
             }
