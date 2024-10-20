@@ -131,6 +131,73 @@ impl<T, const N: usize> CircularBuffer<T, N> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use core::fmt;
+
+    struct Check<T> {
+        capacity: usize,
+        len: usize,
+        is_empty: bool,
+        front: Option<T>,
+        back: Option<T>,
+    }
+
+    fn check<T, const N: usize>(buf: &mut CircularBuffer<T, N>, mut check: Check<T>) -> Result<()>
+    where
+        T: fmt::Debug + PartialEq,
+    {
+        if buf.capacity() != check.capacity {
+            bail!(
+                "capacity real: {} expect: {}",
+                buf.capacity(),
+                check.capacity
+            );
+        }
+        if buf.len() != check.len {
+            bail!("len real: {} expect: {}", buf.len(), check.len);
+        }
+        if buf.is_empty() != check.is_empty {
+            bail!(
+                "is_empty real: {} expect: {}",
+                buf.is_empty(),
+                check.is_empty
+            );
+        }
+        if buf.front() != check.front.as_ref() {
+            bail!(
+                "front real: {:?} expect: {:?}",
+                buf.front(),
+                check.front.as_ref()
+            );
+        }
+        if buf.front_mut() != check.front.as_mut() {
+            bail!(
+                "front_mut real: {:?} expect: {:?}",
+                buf.front_mut(),
+                check.front.as_mut()
+            );
+        }
+        if buf.back() != check.back.as_ref() {
+            bail!(
+                "back real: {:?} expect: {:?}",
+                buf.back(),
+                check.back.as_ref()
+            );
+        }
+        if buf.back_mut() != check.back.as_mut() {
+            bail!(
+                "back_mut real: {:?} expect: {:?}",
+                buf.back_mut(),
+                check.back.as_mut()
+            )
+        }
+        Ok(())
+    }
+
+    macro_rules! check {
+        ($buf:expr, $check:expr) => {
+            check($buf, $check).unwrap()
+        };
+    }
 
     #[test]
     fn wrapping_add() {
@@ -150,142 +217,552 @@ mod tests {
 
     #[test]
     fn n_1() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        assert_eq!(result.is_ok(), true);
+        let mut buf = CircularBuffer::<i32, 1>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+    }
+
+    #[test]
+    fn n_1_push_back_once() {
+        let mut buf = CircularBuffer::<i32, 1>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+    }
+
+    #[test]
+    fn n_1_push_back_twice() {
+        let mut buf = CircularBuffer::<i32, 1>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+        assert_eq!(buf.push_back(1), false);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+    }
+
+    #[test]
+    fn n_1_push_back_once_pop_front_once() {
+        let mut buf = CircularBuffer::<i32, 1>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+        assert_eq!(buf.pop_front(), Some(0));
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+    }
+
+    #[test]
+    fn n_1_push_back_once_pop_front_twice() {
+        let mut buf = CircularBuffer::<i32, 1>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+        assert_eq!(buf.pop_front(), Some(0));
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.pop_front(), None);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 1,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
     }
 
     #[test]
     fn n_2() {
-        let result = CircularBuffer::<i32, 2>::try_new();
-        assert_eq!(result.is_ok(), true);
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        )
     }
 
     #[test]
-    fn capacity_1() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let buf = result.unwrap();
-        assert_eq!(buf.capacity(), 1);
-    }
-
-    #[test]
-    fn capacity_2() {
-        let result = CircularBuffer::<i32, 2>::try_new();
-        let buf = result.unwrap();
-        assert_eq!(buf.capacity(), 2);
-    }
-
-    #[test]
-    fn len_empty() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let buf = result.unwrap();
-        assert_eq!(buf.len(), 0);
-    }
-
-    #[test]
-    fn len_full() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
+    fn n_2_push_back_once() {
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
         assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.len(), 1);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
     }
 
     #[test]
-    fn len_head_smaller_than_tail() {
-        let result = CircularBuffer::<i32, 2>::try_new();
-        let mut buf = result.unwrap();
+    fn n_2_push_back_twice() {
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
         assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.len(), 1);
-    }
-
-    #[test]
-    fn len_tail_smaller_than_head() {
-        let result = CircularBuffer::<i32, 2>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
         assert_eq!(buf.push_back(1), true);
-        assert_eq!(buf.pop_front().is_some(), true);
-        assert_eq!(buf.len(), 1);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 2,
+                is_empty: false,
+                front: Some(0),
+                back: Some(1),
+            }
+        );
     }
 
     #[test]
-    fn is_empty() {
-        let result = CircularBuffer::<i32, 2>::try_new();
-        let buf = result.unwrap();
-        assert_eq!(buf.is_empty(), true);
-    }
-
-    #[test]
-    fn get_0() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.get(0), None);
+    fn n_2_push_back_once_pop_front_once() {
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
         assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.get(0), Some(0).as_ref());
-    }
-
-    #[test]
-    fn get_mut() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.get_mut(0), None);
-        assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.get_mut(0), Some(0).as_mut());
-    }
-
-    #[test]
-    fn front() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.front(), None);
-        assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.front(), Some(0).as_ref());
-    }
-
-    #[test]
-    fn front_mut() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.front_mut(), None);
-        assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.front_mut(), Some(0).as_mut());
-    }
-
-    #[test]
-    fn back() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.back(), None);
-        assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.back(), Some(0).as_ref());
-    }
-
-    #[test]
-    fn back_mut() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.back_mut(), None);
-        assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.back_mut(), Some(0).as_mut());
-    }
-
-    #[test]
-    fn pop_front() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.pop_front(), None);
-        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
         assert_eq!(buf.pop_front(), Some(0));
-        assert_eq!(buf.pop_front(), None);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
     }
 
     #[test]
-    fn push_back() {
-        let result = CircularBuffer::<i32, 1>::try_new();
-        let mut buf = result.unwrap();
-        assert_eq!(buf.is_empty(), true);
+    fn n_2_push_back_once_pop_front_twice() {
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
         assert_eq!(buf.push_back(0), true);
-        assert_eq!(buf.front(), Some(0).as_ref());
-        assert_eq!(buf.back(), Some(0).as_ref());
-        assert_eq!(buf.is_empty(), false);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+        assert_eq!(buf.pop_front(), Some(0));
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.pop_front(), None);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+    }
+
+    #[test]
+    fn n_2_push_back_thrice() {
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+        assert_eq!(buf.push_back(1), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 2,
+                is_empty: false,
+                front: Some(0),
+                back: Some(1),
+            }
+        );
+        assert_eq!(buf.push_back(2), false);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 2,
+                is_empty: false,
+                front: Some(0),
+                back: Some(1),
+            }
+        );
+    }
+
+    #[test]
+    fn n_2_push_back_twice_pop_front_once() {
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+        assert_eq!(buf.push_back(1), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 2,
+                is_empty: false,
+                front: Some(0),
+                back: Some(1),
+            }
+        );
+        assert_eq!(buf.pop_front(), Some(0));
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(1),
+                back: Some(1),
+            }
+        );
+    }
+
+    #[test]
+    fn n_2_push_back_twice_pop_front_twice() {
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+        assert_eq!(buf.push_back(1), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 2,
+                is_empty: false,
+                front: Some(0),
+                back: Some(1),
+            }
+        );
+        assert_eq!(buf.pop_front(), Some(0));
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(1),
+                back: Some(1),
+            }
+        );
+        assert_eq!(buf.pop_front(), Some(1));
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+    }
+
+    #[test]
+    fn n_2_push_back_twice_pop_front_thrice() {
+        let mut buf = CircularBuffer::<i32, 2>::try_new().unwrap();
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.push_back(0), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(0),
+                back: Some(0),
+            }
+        );
+        assert_eq!(buf.push_back(1), true);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 2,
+                is_empty: false,
+                front: Some(0),
+                back: Some(1),
+            }
+        );
+        assert_eq!(buf.pop_front(), Some(0));
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 1,
+                is_empty: false,
+                front: Some(1),
+                back: Some(1),
+            }
+        );
+        assert_eq!(buf.pop_front(), Some(1));
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
+        assert_eq!(buf.pop_front(), None);
+        check!(
+            &mut buf,
+            Check {
+                capacity: 2,
+                len: 0,
+                is_empty: true,
+                front: None,
+                back: None,
+            }
+        );
     }
 }
