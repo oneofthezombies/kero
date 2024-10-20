@@ -1,7 +1,6 @@
+use crate::circular_buffer::CircularBuffer;
 use anyhow::{bail, Result};
 use std::io::Read;
-
-use crate::circular_buffer::CircularBuffer;
 
 const DEFAULT_LOOKBEHIND_CAPACITY: usize = 0;
 
@@ -24,12 +23,9 @@ where
 
     pub fn with_lookbehind_capacity(inner: R, lookbehind_capacity: usize) -> Result<Self> {
         let buf = CircularBuffer::<u8, N>::try_new()?;
-        let current_capacity = 1;
-        let min_lookahead_capacity = current_capacity;
-        let min_need_capacity = lookbehind_capacity + min_lookahead_capacity;
-        if min_need_capacity > N {
+        if lookbehind_capacity > N - 1 {
             bail!(
-                "lookbehind_capacity must be less than N. lookbehind_capacity: {} N: {}",
+                "lookbehind_capacity must be less than N - 1 for current lookahead(0). lookbehind_capacity: {} N: {}",
                 lookbehind_capacity,
                 N
             );
@@ -45,28 +41,38 @@ where
     }
 
     pub fn read(&mut self, relative_offset: isize) -> Result<Option<u8>> {
-        let index = self.parse_relative_offset(relative_offset)?;
+        let Some(index) = self.lookbehind_length.checked_add_signed(relative_offset) else {
+            bail!(
+                "Overflow occurred. lookbehind_length: {} relative_offset: {}",
+                self.lookbehind_length,
+                relative_offset
+            );
+        };
+        if index >= self.buf.capacity() {
+            bail!(
+                "index must be less than buffer capacity. index: {} capacity: {}",
+                index,
+                self.buf.capacity()
+            );
+        }
         loop {
             if let Some(v) = self.buf.get(index) {
                 return Ok(Some(v.clone()));
             }
-
             if self.is_eof {
                 return Ok(None);
             }
-
-            let mut buf = [0u8; 4];
-            let need_count = index + 1 - self.buf.len();
-            if need_count > 4 {
+            let mut buf = [0u8; N];
+            let need_len = index + 1 - self.buf.len();
+            if need_len > N {
                 bail!("read buffer out of range");
             }
-            let read_count = self.inner.read(&mut buf[0..need_count])?;
-            if read_count == 0 {
+            let read_len = self.inner.read(&mut buf[0..need_len])?;
+            if read_len == 0 {
                 self.is_eof = true;
                 return Ok(None);
             }
-
-            for i in 0..read_count {
+            for i in 0..read_len {
                 if !self.buf.push_back(buf[i]) {
                     bail!("circular buffer out of range");
                 }
@@ -102,20 +108,7 @@ where
                 self.absolute_offset -= 1;
             }
         }
-
         Ok(())
-    }
-
-    fn parse_relative_offset(&self, relative_offset: isize) -> Result<usize> {
-        let Some(v) = self.lookbehind_length.checked_add_signed(relative_offset) else {
-            bail!(
-                "Overflow occurred. lookbehind_length: {} relative_offset: {}",
-                self.lookbehind_length,
-                relative_offset
-            );
-        };
-
-        Ok(v)
     }
 
     pub fn absolute_offset(&self) -> usize {
