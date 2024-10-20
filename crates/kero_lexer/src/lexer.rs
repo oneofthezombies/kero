@@ -17,12 +17,12 @@ impl<R> Lexer<R>
 where
     R: Read,
 {
-    pub fn new(reader: R) -> Self {
-        Self {
-            reader: LookaroundBufReader::new(reader),
+    pub fn new(reader: R) -> Result<Self> {
+        Ok(Self {
+            reader: LookaroundBufReader::new(reader)?,
             token_info_queue: VecDeque::new(),
             line: 1,
-        }
+        })
     }
 
     pub fn next(&mut self) -> Result<TokenInfo> {

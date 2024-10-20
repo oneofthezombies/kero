@@ -1,11 +1,13 @@
 use anyhow::{bail, Result};
 use std::{collections::VecDeque, io::Read};
 
+use crate::circular_buffer::CircularBuffer;
+
 const DEFAULT_LOOKBEHIND_CAPACITY: usize = 0;
 
 pub struct LookaroundBufReader<R> {
     inner: R,
-    buf: VecDeque<u8>,
+    buf: CircularBuffer<5, u8>,
     absolute_offset: usize,
     lookbehind_capacity: usize,
     lookbehind_length: usize,
@@ -16,19 +18,19 @@ impl<R> LookaroundBufReader<R>
 where
     R: Read,
 {
-    pub fn new(inner: R) -> Self {
+    pub fn new(inner: R) -> Result<Self> {
         Self::with_lookbehind_capacity(inner, DEFAULT_LOOKBEHIND_CAPACITY)
     }
 
-    pub fn with_lookbehind_capacity(inner: R, lookbehind_capacity: usize) -> Self {
-        Self {
+    pub fn with_lookbehind_capacity(inner: R, lookbehind_capacity: usize) -> Result<Self> {
+        Ok(Self {
             inner,
-            buf: VecDeque::<u8>::new(),
+            buf: CircularBuffer::<5, u8>::try_new()?,
             absolute_offset: 0,
             lookbehind_capacity,
             lookbehind_length: 0,
             is_eof: false,
-        }
+        })
     }
 
     pub fn read(&mut self, relative_offset: isize) -> Result<Option<u8>> {
@@ -51,7 +53,11 @@ where
             }
 
             buffer.truncate(read_count);
-            self.buf.extend(buffer);
+            for b in buffer {
+                if !self.buf.push_back(b) {
+                    bail!("circular buffer out of range");
+                }
+            }
         }
     }
 
@@ -127,7 +133,7 @@ mod tests {
     #[test]
     fn eof_greater_1() {
         let source = b"";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         let result = reader.read(0);
         assert!(result.unwrap().is_none());
         assert!(reader.buffer_length() == 0);
@@ -140,7 +146,7 @@ mod tests {
     #[test]
     fn eof_greater_2() {
         let source = b"";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         let result = reader.read(1);
         assert!(result.unwrap().is_none());
         assert!(reader.buffer_length() == 0);
@@ -153,7 +159,7 @@ mod tests {
     #[test]
     fn eof_multiple_read() {
         let source = b"";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         {
             let result = reader.read(0);
             assert!(result.unwrap().is_none());
@@ -172,7 +178,7 @@ mod tests {
     #[test]
     fn read() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         let result = reader.read(0);
         assert!(result.unwrap().unwrap() == b'a');
         assert!(reader.buffer_length() == 1);
@@ -185,7 +191,7 @@ mod tests {
     #[test]
     fn read_multiple() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         {
             let result = reader.read(0);
             assert!(result.unwrap().unwrap() == b'a');
@@ -204,7 +210,7 @@ mod tests {
     #[test]
     fn read_greater_1() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         let result = reader.read(1);
         assert!(result.unwrap().is_none());
         assert!(reader.buffer_length() == 1);
@@ -217,7 +223,7 @@ mod tests {
     #[test]
     fn read_greater_2() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         let result = reader.read(2);
         assert!(result.unwrap().is_none());
         assert!(reader.buffer_length() == 1);
@@ -230,7 +236,7 @@ mod tests {
     #[test]
     fn advance_0() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         {
             let result = reader.read(0);
             assert!(result.unwrap().unwrap() == b'a');
@@ -249,7 +255,7 @@ mod tests {
     #[test]
     fn advance_1() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         {
             let result = reader.read(0);
             assert!(result.unwrap().unwrap() == b'a');
@@ -272,7 +278,7 @@ mod tests {
     #[test]
     fn advance_2() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         {
             let result = reader.read(0);
             assert!(result.unwrap().unwrap() == b'a');
@@ -291,7 +297,7 @@ mod tests {
     #[test]
     fn advance_minus_1() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::new(source.as_slice());
+        let mut reader = LookaroundBufReader::new(source.as_slice()).unwrap();
         {
             let result = reader.read(0);
             assert!(result.unwrap().unwrap() == b'a');
@@ -310,7 +316,8 @@ mod tests {
     #[test]
     fn lookbehind_advance_1() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::with_lookbehind_capacity(source.as_slice(), 1);
+        let mut reader =
+            LookaroundBufReader::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
         {
             let result = reader.read(0);
             assert!(result.unwrap().unwrap() == b'a');
@@ -329,7 +336,8 @@ mod tests {
     #[test]
     fn lookbehind_advance_1_advance_minus_1() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::with_lookbehind_capacity(source.as_slice(), 1);
+        let mut reader =
+            LookaroundBufReader::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
         {
             let result = reader.read(0);
             assert!(result.unwrap().unwrap() == b'a');

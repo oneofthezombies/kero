@@ -103,7 +103,7 @@ fn check_info(check_info: CheckInfo) -> Result<()> {
 #[test]
 fn endmarker() {
     let source = b"";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     let info = lexer.next().unwrap();
     check_info(CheckInfo {
         source,
@@ -121,7 +121,7 @@ fn endmarker() {
 #[test]
 fn nl_carriage_return() {
     let source = b"\r";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -155,7 +155,7 @@ fn nl_carriage_return() {
 #[test]
 fn nl_line_feed() {
     let source = b"\n";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -189,7 +189,7 @@ fn nl_line_feed() {
 #[test]
 fn nl_carriage_return_line_feed() {
     let source = b"\r\n";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -209,7 +209,7 @@ fn nl_carriage_return_line_feed() {
 #[test]
 fn comment() {
     let source = b"#";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -257,7 +257,7 @@ fn comment() {
 #[test]
 fn comment_carriage_return() {
     let source = b"#\r";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -305,7 +305,7 @@ fn comment_carriage_return() {
 #[test]
 fn comment_line_feed() {
     let source = b"#\n";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -353,7 +353,7 @@ fn comment_line_feed() {
 #[test]
 fn comment_carriage_return_line_feed() {
     let source = b"#\r\n";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -401,7 +401,7 @@ fn comment_carriage_return_line_feed() {
 #[test]
 fn name_ascii_start() {
     let source = b"a";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -449,7 +449,7 @@ fn name_ascii_start() {
 #[test]
 fn name_ascii_continue_ascii() {
     let source = b"a1";
-    let mut lexer = Lexer::new(source.as_slice());
+    let mut lexer = Lexer::new(source.as_slice()).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -498,7 +498,7 @@ fn name_ascii_continue_ascii() {
 fn name_ascii_continue_multi_byte_code_point() {
     let source_str = "a가";
     let source = source_str.as_bytes();
-    let mut lexer = Lexer::new(source);
+    let mut lexer = Lexer::new(source).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -547,7 +547,7 @@ fn name_ascii_continue_multi_byte_code_point() {
 fn name_utf8_multi_byte_code_point_start() {
     let source_str = "가";
     let source = source_str.as_bytes();
-    let mut lexer = Lexer::new(source);
+    let mut lexer = Lexer::new(source).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -596,7 +596,7 @@ fn name_utf8_multi_byte_code_point_start() {
 fn name_utf8_multi_byte_code_point_continue_ascii() {
     let source_str = "가1";
     let source = source_str.as_bytes();
-    let mut lexer = Lexer::new(source);
+    let mut lexer = Lexer::new(source).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
@@ -645,7 +645,7 @@ fn name_utf8_multi_byte_code_point_continue_ascii() {
 fn name_utf8_multi_byte_code_point_continue_multi_byte_code_point() {
     let source_str = "가나";
     let source = source_str.as_bytes();
-    let mut lexer = Lexer::new(source);
+    let mut lexer = Lexer::new(source).unwrap();
     {
         let info = lexer.next().unwrap();
         check_info(CheckInfo {
