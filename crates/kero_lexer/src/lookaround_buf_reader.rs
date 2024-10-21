@@ -41,31 +41,28 @@ where
     }
 
     pub fn read(&mut self, relative_offset: isize) -> Result<Option<u8>> {
-        let Some(buf_index) = self.lookbehind_length.checked_add_signed(relative_offset) else {
+        let Some(index) = self.lookbehind_length.checked_add_signed(relative_offset) else {
             bail!(
                 "Overflow occurred. lookbehind_length: {} relative_offset: {}",
                 self.lookbehind_length,
                 relative_offset
             );
         };
-        if buf_index >= self.buf.capacity() {
+        if index >= self.buf.capacity() {
             bail!(
-                "index must be less than buffer capacity. index: {} capacity: {}",
-                buf_index,
+                "Index must be less than buffer capacity. index: {} capacity: {}",
+                index,
                 self.buf.capacity()
             );
         }
         loop {
-            if let Some(v) = self.buf.get(buf_index) {
+            if let Some(v) = self.buf.get(index) {
                 return Ok(Some(v.clone()));
             }
             if self.is_eof {
                 return Ok(None);
             }
-            let need_len = buf_index + 1 - self.buf.len();
-            if need_len > self.buf.capacity() - self.buf.len() {
-                bail!("need_len is greater than buffer capacity - length. need_len: {} capacity: {} length: {}", need_len, self.buf.capacity(), self.buf.len());
-            }
+            let need_len = index + 1 - self.buf.len();
             let mut read_buf = [0u8; N];
             let read_len = self.inner.read(&mut read_buf[0..need_len])?;
             if read_len == 0 {
@@ -74,7 +71,7 @@ where
             }
             for i in 0..read_len {
                 if !self.buf.push_back(read_buf[i]) {
-                    bail!("circular buffer out of range");
+                    bail!("InternalError: It must be verified early in the function");
                 }
             }
         }
