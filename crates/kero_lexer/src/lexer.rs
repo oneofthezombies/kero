@@ -80,6 +80,9 @@ where
                     self.handle_line_separator(byte)?;
                     break;
                 }
+                x if is_single_quote_or_double_quote(x) => {
+                    self.handle_single_quote_or_double_quote(byte)?
+                }
                 x if is_ascii_xid_start(x) => self.handle_ascii_xid_start(byte)?,
                 x if ByteKind::from(x).is_first_of_multi_byte_code_point() => {
                     self.handle_first_of_multi_byte_code_point(byte)?
@@ -166,6 +169,11 @@ where
             this.advance_and_increase_column(ch.len_utf8())?;
             this.process_name_continue()
         })
+    }
+
+    fn handle_single_quote_or_double_quote(&mut self, byte: u8) -> Result<()> {
+        debug_assert!(is_single_quote_or_double_quote(byte));
+        todo!();
     }
 
     fn process_name_continue(&mut self) -> Result<TokenKind> {
@@ -274,6 +282,10 @@ where
 
 fn is_line_separator(byte: u8) -> bool {
     byte == b'\r' || byte == b'\n'
+}
+
+fn is_single_quote_or_double_quote(byte: u8) -> bool {
+    byte == b'\'' || byte == b'"'
 }
 
 fn is_ascii_alphabetic(byte: u8) -> bool {
