@@ -442,126 +442,290 @@ mod tests {
     }
 
     #[test]
-    fn advance_0() {
-        let source = b"a";
+    fn source_len_0_advance_0() {
+        let source = b"";
         let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
-        {
-            let result = reader.read(0);
-            assert!(result.unwrap().unwrap() == b'a');
-        }
-        {
-            let result = reader.advance(0);
-            assert!(result.is_ok());
-        }
-        assert!(reader.buffer_length() == 1);
-        assert!(reader.lookahead_length() == 1);
-        assert!(reader.lookbehind_capacity() == 0);
-        assert!(reader.lookbehind_length() == 0);
-        assert!(reader.absolute_offset() == 0);
+        let result = reader.advance(0);
+        assert_eq!(result.is_ok(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 0,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
     }
 
     #[test]
-    fn advance_1() {
+    fn source_len_0_advance_1() {
+        let source = b"";
+        let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
+        let result = reader.advance(1);
+        assert_eq!(result.is_err(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 0,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_0_advance_minus_1() {
+        let source = b"";
+        let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
+        let result = reader.advance(-1);
+        assert_eq!(result.is_err(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 0,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_1_advance_0() {
         let source = b"a";
         let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
+        let result = reader.advance(0);
+        assert_eq!(result.is_ok(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 0,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_1_advance_1() {
+        let source = b"a";
+        let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
+        let result = reader.advance(1);
+        assert_eq!(result.is_err(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 0,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_1_advance_2() {
+        let source = b"a";
+        let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
+        let result = reader.advance(2);
+        assert_eq!(result.is_err(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 0,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_1_advance_minus_1() {
+        let source = b"a";
+        let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
+        let result = reader.advance(-1);
+        assert_eq!(result.is_err(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 0,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_1_lookbehind_1_advance_0() {
+        let source = b"a";
+        let mut reader =
+            LookaroundBufReader::<_, 5>::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
+        let result = reader.advance(0);
+        assert_eq!(result.is_ok(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 1,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_1_lookbehind_1_advance_1() {
+        let source = b"a";
+        let mut reader =
+            LookaroundBufReader::<_, 5>::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
+        let result = reader.advance(1);
+        assert_eq!(result.is_err(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 1,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_1_lookbehind_1_advance_2() {
+        let source = b"a";
+        let mut reader =
+            LookaroundBufReader::<_, 5>::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
+        let result = reader.advance(1);
+        assert_eq!(result.is_err(), true);
+        check!(
+            &reader,
+            Check {
+                absolute_offset: 0,
+                lookbehind_capacity: 1,
+                lookbehind_length: 0,
+                buffer_length: 0,
+                is_eof: false
+            }
+        );
+    }
+
+    #[test]
+    fn source_len_1_lookbehind_1_read_0_advance_1() {
+        let source = b"a";
+        let mut reader =
+            LookaroundBufReader::<_, 5>::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
         {
             let result = reader.read(0);
-            assert!(result.unwrap().unwrap() == b'a');
+            assert_eq!(result.unwrap(), Some(b'a'));
+            check!(
+                &reader,
+                Check {
+                    absolute_offset: 0,
+                    lookbehind_capacity: 1,
+                    lookbehind_length: 0,
+                    buffer_length: 1,
+                    is_eof: false
+                }
+            );
         }
         {
             let result = reader.advance(1);
-            assert!(result.is_ok());
+            assert_eq!(result.is_ok(), true);
+            check!(
+                &reader,
+                Check {
+                    absolute_offset: 1,
+                    lookbehind_capacity: 1,
+                    lookbehind_length: 1,
+                    buffer_length: 1,
+                    is_eof: false
+                }
+            );
         }
-        {
-            let result = reader.read(0);
-            assert!(result.unwrap().is_none());
-        }
-        assert!(reader.buffer_length() == 0);
-        assert!(reader.lookahead_length() == 0);
-        assert!(reader.lookbehind_capacity() == 0);
-        assert!(reader.lookbehind_length() == 0);
-        assert!(reader.absolute_offset() == 1);
     }
 
     #[test]
-    fn advance_2() {
+    fn source_len_1_lookbehind_1_read_0_advance_2() {
         let source = b"a";
-        let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
+        let mut reader =
+            LookaroundBufReader::<_, 5>::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
         {
             let result = reader.read(0);
-            assert!(result.unwrap().unwrap() == b'a');
+            assert_eq!(result.unwrap(), Some(b'a'));
+            check!(
+                &reader,
+                Check {
+                    absolute_offset: 0,
+                    lookbehind_capacity: 1,
+                    lookbehind_length: 0,
+                    buffer_length: 1,
+                    is_eof: false
+                }
+            );
         }
         {
             let result = reader.advance(2);
-            assert!(result.is_err());
+            assert_eq!(result.is_err(), true);
+            check!(
+                &reader,
+                Check {
+                    absolute_offset: 0,
+                    lookbehind_capacity: 1,
+                    lookbehind_length: 0,
+                    buffer_length: 1,
+                    is_eof: false
+                }
+            );
         }
-        assert!(reader.buffer_length() == 1);
-        assert!(reader.lookahead_length() == 1);
-        assert!(reader.lookbehind_capacity() == 0);
-        assert!(reader.lookbehind_length() == 0);
-        assert!(reader.absolute_offset() == 0);
     }
 
     #[test]
-    fn advance_minus_1() {
-        let source = b"a";
-        let mut reader = LookaroundBufReader::<_, 5>::new(source.as_slice()).unwrap();
-        {
-            let result = reader.read(0);
-            assert!(result.unwrap().unwrap() == b'a');
-        }
-        {
-            let result = reader.advance(-1);
-            assert!(result.is_err());
-        }
-        assert!(reader.buffer_length() == 1);
-        assert!(reader.lookahead_length() == 1);
-        assert!(reader.lookbehind_capacity() == 0);
-        assert!(reader.lookbehind_length() == 0);
-        assert!(reader.absolute_offset() == 0);
-    }
-
-    #[test]
-    fn lookbehind_advance_1() {
+    fn source_len_1_lookbehind_1_read_0_advance_minus_1() {
         let source = b"a";
         let mut reader =
             LookaroundBufReader::<_, 5>::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
         {
             let result = reader.read(0);
-            assert!(result.unwrap().unwrap() == b'a');
-        }
-        {
-            let result = reader.advance(1);
-            assert!(result.is_ok());
-        }
-        assert!(reader.buffer_length() == 1);
-        assert!(reader.lookahead_length() == 0);
-        assert!(reader.lookbehind_capacity() == 1);
-        assert!(reader.lookbehind_length() == 1);
-        assert!(reader.absolute_offset() == 1);
-    }
-
-    #[test]
-    fn lookbehind_advance_1_advance_minus_1() {
-        let source = b"a";
-        let mut reader =
-            LookaroundBufReader::<_, 5>::with_lookbehind_capacity(source.as_slice(), 1).unwrap();
-        {
-            let result = reader.read(0);
-            assert!(result.unwrap().unwrap() == b'a');
-        }
-        {
-            let result = reader.advance(1);
-            assert!(result.is_ok());
+            assert_eq!(result.unwrap(), Some(b'a'));
+            check!(
+                &reader,
+                Check {
+                    absolute_offset: 0,
+                    lookbehind_capacity: 1,
+                    lookbehind_length: 0,
+                    buffer_length: 1,
+                    is_eof: false
+                }
+            );
         }
         {
             let result = reader.advance(-1);
-            assert!(result.is_ok());
+            assert_eq!(result.is_err(), true);
+            check!(
+                &reader,
+                Check {
+                    absolute_offset: 0,
+                    lookbehind_capacity: 1,
+                    lookbehind_length: 0,
+                    buffer_length: 1,
+                    is_eof: false
+                }
+            );
         }
-        assert!(reader.buffer_length() == 1);
-        assert!(reader.lookahead_length() == 1);
-        assert!(reader.lookbehind_capacity() == 1);
-        assert!(reader.lookbehind_length() == 0);
-        assert!(reader.absolute_offset() == 0);
     }
 }
