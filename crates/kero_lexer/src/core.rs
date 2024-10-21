@@ -7,6 +7,7 @@ pub enum TokenKind {
     Dedent,
     Comment, // #
     Name,    // identifier or keyword
+    String,  // "" '' """""" ''''''
 }
 
 #[derive(Clone, Debug)]
