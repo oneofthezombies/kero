@@ -47,14 +47,14 @@ impl<T, const N: usize> CircularBuffer<T, N> {
 
     pub(crate) fn get(&self, index: usize) -> Option<&T> {
         self.buf
-            .get(self.parse_index_to_position(index)?)
+            .get(self.parse_index_to_array_index(index)?)
             .map(|v| unsafe { v.assume_init_ref() })
     }
 
     pub(crate) fn get_mut(&mut self, index: usize) -> Option<&mut T> {
-        let position = self.parse_index_to_position(index)?;
+        let array_index = self.parse_index_to_array_index(index)?;
         self.buf
-            .get_mut(position)
+            .get_mut(array_index)
             .map(|v| unsafe { v.assume_init_mut() })
     }
 
@@ -99,29 +99,29 @@ impl<T, const N: usize> CircularBuffer<T, N> {
         true
     }
 
-    fn parse_index_to_position(&self, index: usize) -> Option<usize> {
+    fn parse_index_to_array_index(&self, index: usize) -> Option<usize> {
         debug_assert!(N != 0);
-        let position = self.head.wrapping_add(index) % N;
+        let array_index = self.head.wrapping_add(index) % N;
         if self.head == self.tail {
             if self.is_full {
-                Some(position)
+                Some(array_index)
             } else {
                 None
             }
         } else if self.head < self.tail {
-            if self.head <= position && position < self.tail {
-                Some(position)
+            if self.head <= array_index && array_index < self.tail {
+                Some(array_index)
             } else {
                 None
             }
         } else
         /* tail < head */
         {
-            if self.head <= position && position < N {
-                Some(position)
+            if self.head <= array_index && array_index < N {
+                Some(array_index)
             } else {
-                if position < self.tail {
-                    Some(position)
+                if array_index < self.tail {
+                    Some(array_index)
                 } else {
                     None
                 }
